@@ -63,6 +63,7 @@ export default function SignupPage() {
           shadow="xl"
           radius="lg"
           p="xl"
+          mb="xl"
           style={{
             backgroundColor: 'white',
             width: '100%',

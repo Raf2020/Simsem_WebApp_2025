@@ -2,9 +2,9 @@ import { createTheme } from '@mantine/core';
 
 export const theme = createTheme({
   primaryColor: 'blue',
-  fontFamily: 'var(--font-geist-sans), -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+  fontFamily: 'var(--font-barlow), -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
   headings: {
-    fontFamily: 'var(--font-geist-sans), -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+    fontFamily: 'var(--font-barlow), -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
   },
   colors: {
     blue: [
