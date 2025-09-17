@@ -64,3 +64,41 @@ a {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #6b7280;
 }
+
+/* Custom phone input styling */
+.phone-input-custom {
+  display: flex !important;
+  background-color: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.phone-input-custom .PhoneInputCountrySelect {
+  background-color: transparent !important;
+  border: none !important;
+  border-right: 1px solid #e5e7eb !important;
+  border-radius: 0 !important;
+  padding: 8px 12px !important;
+  margin: 0 !important;
+}
+
+.phone-input-custom .PhoneInputInput {
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+  height: 36px !important;
+  flex: 1 !important;
+  outline: none !important;
+}
+
+.phone-input-custom .PhoneInputCountrySelectArrow {
+  color: #6b7280 !important;
+}
+
+.phone-input-custom:focus-within {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 1px #3b82f6 !important;
+}

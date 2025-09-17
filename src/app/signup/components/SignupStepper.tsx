@@ -20,7 +20,7 @@ export default function SignupStepper({ activeStep }: SignupStepperProps) {
           fontWeight: 600,
         },
         stepLabel: {
-          color: 'white',
+          color: 'black',
           fontSize: '12px',
           fontWeight: 500,
           marginTop: '8px',

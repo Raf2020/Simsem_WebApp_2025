@@ -78,15 +78,22 @@ export default function SignupPage() {
           p="xl"
           mb="xl"
           style={{
+            alignItems: "center",
+            display: "flex",
+            flexDirection: "column",
             backgroundColor: 'white',
             width: '100%',
-            maxWidth: '600px',
+            maxWidth: '1114px',
             border: 'none',
             position: 'relative',
             zIndex: 2
           }}
         >
-          <SignupStepper activeStep={0} />
+          <Box style={{
+            width: "100%"
+          }}>
+            <SignupStepper activeStep={0} />
+          </Box>
           {renderCurrentStep()}
         </Paper>
       </Container>
