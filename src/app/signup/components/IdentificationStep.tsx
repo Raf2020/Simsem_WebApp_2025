@@ -18,7 +18,7 @@ import {
   Image
 } from '@mantine/core';
 import { IconUpload, IconUser, IconCamera } from '@tabler/icons-react';
-import countries from 'world-countries';
+import { Country, City, State } from 'country-state-city';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 
@@ -41,29 +41,33 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
   const [city, setCity] = useState('');
   const [introduction, setIntroduction] = useState('');
 
-  // Prepare countries data for Select component
-  const countryOptions = countries
+  // Prepare countries data for Select component using country-state-city
+  const countryOptions = Country.getAllCountries()
     .map((country) => ({
-      value: country.cca2.toLowerCase(),
-      label: country.name.common,
+      value: country.isoCode,
+      label: country.name,
     }))
     .sort((a, b) => a.label.localeCompare(b.label));
 
-  // Phone field uses PhoneInput component with built-in country selection
+  // Get states for selected country using country-state-city
+  const getCityOptions = () => {
+    if (!country) return [];
+    const states = State.getStatesOfCountry(country);
+    if (!states) return [];
 
-  // Sample cities data (you might want to make this dynamic based on selected country)
-  const cityOptions = [
-    { value: 'amman', label: 'Amman' },
-    { value: 'riyadh', label: 'Riyadh' },
-    { value: 'dubai', label: 'Dubai' },
-    { value: 'cairo', label: 'Cairo' },
-    { value: 'doha', label: 'Doha' },
-    { value: 'kuwait', label: 'Kuwait City' },
-    { value: 'manama', label: 'Manama' },
-    { value: 'muscat', label: 'Muscat' },
-    { value: 'beirut', label: 'Beirut' },
-    { value: 'damascus', label: 'Damascus' },
-  ].sort((a, b) => a.label.localeCompare(b.label));
+    return states
+      .map((state) => ({
+        value: state.isoCode,
+        label: state.name,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  };
+
+  // Handle country change - reset city when country changes
+  const handleCountryChange = (value: string | null) => {
+    setCountry(value || '');
+    setCity(''); // Reset city when country changes
+  };
 
   return (
     <Stack gap="lg" style={{
@@ -298,7 +302,7 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
                 label="Country"
                 placeholder="Select Country"
                 value={country}
-                onChange={(value) => setCountry(value || '')}
+                onChange={handleCountryChange}
                 data={countryOptions}
                 searchable
                 styles={{
@@ -335,12 +339,13 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 6 }}>
               <Select
-                label="City"
-                placeholder="Select City"
+                label="State/Province"
+                placeholder="Select State/Province"
                 value={city}
                 onChange={(value) => setCity(value || '')}
-                data={cityOptions}
+                data={getCityOptions()}
                 searchable
+                disabled={!country}
                 styles={{
                   label: {
                     fontFamily: 'Barlow',

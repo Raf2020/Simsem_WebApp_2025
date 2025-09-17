@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import {
   Text,
   Title,
@@ -18,232 +17,249 @@ interface LanguageStepProps {
   onBack: () => void;
 }
 
-interface Language {
-  name: string;
-  level: 'NATIVE' | 'FLUENT' | 'CONVERSATIONAL' | 'BASIC';
-}
 
-const availableLanguages = [
-  'Arabic', 'English', 'French', 'Spanish', 'German', 'Italian', 
-  'Portuguese', 'Russian', 'Chinese', 'Japanese', 'Korean', 'Hindi',
-  'Turkish', 'Dutch', 'Swedish', 'Norwegian', 'Danish', 'Finnish'
-];
-
-const levelColors = {
-  NATIVE: 'blue',
-  FLUENT: 'green', 
-  CONVERSATIONAL: 'orange',
-  BASIC: 'gray'
-};
 
 export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) {
-  const [selectedLanguages, setSelectedLanguages] = useState<Language[]>([
-    { name: 'Arabic', level: 'NATIVE' },
-    { name: 'English', level: 'FLUENT' },
-    { name: 'French', level: 'CONVERSATIONAL' }
-  ]);
-  const [showAddLanguage, setShowAddLanguage] = useState(false);
-
-  const addLanguage = (languageName: string, level: Language['level']) => {
-    if (selectedLanguages.length < 3 && !selectedLanguages.find(l => l.name === languageName)) {
-      setSelectedLanguages([...selectedLanguages, { name: languageName, level }]);
-      setShowAddLanguage(false);
-    }
-  };
-
-  const removeLanguage = (languageName: string) => {
-    setSelectedLanguages(selectedLanguages.filter(l => l.name !== languageName));
-  };
-
-  const updateLanguageLevel = (languageName: string, newLevel: Language['level']) => {
-    setSelectedLanguages(selectedLanguages.map(l => 
-      l.name === languageName ? { ...l, level: newLevel } : l
-    ));
-  };
 
   return (
-    <Paper
-      p={40}
-      radius="md"
-      style={{
-        maxWidth: '962px',
-        width: '100%',
-        margin: '0 auto',
-        border: '1px solid #e5e7eb'
-      }}
-    >
-      <Stack gap={24}>
+
+    <Stack gap="lg" style={{
+      maxWidth: 962,
+      width: "100%"
+    }}>
+
+      {/* maxWidth: '962px',  */}
+      <Paper
+        withBorder
+        radius="lg"
+        p="xl"
+        style={{
+          width: '100%',
+          margin: '0 auto'
+        }}
+      >
         <Box>
-          <Title 
-            order={2} 
+          <Title
+            order={2}
             style={{
               fontFamily: 'Barlow',
-              fontWeight: 600,
-              fontSize: '24px',
+              fontWeight: 700,
+              fontSize: '20px',
+              lineHeight: '100%',
+              letterSpacing: '0px',
               color: '#000000',
               marginBottom: '8px'
             }}
           >
             Languages
           </Title>
-          <Text 
+          <Text
             style={{
               fontFamily: 'Barlow',
               fontWeight: 400,
-              fontSize: '16px',
+              fontSize: '18px',
+              lineHeight: '100%',
+              letterSpacing: '0%',
               color: '#6b7280'
             }}
           >
             You can add up to three languages
           </Text>
         </Box>
-
-        <Stack gap={16}>
-          {selectedLanguages.map((language) => (
-            <Group key={language.name} justify="space-between" align="center">
-              <Group gap={12}>
-                <Text 
-                  style={{
-                    fontFamily: 'Barlow',
-                    fontWeight: 400,
-                    fontSize: '18px',
-                    color: '#000000'
-                  }}
-                >
-                  {language.name}
-                </Text>
-                <Badge 
-                  color={levelColors[language.level]}
-                  variant="light"
-                  style={{
-                    fontFamily: 'Barlow',
-                    fontWeight: 500,
-                    fontSize: '12px'
-                  }}
-                >
-                  {language.level}
-                </Badge>
-              </Group>
-              <Group gap={8}>
-                {(['NATIVE', 'FLUENT', 'CONVERSATIONAL', 'BASIC'] as const).map((level) => (
-                  <Button
-                    key={level}
-                    size="xs"
-                    variant={language.level === level ? 'filled' : 'outline'}
-                    color={levelColors[level]}
-                    onClick={() => updateLanguageLevel(language.name, level)}
-                    style={{
-                      fontFamily: 'Barlow',
-                      fontSize: '11px'
-                    }}
-                  >
-                    {level}
-                  </Button>
-                ))}
-                <Button
-                  size="xs"
-                  variant="outline"
-                  color="red"
-                  onClick={() => removeLanguage(language.name)}
-                  style={{
-                    fontFamily: 'Barlow',
-                    fontSize: '11px'
-                  }}
-                >
-                  Remove
-                </Button>
-              </Group>
-            </Group>
-          ))}
-        </Stack>
-
-        {selectedLanguages.length < 3 && (
-          <Box>
-            {!showAddLanguage ? (
-              <Button
-                variant="outline"
-                leftSection={<IconPlus size={16} />}
-                onClick={() => setShowAddLanguage(true)}
-                style={{
-                  fontFamily: 'Barlow',
-                  fontWeight: 400,
-                  fontSize: '16px',
-                  color: '#6b7280',
-                  borderColor: '#e5e7eb'
-                }}
-              >
-                Add Language
-              </Button>
-            ) : (
-              <Stack gap={12}>
-                <Group wrap="wrap" gap={8}>
-                  {availableLanguages
-                    .filter(lang => !selectedLanguages.find(l => l.name === lang))
-                    .map((language) => (
-                      <Group key={language} gap={4}>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => addLanguage(language, 'CONVERSATIONAL')}
-                          style={{
-                            fontFamily: 'Barlow',
-                            fontSize: '14px'
-                          }}
-                        >
-                          {language}
-                        </Button>
-                      </Group>
-                    ))}
-                </Group>
-                <Button
-                  variant="subtle"
-                  onClick={() => setShowAddLanguage(false)}
-                  style={{
-                    fontFamily: 'Barlow',
-                    fontSize: '14px'
-                  }}
-                >
-                  Cancel
-                </Button>
-              </Stack>
-            )}
-          </Box>
-        )}
-
-        <Group justify="space-between" mt={32}>
+        <Group gap={12} mt={24}>
           <Button
-            variant="outline"
-            onClick={onBack}
+            variant="light"
             style={{
+              backgroundColor: '#e5e7eb',
+              color: '#374151',
+              border: 'none',
+              borderRadius: '10px',
               fontFamily: 'Barlow',
               fontWeight: 400,
-              fontSize: '16px',
-              backgroundColor: '#9ca3af',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '12px 24px'
+              fontSize: '18px',
+              lineHeight: '100%',
+              letterSpacing: '0%',
+              textAlign: 'justify',
+              width: '179px',
+              height: '51px',
+              padding: '',
+              gap: '10px'
             }}
           >
-            Back
+            Arabic
+            <Badge
+              size="xs"
+              style={{
+                backgroundColor: '#0D2E610D',
+                color: 'white',
+                marginLeft: '10px',
+                fontFamily: 'Barlow',
+                fontWeight: 400,
+                fontSize: '14px',
+                lineHeight: '100%',
+                letterSpacing: '0%',
+                textAlign: 'justify',
+                width: '56px',
+                height: '23px',
+                padding: '3px 5px',
+                borderRadius: '10px',
+                border: '1px solid transparent'
+              }}
+            >
+              NATIVE
+            </Badge>
           </Button>
+
           <Button
-            onClick={onComplete}
+            variant="light"
             style={{
+              backgroundColor: '#e5e7eb',
+              color: '#374151',
+              border: 'none',
+              borderRadius: '10px',
               fontFamily: 'Barlow',
               fontWeight: 400,
-              fontSize: '16px',
-              backgroundColor: '#f97316',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '12px 24px'
+              fontSize: '18px',
+              lineHeight: '100%',
+              letterSpacing: '0%',
+              textAlign: 'justify',
+              width: '179px',
+              height: '51px',
+              padding: '14px 15px',
+              gap: '10px'
             }}
           >
-            Proceed
+            English
+            <Badge
+              size="xs"
+              style={{
+                backgroundColor: '#10b981',
+                color: 'white',
+                marginLeft: '10px',
+                fontFamily: 'Barlow',
+                fontWeight: 400,
+                fontSize: '14px',
+                lineHeight: '100%',
+                letterSpacing: '0%',
+                textAlign: 'justify',
+                width: '56px',
+                height: '23px',
+                padding: '3px 5px',
+                borderRadius: '10px',
+                border: '1px solid transparent'
+              }}
+            >
+              FLUENT
+            </Badge>
+          </Button>
+
+          <Button
+            variant="light"
+            style={{
+              backgroundColor: '#e5e7eb',
+              color: '#374151',
+              border: 'none',
+              borderRadius: '10px',
+              fontFamily: 'Barlow',
+              fontWeight: 400,
+              fontSize: '18px',
+              lineHeight: '100%',
+              letterSpacing: '0%',
+              textAlign: 'justify',
+              width: '179px',
+              height: '51px',
+              padding: '14px 15px',
+              gap: '10px'
+            }}
+          >
+            French
+            <Badge
+              size="xs"
+              style={{
+                backgroundColor: '#f59e0b',
+                color: 'white',
+                marginLeft: '10px',
+                fontFamily: 'Barlow',
+                fontWeight: 400,
+                fontSize: '14px',
+                lineHeight: '100%',
+                letterSpacing: '0%',
+                textAlign: 'justify',
+                width: '56px',
+                height: '23px',
+                padding: '3px 5px',
+                borderRadius: '10px',
+                border: '1px solid transparent'
+              }}
+            >
+              CONVERSATIONAL
+            </Badge>
           </Button>
         </Group>
-      </Stack>
-    </Paper>
+
+        <Box mt={16}>
+          <Button
+            variant="outline"
+            leftSection={<IconPlus size={14} />}
+            style={{
+              fontFamily: 'Barlow',
+              fontWeight: 500,
+              fontSize: '16px',
+              lineHeight: '100%',
+              letterSpacing: '0px',
+              color: '#6b7280',
+              borderColor: '#d1d5db',
+              backgroundColor: 'transparent',
+              width: '164px',
+              height: '49px',
+              padding: '15px 20px',
+              borderRadius: '10px',
+              borderWidth: '1px',
+              gap: '10px'
+            }}
+          >
+            Add Language
+          </Button>
+        </Box>
+      </Paper>
+      {/* Buttons */}
+      <Group justify="space-between">
+        <Button
+          variant="filled"
+          size="md"
+          onClick={onBack}
+          style={{
+            backgroundColor: '#d1d5db',
+            color: '#6b7280',
+            border: 'none',
+            borderRadius: '6px',
+            height: '44px',
+            fontSize: '14px',
+            fontWeight: 500,
+            minWidth: '120px'
+          }}
+        >
+          Back
+        </Button>
+
+        <Button
+          size="md"
+          onClick={onComplete}
+          style={{
+            backgroundColor: '#f59e0b',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            height: '44px',
+            fontSize: '14px',
+            fontWeight: 500,
+            minWidth: '120px'
+          }}
+        >
+          Proceed
+        </Button>
+      </Group>
+    </Stack >
+
   );
 }
