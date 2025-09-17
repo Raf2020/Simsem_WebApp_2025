@@ -8,8 +8,7 @@ import {
   Button,
   Stack,
   Box,
-  Group,
-  Stepper
+  Group
 } from '@mantine/core';
 import { IconUpload } from '@tabler/icons-react';
 
@@ -24,39 +23,7 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
   const [isCertifiedGuide, setIsCertifiedGuide] = useState(false);
 
   return (
-    <Box
-    >
-      <Stepper
-        active={0}
-        size="sm"
-        styles={{
-          stepIcon: {
-            backgroundColor: 'white',
-            color: '#1e3a8a',
-            border: '2px solid white',
-            fontWeight: 600,
-            borderRadius: '50%'
-          },
-          stepBody: {
-            marginTop: '8px'
-          },
-          stepLabel: {
-            fontSize: '12px',
-            fontWeight: 500,
-            textAlign: 'center'
-          },
-          separator: {
-            backgroundColor: 'rgba(255, 255, 255, 0.3)',
-            height: '2px'
-          }
-        }}
-      >
-        <Stepper.Step label="About you" />
-        <Stepper.Step label="Language" />
-        <Stepper.Step label="Services" />
-        <Stepper.Step label="Payment" />
-        <Stepper.Step label="Account" />
-      </Stepper>
+   
       <Stack gap="lg">
         {/* Identification Card Section */}
         <Box>
@@ -251,7 +218,7 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
           </Button>
         </Group>
       </Stack>
-    </Box>
+
 
 
   );

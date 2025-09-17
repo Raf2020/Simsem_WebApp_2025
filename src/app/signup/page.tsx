@@ -1,32 +1,25 @@
 'use client';
 
 import { useState } from 'react';
-import PermissionStep from './components/PermissionStep';
 import IdentificationStep from './components/IdentificationStep';
 import { Box, Image, Container, Paper } from '@mantine/core';
+import SignupStepper from './components/SignupStepper';
 
-type SignupStep = 'permission' | 'identification' | 'profile' | 'language' | 'services' | 'payment' | 'account';
+type SignupStep = 'identification' | 'profile' | 'language' | 'services' | 'payment' | 'account';
 
 export default function SignupPage() {
-  const [currentStep, setCurrentStep] = useState<SignupStep>('permission');
+  const [currentStep, setCurrentStep] = useState<SignupStep>('identification');
 
   const handleStepComplete = (nextStep: SignupStep) => {
     setCurrentStep(nextStep);
   };
 
   const handleCancel = () => {
-    setCurrentStep('permission')
+    setCurrentStep('identification')
   };
 
   const renderCurrentStep = () => {
     switch (currentStep) {
-      case 'permission':
-        return (
-          <PermissionStep
-            onComplete={() => handleStepComplete('identification')}
-            onCancel={handleCancel}
-          />
-        );
       case 'identification':
         return (
           <IdentificationStep
@@ -34,10 +27,30 @@ export default function SignupPage() {
             onCancel={handleCancel}
           />
         );
+      case 'profile':
+        return (
+          <div>Profile Step - Coming Soon</div>
+        );
+      case 'language':
+        return (
+          <div>Language Step - Coming Soon</div>
+        );
+      case 'services':
+        return (
+          <div>Services Step - Coming Soon</div>
+        );
+      case 'payment':
+        return (
+          <div>Payment Step - Coming Soon</div>
+        );
+      case 'account':
+        return (
+          <div>Account Step - Coming Soon</div>
+        );
       default:
         return (
-          <PermissionStep
-            onComplete={() => handleStepComplete('identification')}
+          <IdentificationStep
+            onComplete={() => handleStepComplete('profile')}
             onCancel={handleCancel}
           />
         );
@@ -73,6 +86,7 @@ export default function SignupPage() {
             zIndex: 2
           }}
         >
+          <SignupStepper activeStep={0} />
           {renderCurrentStep()}
         </Paper>
       </Container>
