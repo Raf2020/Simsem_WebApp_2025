@@ -2,6 +2,10 @@
 
 import { useState } from 'react';
 import IdentificationStep from './components/IdentificationStep';
+import LanguageStep from './components/LanguageStep';
+import ServicesStep from './components/ServicesStep';
+import PaymentStep from './components/PaymentStep';
+import AccountStep from './components/AccountStep';
 import { Box, Image, Container, Paper } from '@mantine/core';
 import SignupStepper from './components/SignupStepper';
 
@@ -18,12 +22,23 @@ export default function SignupPage() {
     setCurrentStep('identification')
   };
 
+  const getActiveStepIndex = () => {
+    switch (currentStep) {
+      case 'identification': return 0;
+      case 'language': return 1;
+      case 'services': return 2;
+      case 'payment': return 3;
+      case 'account': return 4;
+      default: return 0;
+    }
+  };
+
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 'identification':
         return (
           <IdentificationStep
-            onComplete={() => handleStepComplete('profile')}
+            onComplete={() => handleStepComplete('language')}
             onCancel={handleCancel}
           />
         );
@@ -33,19 +48,35 @@ export default function SignupPage() {
         );
       case 'language':
         return (
-          <div>Language Step - Coming Soon</div>
+          <LanguageStep
+            onComplete={() => handleStepComplete('services')}
+            onBack={() => setCurrentStep('identification')}
+          />
         );
       case 'services':
         return (
-          <div>Services Step - Coming Soon</div>
+          <ServicesStep
+            onComplete={() => handleStepComplete('payment')}
+            onBack={() => setCurrentStep('language')}
+          />
         );
       case 'payment':
         return (
-          <div>Payment Step - Coming Soon</div>
+          <PaymentStep
+            onComplete={() => handleStepComplete('account')}
+            onBack={() => setCurrentStep('services')}
+          />
         );
       case 'account':
         return (
-          <div>Account Step - Coming Soon</div>
+          <AccountStep
+            onComplete={() => {
+              // Handle final signup completion
+              console.log('Signup completed!');
+              // You could redirect to a success page or dashboard here
+            }}
+            onBack={() => setCurrentStep('payment')}
+          />
         );
       default:
         return (
@@ -92,7 +123,7 @@ export default function SignupPage() {
           <Box style={{
             width: "100%"
           }}>
-            <SignupStepper activeStep={0} />
+            <SignupStepper activeStep={getActiveStepIndex()} />
           </Box>
           {renderCurrentStep()}
         </Paper>
