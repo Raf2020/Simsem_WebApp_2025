@@ -51,180 +51,176 @@ export default function ServicesStep({ onComplete, onBack }: ServicesStepProps) 
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
   const toggleService = (serviceId: string) => {
-    setSelectedServices(prev => 
-      prev.includes(serviceId) 
+    setSelectedServices(prev =>
+      prev.includes(serviceId)
         ? prev.filter(id => id !== serviceId)
         : [...prev, serviceId]
     );
   };
 
   return (
-    <Paper
-      p={40}
-      radius="md"
-      style={{
-        maxWidth: '962px',
-        width: '100%',
-        margin: '0 auto',
-        border: '1px solid #e5e7eb'
-      }}
-    >
-      <Stack gap={24}>
-        <Box>
-          <Title 
-            order={2} 
-            style={{
-              fontFamily: 'Barlow',
-              fontWeight: 600,
-              fontSize: '24px',
-              color: '#000000',
-              marginBottom: '8px'
-            }}
-          >
-            Services
-          </Title>
-          <Text 
-            style={{
-              fontFamily: 'Barlow',
-              fontWeight: 400,
-              fontSize: '16px',
-              color: '#6b7280'
-            }}
-          >
-            Choose all types of services you would like to provide. You can select more than one
-          </Text>
-        </Box>
 
-        <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing={20}>
-          {availableServices.map((service) => (
-            <Card
-              key={service.id}
-              shadow="sm"
-              padding="lg"
-              radius="md"
-              withBorder
-              style={{
-                cursor: 'pointer',
-                border: selectedServices.includes(service.id) 
-                  ? '2px solid #f97316' 
-                  : '1px solid #e5e7eb',
-                backgroundColor: selectedServices.includes(service.id) 
-                  ? '#fff7ed' 
-                  : '#ffffff',
-                transition: 'all 0.2s ease'
-              }}
-              onClick={() => toggleService(service.id)}
-            >
-              <Card.Section>
-                <Box
-                  style={{
-                    height: '160px',
-                    backgroundColor: '#f3f4f6',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    position: 'relative',
-                    overflow: 'hidden'
-                  }}
-                >
-                  {service.id === 'local-living' && (
-                    <Box
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e5e7eb\'/%3E%3Ctext x=\'50\' y=\'50\' font-family=\'Arial\' font-size=\'12\' fill=\'%236b7280\' text-anchor=\'middle\' dy=\'.3em\'%3ELocal Living%3C/text%3E%3C/svg%3E")',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center'
-                      }}
-                    />
-                  )}
-                  {service.id === 'getaway' && (
-                    <Box
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23dbeafe\'/%3E%3Ccircle cx=\'50\' cy=\'30\' r=\'15\' fill=\'%23ef4444\' stroke=\'%23dc2626\' stroke-width=\'2\'/%3E%3Cpath d=\'M35 45 Q50 35 65 45\' stroke=\'%23374151\' stroke-width=\'2\' fill=\'none\'/%3E%3Ctext x=\'50\' y=\'70\' font-family=\'Arial\' font-size=\'10\' fill=\'%236b7280\' text-anchor=\'middle\'%3EHot Air Balloon%3C/text%3E%3C/svg%3E")',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center'
-                      }}
-                    />
-                  )}
-                  {service.id === 'dining' && (
-                    <Box
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23fef3c7\'/%3E%3Ccircle cx=\'30\' cy=\'40\' r=\'8\' fill=\'%23f59e0b\'/%3E%3Ccircle cx=\'50\' cy=\'35\' r=\'10\' fill=\'%23d97706\'/%3E%3Ccircle cx=\'70\' cy=\'40\' r=\'8\' fill=\'%23f59e0b\'/%3E%3Ctext x=\'50\' y=\'70\' font-family=\'Arial\' font-size=\'10\' fill=\'%236b7280\' text-anchor=\'middle\'%3ELocal Food%3C/text%3E%3C/svg%3E")',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center'
-                      }}
-                    />
-                  )}
-                </Box>
-              </Card.Section>
+    <Stack gap="lg" style={{
+      maxWidth: 962,
+      width: "100%"
+    }}>
+      <Box>
+        <Title
+          order={2}
+          style={{
+            fontFamily: 'Barlow',
+            fontWeight: 600,
+            fontSize: '24px',
+            color: '#000000',
+            marginBottom: '8px'
+          }}
+        >
+          Services
+        </Title>
+        <Text
+          style={{
+            fontFamily: 'Barlow',
+            fontWeight: 400,
+            fontSize: '16px',
+            color: '#6b7280'
+          }}
+        >
+          Choose all types of services you would like to provide. You can select more than one
+        </Text>
+      </Box>
 
-              <Stack gap={8} mt="md">
-                <Text 
-                  fw={600} 
-                  style={{
-                    fontFamily: 'Barlow',
-                    fontSize: '18px',
-                    color: '#000000'
-                  }}
-                >
-                  {service.title}
-                </Text>
-                <Text 
-                  size="sm" 
-                  style={{
-                    fontFamily: 'Barlow',
-                    fontSize: '14px',
-                    color: '#6b7280',
-                    lineHeight: '1.4'
-                  }}
-                >
-                  {service.description}
-                </Text>
-              </Stack>
-            </Card>
-          ))}
-        </SimpleGrid>
+      <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing={20}>
+        {availableServices.map((service) => (
+          <Card
+            key={service.id}
+            shadow="sm"
+            padding="lg"
+            radius="md"
+            withBorder
+            style={{
+              cursor: 'pointer',
+              border: selectedServices.includes(service.id)
+                ? '2px solid #f97316'
+                : '1px solid #e5e7eb',
+              backgroundColor: selectedServices.includes(service.id)
+                ? '#fff7ed'
+                : '#ffffff',
+              transition: 'all 0.2s ease'
+            }}
+            onClick={() => toggleService(service.id)}
+          >
+            <Card.Section>
+              <Box
+                style={{
+                  height: '160px',
+                  backgroundColor: '#f3f4f6',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                {service.id === 'local-living' && (
+                  <Box
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e5e7eb\'/%3E%3Ctext x=\'50\' y=\'50\' font-family=\'Arial\' font-size=\'12\' fill=\'%236b7280\' text-anchor=\'middle\' dy=\'.3em\'%3ELocal Living%3C/text%3E%3C/svg%3E")',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center'
+                    }}
+                  />
+                )}
+                {service.id === 'getaway' && (
+                  <Box
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23dbeafe\'/%3E%3Ccircle cx=\'50\' cy=\'30\' r=\'15\' fill=\'%23ef4444\' stroke=\'%23dc2626\' stroke-width=\'2\'/%3E%3Cpath d=\'M35 45 Q50 35 65 45\' stroke=\'%23374151\' stroke-width=\'2\' fill=\'none\'/%3E%3Ctext x=\'50\' y=\'70\' font-family=\'Arial\' font-size=\'10\' fill=\'%236b7280\' text-anchor=\'middle\'%3EHot Air Balloon%3C/text%3E%3C/svg%3E")',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center'
+                    }}
+                  />
+                )}
+                {service.id === 'dining' && (
+                  <Box
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23fef3c7\'/%3E%3Ccircle cx=\'30\' cy=\'40\' r=\'8\' fill=\'%23f59e0b\'/%3E%3Ccircle cx=\'50\' cy=\'35\' r=\'10\' fill=\'%23d97706\'/%3E%3Ccircle cx=\'70\' cy=\'40\' r=\'8\' fill=\'%23f59e0b\'/%3E%3Ctext x=\'50\' y=\'70\' font-family=\'Arial\' font-size=\'10\' fill=\'%236b7280\' text-anchor=\'middle\'%3ELocal Food%3C/text%3E%3C/svg%3E")',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center'
+                    }}
+                  />
+                )}
+              </Box>
+            </Card.Section>
 
-        <Group justify="space-between" mt={32}>
-          <Button
-            variant="outline"
-            onClick={onBack}
-            style={{
-              fontFamily: 'Barlow',
-              fontWeight: 400,
-              fontSize: '16px',
-              backgroundColor: '#9ca3af',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '12px 24px'
-            }}
-          >
-            Back
-          </Button>
-          <Button
-            onClick={onComplete}
-            disabled={selectedServices.length === 0}
-            style={{
-              fontFamily: 'Barlow',
-              fontWeight: 400,
-              fontSize: '16px',
-              backgroundColor: selectedServices.length === 0 ? '#d1d5db' : '#f97316',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '12px 24px'
-            }}
-          >
-            Proceed
-          </Button>
-        </Group>
-      </Stack>
-    </Paper>
+            <Stack gap={8} mt="md">
+              <Text
+                fw={600}
+                style={{
+                  fontFamily: 'Barlow',
+                  fontSize: '18px',
+                  color: '#000000'
+                }}
+              >
+                {service.title}
+              </Text>
+              <Text
+                size="sm"
+                style={{
+                  fontFamily: 'Barlow',
+                  fontSize: '14px',
+                  color: '#6b7280',
+                  lineHeight: '1.4'
+                }}
+              >
+                {service.description}
+              </Text>
+            </Stack>
+          </Card>
+        ))}
+      </SimpleGrid>
+
+      <Group justify="space-between">
+        <Button
+          variant="filled"
+          size="md"
+          onClick={onBack}
+          style={{
+            backgroundColor: '#d1d5db',
+            color: '#6b7280',
+            border: 'none',
+            borderRadius: '6px',
+            height: '44px',
+            fontSize: '14px',
+            fontWeight: 500,
+            minWidth: '120px'
+          }}
+        >
+          Back
+        </Button>
+
+        <Button
+          size="md"
+          onClick={onComplete}
+          style={{
+            backgroundColor: '#f59e0b',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            height: '44px',
+            fontSize: '14px',
+            fontWeight: 500,
+            minWidth: '120px'
+          }}
+        >
+          Proceed
+        </Button>
+      </Group>
+    </Stack>
+
   );
 }

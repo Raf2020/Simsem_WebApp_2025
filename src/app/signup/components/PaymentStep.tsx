@@ -61,16 +61,20 @@ export default function PaymentStep({ onComplete, onBack }: PaymentStepProps) {
   };
 
   return (
-    <Paper
-      p={40}
-      radius="md"
-      style={{
-        maxWidth: '962px',
-        width: '100%',
-        margin: '0 auto',
-        border: '1px solid #e5e7eb'
-      }}
-    >
+    <Stack gap="lg" style={{
+      maxWidth: 962,
+      width: "100%"
+    }}>
+      <Paper
+        p={40}
+        radius="md"
+        style={{
+          maxWidth: '962px',
+          width: '100%',
+          margin: '0 auto',
+          border: '1px solid #e5e7eb'
+        }}
+      >
       <Stack gap={24}>
         <Box>
           <Title 
@@ -144,41 +148,46 @@ export default function PaymentStep({ onComplete, onBack }: PaymentStepProps) {
             styles={inputStyles}
           />
         </Stack>
-
-        <Group justify="space-between" mt={32}>
-          <Button
-            variant="outline"
-            onClick={onBack}
-            style={{
-              fontFamily: 'Barlow',
-              fontWeight: 400,
-              fontSize: '16px',
-              backgroundColor: '#9ca3af',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '12px 24px'
-            }}
-          >
-            Back
-          </Button>
-          <Button
-            onClick={onComplete}
-            style={{
-              fontFamily: 'Barlow',
-              fontWeight: 400,
-              fontSize: '16px',
-              backgroundColor: '#f97316',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '12px 24px'
-            }}
-          >
-            Proceed
-          </Button>
-        </Group>
       </Stack>
     </Paper>
+
+    {/* Buttons */}
+    <Group justify="space-between">
+      <Button
+        variant="filled"
+        size="md"
+        onClick={onBack}
+        style={{
+          backgroundColor: '#d1d5db',
+          color: '#6b7280',
+          border: 'none',
+          borderRadius: '6px',
+          height: '44px',
+          fontSize: '14px',
+          fontWeight: 500,
+          minWidth: '120px'
+        }}
+      >
+        Back
+      </Button>
+
+      <Button
+        size="md"
+        onClick={onComplete}
+        style={{
+          backgroundColor: '#f59e0b',
+          color: 'white',
+          border: 'none',
+          borderRadius: '6px',
+          height: '44px',
+          fontSize: '14px',
+          fontWeight: 500,
+          minWidth: '120px'
+        }}
+      >
+        Proceed
+      </Button>
+    </Group>
+    </Stack>
   );
 }
