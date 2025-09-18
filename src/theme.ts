@@ -6,6 +6,13 @@ export const theme = createTheme({
   headings: {
     fontFamily: 'var(--font-barlow), -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
   },
+  breakpoints: {
+    xs: '30em',    // 480px
+    sm: '48em',    // 768px
+    md: '64em',    // 1024px
+    lg: '74em',    // 1184px
+    xl: '90em',    // 1440px
+  },
   colors: {
     blue: [
       '#e6f3ff',

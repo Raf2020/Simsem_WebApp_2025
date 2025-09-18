@@ -97,17 +97,39 @@ export default function SignupPage() {
         #ffffff 275px,
         #ffffff 100%)`
     }}>
-      <Container size="lg" style={{ display: 'flex', justifyContent: 'center', paddingTop: '2rem', flexDirection: "column", justifyItems: "center", alignItems: "center" }}>
-        <Box mb={36} w={340} h={95} style={{ alignItems: "center", justifyContent: "center", display: "flex" }}>
-          <Box w={176} h={72.7} style={{ overflow: "hidden" }}>
+      <Container
+        size="lg"
+        py={{ base: 'xl', sm: 'xl' }}
+        px={{ base: 0, sm: "lg" }}
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: "column",
+          justifyItems: "center",
+          alignItems: "center"
+        }}
+      >
+        <Box
+          mb={{ base: 24, sm: 36 }}
+          w={{ base: 280, sm: 340 }}
+          h={{ base: 80, sm: 95 }}
+          style={{ alignItems: "center", justifyContent: "center", display: "flex" }}
+        >
+          <Box
+            w={{ base: 140, sm: 176 }}
+            h={{ base: 58, sm: 72.7 }}
+            style={{ overflow: "hidden" }}
+          >
             <Image fit="fill" alt={"Simsen-Logo"} src={"/logo/simsem-tr-bg.svg"} />
           </Box>
         </Box>
         <Paper
           shadow="xl"
           radius="lg"
-          p="xl"
-          mb="xl"
+          p={{ base: 'sm', sm: 'xl' }}
+          py={{ base: 'xl', sm: "xl" }}
+          mb={{ base: 'lg', sm: 'xl' }}
+          mx={{ base: 0, sm: 0 }}
           style={{
             alignItems: "center",
             display: "flex",
@@ -120,14 +142,17 @@ export default function SignupPage() {
             zIndex: 2
           }}
         >
-          <Box style={{
-            width: "100%"
-          }}>
+          <Box
+            style={{
+              maxWidth: 962,
+              width: "100%"
+            }}
+          >
             <SignupStepper activeStep={getActiveStepIndex()} />
           </Box>
           {renderCurrentStep()}
         </Paper>
       </Container>
-    </Box>
+    </Box >
   );
 }

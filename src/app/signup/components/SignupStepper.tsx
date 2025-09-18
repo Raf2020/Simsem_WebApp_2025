@@ -1,6 +1,6 @@
 'use client';
 
-import { Group, Box, Text } from '@mantine/core';
+import { Group, Box, Text, Flex } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 
 interface SignupStepperProps {
@@ -17,7 +17,7 @@ const steps = [
 
 export default function SignupStepper({ activeStep }: SignupStepperProps) {
   return (
-    <Group justify="center" gap={60} style={{ marginBottom: '32px' }}>
+    <Flex justify="space-around" style={{ marginBottom: '32px' }}>
       {steps.map((step, index) => {
         const isCompleted = index < activeStep;
         const isActive = index === activeStep;
@@ -59,6 +59,6 @@ export default function SignupStepper({ activeStep }: SignupStepperProps) {
           </Box>
         );
       })}
-    </Group>
+    </Flex>
   );
 }

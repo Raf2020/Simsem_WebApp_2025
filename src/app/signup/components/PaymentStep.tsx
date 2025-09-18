@@ -152,11 +152,22 @@ export default function PaymentStep({ onComplete, onBack }: PaymentStepProps) {
     </Paper>
 
     {/* Buttons */}
-    <Group justify="space-between">
+    <Group
+      justify="space-between"
+      styles={{
+        root: {
+          '@media (max-width: 48em)': {
+            flexDirection: 'column !important',
+            gap: '12px !important'
+          }
+        }
+      }}
+    >
       <Button
         variant="filled"
         size="md"
         onClick={onBack}
+        w={{ base: '100%', sm: 'auto' }}
         style={{
           backgroundColor: '#d1d5db',
           color: '#6b7280',
@@ -174,6 +185,7 @@ export default function PaymentStep({ onComplete, onBack }: PaymentStepProps) {
       <Button
         size="md"
         onClick={onComplete}
+        w={{ base: '100%', sm: 'auto' }}
         style={{
           backgroundColor: '#f59e0b',
           color: 'white',

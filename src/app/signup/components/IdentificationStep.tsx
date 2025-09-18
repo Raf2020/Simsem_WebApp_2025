@@ -15,7 +15,8 @@ import {
   Avatar,
   Paper,
   Grid,
-  Image
+  Image,
+  Flex
 } from '@mantine/core';
 import { IconUpload, IconUser, IconCamera } from '@tabler/icons-react';
 import { Country, City, State } from 'country-state-city';
@@ -79,7 +80,8 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
       <Paper
         withBorder
         radius="lg"
-        p="xl"
+        p={{ base: "sm", sm: "xl" }}
+        py={"xl"}
         style={{
           width: '100%',
           margin: '0 auto'
@@ -87,7 +89,11 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
       >
         <Stack gap="lg">
           {/* Avatar and Photo Upload */}
-          <Group gap="md" align="center">
+          <Flex
+            direction={{ base: "column", sm: "row" }}
+            align={"center"}
+            gap={"md"}
+          >
             <Avatar
               size={80}
               radius="xl"
@@ -98,7 +104,10 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
             >
               <IconUser size={40} />
             </Avatar>
-            <Box>
+            <Flex
+              direction={"column"}
+              align={{ base: "center", sm: "flex-start" }}
+            >
               <Button
                 variant="outline"
                 leftSection={<IconCamera size={16} />}
@@ -113,8 +122,8 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
               <Text size="xs" c="dimmed" mt={4}>
                 JPG, PNG, Max 2MB
               </Text>
-            </Box>
-          </Group>
+            </Flex>
+          </Flex>
 
           {/* Name Fields */}
           <Grid>
@@ -435,7 +444,8 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
       <Paper
         withBorder
         radius="lg"
-        p="xl"
+        p={{ base: "sm", sm: "xl" }}
+        py={"xl"}
         style={{
           width: '100%',
           margin: '0 auto'
@@ -444,8 +454,10 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
         <Box>
           <Title
             order={3}
+
             style={{
-              color: '#1f2937',
+              color: '#0D2E61',
+
               fontWeight: 600,
               fontSize: '18px',
               marginBottom: '8px'
@@ -469,7 +481,9 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
               <Text
                 size="sm"
                 style={{
-                  color: '#374151',
+                  color: '#0D2E61',
+
+
                   fontWeight: 500
                 }}
               >
@@ -509,7 +523,7 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
               <Text
                 size="sm"
                 style={{
-                  color: '#374151',
+                  color: '#0D2E61',
                   fontWeight: 500
                 }}
               >
@@ -552,7 +566,6 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
           border: '1px solid #e5e7eb',
           borderRadius: '8px',
           padding: '16px',
-          marginBottom: '20px'
         }}
       >
         <Group gap="xs" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
@@ -595,14 +608,74 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
             </Text>
           </Box>
         </Group>
-      </Box>
 
+
+      </Box>
+      {/* Guide Certificate Upload - Show when certification is checked */}
+      {isCertifiedGuide && (
+        <Paper
+          withBorder
+          radius="lg"
+          p={{ base: "sm", sm: "xl" }}
+          py={"xl"}
+          style={{
+            width: '100%',
+            margin: '0 auto'
+          }}
+        >
+          <Box>
+            <Title
+              order={3}
+              style={{
+                color: '#1f2937',
+                fontWeight: 600,
+                fontSize: '18px',
+                marginBottom: '8px'
+              }}
+            >
+              Certification
+            </Title>
+
+            {/* ID Card Front Side */}
+            <Box style={{ marginBottom: '20px' }}>
+
+              <Box
+                style={{
+                  border: '2px dashed #0D2E61',
+                  borderRadius: '8px',
+                  padding: '40px 20px',
+                  textAlign: 'center',
+                  backgroundColor: '#0D2E611A',
+                  cursor: 'pointer'
+                }}
+              >
+                <IconUpload size={24} color="#6b7280" style={{ marginBottom: '8px' }} />
+                <Text size="sm" style={{ color: '#6b7280' }}>
+                  Upload Document
+                </Text>
+              </Box>
+            </Box>
+          </Box>
+        </Paper>
+      )}
       {/* Buttons */}
-      <Group justify="space-between">
+      <Group
+        justify="space-between"
+        mt={20}
+        styles={{
+          root: {
+            '@media (max-width: 48em)': {
+              flexDirection: 'column !important',
+              gap: '12px !important'
+            }
+          }
+        }}
+      >
         <Button
           variant="filled"
           size="md"
           onClick={onCancel}
+          w={{ base: '100%', sm: 'auto' }}
           style={{
             backgroundColor: '#d1d5db',
             color: '#6b7280',
@@ -620,6 +693,7 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
         <Button
           size="md"
           onClick={onComplete}
+          w={{ base: '100%', sm: 'auto' }}
           style={{
             backgroundColor: '#f59e0b',
             color: 'white',
