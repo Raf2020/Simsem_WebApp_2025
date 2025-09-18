@@ -69,6 +69,26 @@ export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) 
         <Group gap={12} mt={24}>
           <Button
             variant="light"
+            rightSection={<Badge
+              size="xs"
+              style={{
+                backgroundColor: '#0D2E610D',
+                color: '#0D2E61',
+                marginLeft: '10px',
+                fontFamily: 'Barlow',
+                fontWeight: 400,
+                fontSize: '14px',
+                lineHeight: '100%',
+                letterSpacing: '0%',
+                textAlign: 'justify',
+                height: '23px',
+                padding: '3px 5px',
+                borderRadius: '10px',
+                border: '1px solid #3D3D3D1A'
+              }}
+            >
+              NATIVE
+            </Badge>}
             style={{
               backgroundColor: '#e5e7eb',
               color: '#374151',
@@ -87,11 +107,15 @@ export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) 
             }}
           >
             Arabic
-            <Badge
+          </Button>
+
+     <Button
+            variant="light"
+            rightSection={<Badge
               size="xs"
               style={{
                 backgroundColor: '#0D2E610D',
-                color: 'white',
+                color: '#0D2E61',
                 marginLeft: '10px',
                 fontFamily: 'Barlow',
                 fontWeight: 400,
@@ -99,19 +123,14 @@ export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) 
                 lineHeight: '100%',
                 letterSpacing: '0%',
                 textAlign: 'justify',
-                width: '56px',
                 height: '23px',
                 padding: '3px 5px',
                 borderRadius: '10px',
-                border: '1px solid transparent'
+                border: '1px solid #3D3D3D1A'
               }}
             >
-              NATIVE
-            </Badge>
-          </Button>
-
-          <Button
-            variant="light"
+              FLUENT
+            </Badge>}
             style={{
               backgroundColor: '#e5e7eb',
               color: '#374151',
@@ -125,16 +144,19 @@ export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) 
               textAlign: 'justify',
               width: '179px',
               height: '51px',
-              padding: '14px 15px',
+              padding: '',
               gap: '10px'
             }}
           >
             English
-            <Badge
+          </Button>
+          <Button
+            variant="light"
+            rightSection={<Badge
               size="xs"
               style={{
-                backgroundColor: '#10b981',
-                color: 'white',
+                backgroundColor: '#0D2E610D',
+                color: '#0D2E61',
                 marginLeft: '10px',
                 fontFamily: 'Barlow',
                 fontWeight: 400,
@@ -142,19 +164,14 @@ export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) 
                 lineHeight: '100%',
                 letterSpacing: '0%',
                 textAlign: 'justify',
-                width: '56px',
                 height: '23px',
                 padding: '3px 5px',
                 borderRadius: '10px',
-                border: '1px solid transparent'
+                border: '1px solid #3D3D3D1A'
               }}
             >
-              FLUENT
-            </Badge>
-          </Button>
-
-          <Button
-            variant="light"
+              CONVERSATIONAL
+            </Badge>}
             style={{
               backgroundColor: '#e5e7eb',
               color: '#374151',
@@ -168,32 +185,11 @@ export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) 
               textAlign: 'justify',
               width: '179px',
               height: '51px',
-              padding: '14px 15px',
+              padding: '',
               gap: '10px'
             }}
           >
             French
-            <Badge
-              size="xs"
-              style={{
-                backgroundColor: '#f59e0b',
-                color: 'white',
-                marginLeft: '10px',
-                fontFamily: 'Barlow',
-                fontWeight: 400,
-                fontSize: '14px',
-                lineHeight: '100%',
-                letterSpacing: '0%',
-                textAlign: 'justify',
-                width: '56px',
-                height: '23px',
-                padding: '3px 5px',
-                borderRadius: '10px',
-                border: '1px solid transparent'
-              }}
-            >
-              CONVERSATIONAL
-            </Badge>
           </Button>
         </Group>
 
