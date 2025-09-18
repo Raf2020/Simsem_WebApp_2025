@@ -488,11 +488,11 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
 
             <Box
               style={{
-                border: '2px dashed #d1d5db',
+                border: '2px dashed #0D2E61',
                 borderRadius: '8px',
                 padding: '40px 20px',
                 textAlign: 'center',
-                backgroundColor: '#f9fafb',
+                backgroundColor: '#0D2E611A',
                 cursor: 'pointer'
               }}
             >
@@ -528,11 +528,11 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
 
             <Box
               style={{
-                border: '2px dashed #d1d5db',
+                border: '2px dashed #0D2E61',
                 borderRadius: '8px',
                 padding: '40px 20px',
                 textAlign: 'center',
-                backgroundColor: '#f9fafb',
+                backgroundColor: '#0D2E611A',
                 cursor: 'pointer'
               }}
             >
