@@ -78,7 +78,7 @@ export default function CreateTourPage() {
         <Paper
           shadow="xl"
           radius="lg"
-          px={{base: 10, sm: 50}}
+          px={{base: 10, sm: 30}}
           py={"xl"}
           my={{ base: 'lg', sm: 'xl' }}
           maw={1204}

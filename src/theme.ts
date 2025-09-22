@@ -25,6 +25,30 @@ export const theme = createTheme({
       '#005699',
       '#003d66',
       '#002333'
+    ],
+    'simsen-text-default': [
+      '#f5f5f5',
+      '#e8e8e8',
+      '#d1d1d1',
+      '#b4b4b4',
+      '#9a9a9a',
+      '#3D3D3D',
+      '#313131',
+      '#2a2a2a',
+      '#1f1f1f',
+      '#141414'
+    ],
+    'simsen-blue': [
+      '#e8f0ff',
+      '#d1e1ff',
+      '#a3c3ff',
+      '#75a5ff',
+      '#4787ff',
+      '#0D2E61',
+      '#0a254e',
+      '#071c3b',
+      '#051328',
+      '#020a15'
     ]
   },
   components: {

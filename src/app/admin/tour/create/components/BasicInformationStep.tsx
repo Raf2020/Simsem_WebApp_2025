@@ -14,7 +14,7 @@ import {
   Flex,
   Badge
 } from '@mantine/core';
-import { IconEye } from '@tabler/icons-react';
+import { IconEye, IconUpload } from '@tabler/icons-react';
 
 interface BasicInformationStepProps {
   onNext: () => void;
@@ -81,7 +81,6 @@ export default function BasicInformationStep({ onNext }: BasicInformationStepPro
         >
           Basic Information
         </Title>
-
         {/* Tour Title */}
         <Stack gap={10}>
           <Text
@@ -132,7 +131,6 @@ export default function BasicInformationStep({ onNext }: BasicInformationStepPro
             }}
           />
         </Stack>
-
         {/* Tour Category */}
         <Stack gap={10}>
           <Text
