@@ -561,11 +561,14 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
 
 
       {/* Certified Tour Guide Section */}
-      <Box
+      <Paper
+        withBorder
+        radius="lg"
+        p={{ base: "sm", sm: "xl" }}
+        py={"xl"}
         style={{
-          border: '1px solid #e5e7eb',
-          borderRadius: '8px',
-          padding: '16px',
+          width: '100%',
+          margin: '0 auto'
         }}
       >
         <Group gap="xs" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
@@ -608,56 +611,52 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
             </Text>
           </Box>
         </Group>
-
-
-      </Box>
-      {/* Guide Certificate Upload - Show when certification is checked */}
-      {isCertifiedGuide && (
-        <Paper
-          withBorder
-          radius="lg"
-          p={{ base: "sm", sm: "xl" }}
-          py={"xl"}
-          style={{
-            width: '100%',
-            margin: '0 auto'
-          }}
-        >
-          <Box>
-            <Title
-              order={3}
-              style={{
-                color: '#1f2937',
-                fontWeight: 600,
-                fontSize: '18px',
-                marginBottom: '8px'
-              }}
-            >
-              Certification
-            </Title>
-
-            {/* ID Card Front Side */}
-            <Box style={{ marginBottom: '20px' }}>
-
-              <Box
+        {/* Guide Certificate Upload - Show when certification is checked */}
+        {isCertifiedGuide && (
+          <Box style={{ marginTop: '20px' }}>
+            <Group gap="xs" style={{ marginBottom: '8px' }}>
+              <Text
+                size="sm"
                 style={{
-                  border: '2px dashed #0D2E61',
-                  borderRadius: '8px',
-                  padding: '40px 20px',
-                  textAlign: 'center',
-                  backgroundColor: '#0D2E611A',
-                  cursor: 'pointer'
+                  color: '#0D2E61',
+
+
+                  fontWeight: 500
                 }}
               >
-                <IconUpload size={24} color="#6b7280" style={{ marginBottom: '8px' }} />
-                <Text size="sm" style={{ color: '#6b7280' }}>
-                  Upload Document
-                </Text>
-              </Box>
+                Tour Guide Certificate
+              </Text>
+              <Text
+                size="xs"
+                style={{
+                  color: '#ef4444',
+                  fontWeight: 500
+                }}
+              >
+                *
+              </Text>
+            </Group>
+
+            <Box
+              style={{
+                border: '2px dashed #0D2E61',
+                borderRadius: '8px',
+                padding: '40px 20px',
+                textAlign: 'center',
+                backgroundColor: '#0D2E611A',
+                cursor: 'pointer'
+              }}
+            >
+              <IconUpload size={24} color="#6b7280" style={{ marginBottom: '8px' }} />
+              <Text size="sm" style={{ color: '#6b7280' }}>
+                Upload Document
+              </Text>
             </Box>
           </Box>
-        </Paper>
-      )}
+        )}
+
+      </Paper>
+
       {/* Buttons */}
       <Flex
         justify="space-between"
