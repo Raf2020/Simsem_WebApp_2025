@@ -10,9 +10,9 @@ import {
   Box,
   Group,
   Paper,
-  PasswordInput
+  PasswordInput,
+  Flex
 } from '@mantine/core';
-import { IconEye, IconEyeOff } from '@tabler/icons-react';
 
 interface AccountStepProps {
   onComplete: () => void;
@@ -24,54 +24,10 @@ export default function AccountStep({ onComplete, onBack }: AccountStepProps) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const inputStyles = {
-    label: {
-      fontFamily: 'Barlow',
-      fontWeight: 400,
-      fontSize: '18px',
-      lineHeight: '100%',
-      letterSpacing: '0%',
-      color: '#000000',
-      marginBottom: '8px'
-    },
-    input: {
-      fontFamily: 'Barlow',
-      fontWeight: 400,
-      fontSize: '18px',
-      lineHeight: '100%',
-      letterSpacing: '0%',
-      backgroundColor: '#f9fafb',
-      border: '1px solid #e5e7eb',
-      borderRadius: '10px',
-      padding: '14px 15px',
-      height: 'auto',
-      minHeight: '48px',
-      '&::placeholder': {
-        color: '#9ca3af',
-        fontFamily: 'Barlow',
-        fontWeight: 400,
-        fontSize: '18px'
-      },
-      '&:focus': {
-        color: '#000000'
-      }
-    },
-    innerInput: {
-      fontFamily: 'Barlow',
-      fontWeight: 400,
-      fontSize: '18px',
-      backgroundColor: 'transparent',
-      border: 'none',
-      '&::placeholder': {
-        color: '#9ca3af'
-      }
-    }
-  };
+  const isFormValid = password.length >= 6 && password === confirmPassword;
 
   const handleComplete = () => {
-    // Here you would typically validate passwords match and meet requirements
-    if (password && confirmPassword && password === confirmPassword) {
-      // Redirect to success page
+    if (isFormValid) {
       router.push('/signup/success');
     }
   };
@@ -82,67 +38,116 @@ export default function AccountStep({ onComplete, onBack }: AccountStepProps) {
       width: "100%"
     }}>
       <Paper
-        p={40}
-        radius="md"
+        p={{ base: "sm", sm: "xl" }}
+        py={"xl"}
+        radius="lg"
+        withBorder
         style={{
-          maxWidth: '962px',
           width: '100%',
-          margin: '0 auto',
-          border: '1px solid #e5e7eb'
+          margin: '0 auto'
         }}
       >
-        <Stack gap={24}>
-          <Box>
-            <Title
-              order={2}
-              style={{
-                fontFamily: 'Barlow',
-                fontWeight: 600,
-                fontSize: '24px',
-                color: '#000000',
-                marginBottom: '8px',
-                textAlign: 'center'
-              }}
-            >
-              Your Simsem Account
-            </Title>
-          </Box>
+        <Stack align='center'>
+          <Stack gap={24} w={{ base: "100%", sm: 526 }}>
+            <Box ta={{ base: "center", sm: "left" }}>
+              <Title
+                order={2}
+                style={{
+                  fontFamily: 'Barlow',
+                  fontWeight: 600,
+                  fontSize: '20px',
+                  color: '#0D2E61',
+                  marginBottom: '24px'
+                }}
+              >
+                Your Simsem Account
+              </Title>
+            </Box>
 
-          <Stack gap={20} style={{ maxWidth: '400px', margin: '0 auto', width: '100%' }}>
-            <PasswordInput
-              label="Create Password"
-              placeholder="Create Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              visibilityToggleIcon={({ reveal }) =>
-                reveal ? <IconEyeOff size={18} /> : <IconEye size={18} />
-              }
-              styles={{
-                ...inputStyles,
-                visibilityToggle: {
-                  color: '#6b7280'
+            <Stack gap={16}>
+              <PasswordInput
+                placeholder="Create Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                styles={{
+                  input: {
+                    backgroundColor: '#f3f4f6',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '16px 20px',
+                    height: '56px',
+                    fontFamily: 'Barlow',
+                    fontSize: '16px',
+                    color: '#374151',
+                    '&::placeholder': {
+                      color: '#9ca3af'
+                    },
+                    '&:focus': {
+                      backgroundColor: '#f3f4f6',
+                      borderColor: 'transparent'
+                    }
+                  },
+                  visibilityToggle: {
+                    color: '#6b7280'
+                  }
+                }}
+                rightSection={
+                  <Text
+                    style={{
+                      fontFamily: 'Barlow',
+                      fontSize: '14px',
+                      color: '#6b7280',
+                      marginRight: '12px'
+                    }}
+                  >
+                    Show
+                  </Text>
                 }
-              }}
-            />
+              />
 
-            <PasswordInput
-              label="Confirm Password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              visibilityToggleIcon={({ reveal }) =>
-                reveal ? <IconEyeOff size={18} /> : <IconEye size={18} />
-              }
-              styles={{
-                ...inputStyles,
-                visibilityToggle: {
-                  color: '#6b7280'
+              <PasswordInput
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                styles={{
+                  input: {
+                    backgroundColor: '#f3f4f6',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '16px 20px',
+                    height: '56px',
+                    fontFamily: 'Barlow',
+                    fontSize: '16px',
+                    color: '#374151',
+                    '&::placeholder': {
+                      color: '#9ca3af'
+                    },
+                    '&:focus': {
+                      backgroundColor: '#f3f4f6',
+                      borderColor: 'transparent'
+                    }
+                  },
+                  visibilityToggle: {
+                    color: '#6b7280'
+                  }
+                }}
+                rightSection={
+                  <Text
+                    style={{
+                      fontFamily: 'Barlow',
+                      fontSize: '14px',
+                      color: '#6b7280',
+                      marginRight: '12px'
+                    }}
+                  >
+                    Show
+                  </Text>
                 }
-              }}
-            />
+              />
+            </Stack>
+
+
           </Stack>
-
-
         </Stack>
       </Paper>
       <Box style={{ textAlign: 'center', marginBottom: '20px' }}>
@@ -159,16 +164,10 @@ export default function AccountStep({ onComplete, onBack }: AccountStepProps) {
         </Text>
       </Box>
       {/* Buttons */}
-      <Group
+      <Flex
         justify="space-between"
-        styles={{
-          root: {
-            '@media (max-width: 48em)': {
-              flexDirection: 'column !important',
-              gap: '12px !important'
-            }
-          }
-        }}
+        gap={12}
+        direction={{ base: "column", sm: "row" }}
       >
         <Button
           variant="filled"
@@ -211,7 +210,7 @@ export default function AccountStep({ onComplete, onBack }: AccountStepProps) {
         >
           Proceed
         </Button>
-      </Group>
+      </Flex>
     </Stack>
   );
 }

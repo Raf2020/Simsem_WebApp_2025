@@ -659,17 +659,10 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
         </Paper>
       )}
       {/* Buttons */}
-      <Group
+      <Flex
         justify="space-between"
-        mt={20}
-        styles={{
-          root: {
-            '@media (max-width: 48em)': {
-              flexDirection: 'column !important',
-              gap: '12px !important'
-            }
-          }
-        }}
+        gap={12}
+        direction={{ base: "column", sm: "row" }}
       >
         <Button
           variant="filled"
@@ -707,7 +700,7 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
         >
           Proceed
         </Button>
-      </Group>
+      </Flex>
     </Stack>
   );
 }

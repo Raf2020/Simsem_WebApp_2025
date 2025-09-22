@@ -8,7 +8,8 @@ import {
   Box,
   Group,
   Badge,
-  Paper
+  Paper,
+  Flex
 } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
 
@@ -169,16 +170,10 @@ export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) 
         </Stack>
       </Paper>
       {/* Buttons */}
-      <Group
+      <Flex
         justify="space-between"
-        styles={{
-          root: {
-            '@media (max-width: 48em)': {
-              flexDirection: 'column !important',
-              gap: '12px !important'
-            }
-          }
-        }}
+        gap={12}
+        direction={{ base: "column", sm: "row" }}
       >
         <Button
           variant="filled"
@@ -216,7 +211,7 @@ export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) 
         >
           Proceed
         </Button>
-      </Group>
+      </Flex>
     </Stack >
 
   );
