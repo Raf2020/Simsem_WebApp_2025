@@ -478,276 +478,558 @@ export default function PricingPolicy({ onNext, onBack }: PricingPolicyProps) {
                   border: '1px solid #00000033'
                 }}
               >
-                <Stack gap={20}>
-                  {/* Day 1 Header */}
-                  <Radio
-                    value="fixed"
-                    checked={infantPricing === 'fixed'}
-                    onChange={() => setInfantPricing('fixed')}
-                    label="Fixed Price"
-                    styles={{
-                      label: {
-                        fontFamily: 'Barlow',
-                        fontSize: '24px',
-                        fontWeight: 700,
-                        color: '#3D3D3DB2'
-                      },
-                      radio: {
-                        borderColor: '#0D2E61',
-                        '&:checked': {
-                          backgroundColor: '#0D2E61',
-                          borderColor: '#0D2E61'
+                <Stack gap={40}>
+
+                  <Stack gap={"lg"}>
+                    <Radio
+                      value="fixed"
+                      checked={infantPricing === 'fixed'}
+                      onChange={() => setInfantPricing('fixed')}
+                      label="Fixed Price"
+                      styles={{
+                        label: {
+                          fontFamily: 'Barlow',
+                          fontSize: '24px',
+                          fontWeight: 700,
+                          color: '#3D3D3DB2'
+                        },
+                        radio: {
+                          borderColor: '#0D2E61',
+                          '&:checked': {
+                            backgroundColor: '#0D2E61',
+                            borderColor: '#0D2E61'
+                          }
                         }
-                      }
-                    }}
-                  />
-
-                  <Paper
-                    p={20}
-                    radius="lg"
-                    style={{
-                      backgroundColor: 'white',
-                      border: '1px solid #E5E7EB'
-                    }}
-                  >
-                    <Stack gap={20} px={30} >
-                      {/* Dahshur Activity Header */}
-                      <Group align="center" justify="space-between" pb={15} style={{
-                        borderBottom: "1px solid #3D3D3D1A"
-                      }}>
-                        <Text
-                          style={{
-                            fontFamily: 'Barlow',
-                            fontWeight: 700,
-                            fontSize: '23px',
-                            color: '#3D3D3D'
-                          }}
-                        >
-                          Fixed Price
-                        </Text>
-                        <Flex gap={10}>
-                          <Flex
-                            gap={5}
-                            h={38}
-                            align={"center"}
-                            style={{
-                              backgroundColor: '#F3F4F6',
-                              borderRadius: '12px',
-                              padding: '6px 12px'
-                            }}
-                          >
-                            <Text
-                              style={{
-                                fontFamily: 'Barlow',
-                                fontWeight: 400,
-                                fontSize: '15px',
-                                color: '#374151'
-                              }}
-                            >
-                              Adults
-                            </Text>
-                            <Text
-                              style={{
-                                fontFamily: 'Barlow',
-                                fontWeight: 700,
-                                fontSize: '15px',
-                                color: '#374151'
-                              }}
-                            >
-                              65$
-                            </Text>
-                          </Flex>
-
-                          <Flex
-                            h={38}
-                            align={"center"}
-                            gap={5}
-                            style={{
-                              backgroundColor: '#F3F4F6',
-                              borderRadius: '12px',
-                              padding: '6px 12px'
-                            }}
-                          >
-                            <Text
-                              style={{
-                                fontFamily: 'Barlow',
-                                fontWeight: 400,
-                                fontSize: '15px',
-                                color: '#374151'
-                              }}
-                            >
-                              Kids
-                            </Text>
-                            <Text
-                              style={{
-                                fontFamily: 'Barlow',
-                                fontWeight: 700,
-                                fontSize: '15px',
-                                color: '#374151'
-                              }}
-                            >
-                              32.5$
-                            </Text>
-                          </Flex>
-                          <Flex
-                            h={38}
-                            align={"center"}
-                            gap={5}
-                            style={{
-                              backgroundColor: '#F3F4F6',
-                              borderRadius: '12px',
-                              padding: '6px 12px'
-                            }}
-                          >
-                            <Text
-                              style={{
-                                fontFamily: 'Barlow',
-                                fontWeight: 400,
-                                fontSize: '15px',
-                                color: '#374151'
-                              }}
-                            >
-                              Infants
-                            </Text>
-                            <Text
-                              style={{
-                                fontFamily: 'Barlow',
-                                fontWeight: 700,
-                                fontSize: '15px',
-                                color: '#374151'
-                              }}
-                            >
-                              0$
-                            </Text>
-                          </Flex>
-                        </Flex>
-                      </Group>
-
-                      {/* Activity Details Grid */}
-                      <Flex gap={20}>
-                        <Stack gap={8} style={{ gridColumn: 'span 187px' }}>
-                          <Text
-                            style={{
-                              fontFamily: 'Barlow',
-                              fontWeight: 500,
-                              fontSize: '16px',
-                              color: '#6B7280'
-                            }}
-                          >
-                            Time
-                          </Text>
-                          <TextInput
-
-                            styles={{
-                              input: {
-                                border: "1px solid #3D3D3D14",
-                                fontFamily: 'Barlow',
-                                height: "54px",
-                                fontWeight: 400,
-                                borderRadius: "10px",
-                                fontSize: '16px',
-                                color: '#3D3D3DB2'
-                              }
-                            }}
-                          />
-
-                        </Stack>
-                        <Box style={{ gridColumn: 'span auto' }}>
-                          <Stack gap={8}>
-                            <Text
-                              style={{
-                                fontFamily: 'Barlow',
-                                fontWeight: 500,
-                                fontSize: '16px',
-                                color: '#6B7280'
-                              }}
-                            >
-                              Activity / Location
-                            </Text>
-                            <TextInput
-
-                              styles={{
-                                input: {
-                                  border: "1px solid #3D3D3D14",
-                                  fontFamily: 'Barlow',
-                                  height: "54px",
-                                  fontWeight: 400,
-                                  borderRadius: "10px",
-                                  fontSize: '16px',
-                                  color: '#3D3D3DB2'
-                                }
-                              }}
-                            />
-                            <Stack gap={12}>
-                              <Text
+                      }}
+                    />
+                    <Paper
+                      p={20}
+                      px={41}
+                      radius="lg"
+                      style={{
+                        backgroundColor: '#3D3D3D08',
+                        border: '1px solid #3D3D3DB2'
+                      }}
+                    >
+                      <Paper
+                        p={20}
+                        px={30}
+                        radius="lg"
+                        style={{
+                          backgroundColor: '#F9FAFB',
+                          border: '1px solid #3D3D3D1A'
+                        }}
+                      >
+                        <Stack gap={20} >
+                          {/* Dahshur Activity Header */}
+                          <Group align="center" justify="space-between" pb={15} style={{
+                            borderBottom: "1px solid #3D3D3D1A"
+                          }}>
+                            <Group gap={5}>
+                              <IconWalk
+                                size={20}
+                                color="#0D2E61"
                                 style={{
-                                  fontFamily: 'Barlow',
-                                  fontWeight: 500,
-                                  fontSize: '16px',
-                                  color: '#6B7280'
-                                }}
-                              >
-                                Description
-                              </Text>
-                              <Textarea
-                                defaultValue="Before leaving we will head to hidden spot in Dahshur where we can enjoy watching 3 of Dahshur Pyramids (Bent Pyramid - Red Pyramid - Black Pyramid)"
-                                minRows={4}
-                                styles={{
-                                  input: {
-                                    fontFamily: 'Barlow',
-                                    fontWeight: 400,
-                                    fontSize: '16px',
-                                    backgroundColor: 'white',
-                                    border: '1px solid #E5E7EB',
-                                    borderRadius: '8px',
-                                    padding: '12px 16px',
-                                    color: '#374151'
-                                  }
+                                  flexShrink: 0
                                 }}
                               />
                               <Text
                                 style={{
                                   fontFamily: 'Barlow',
-                                  fontWeight: 400,
-                                  fontSize: '14px',
-                                  color: '#9CA3AF',
-                                  fontStyle: 'italic'
+                                  fontWeight: 700,
+                                  fontSize: '23px',
+                                  color: '#3D3D3D'
                                 }}
                               >
-                                Example: &quot;8:00 AM - Petra: We will enter through the Siq and explore the Treasury, sharing stories about Nabataean culture and architecture.&quot;
+                                Fixed Price
                               </Text>
+                            </Group>
+                            <Flex gap={10}>
+                              <Flex
+                                gap={5}
+                                h={38}
+                                align={"center"}
+                                style={{
+                                  backgroundColor: '#F3F4F6',
+                                  borderRadius: '12px',
+                                  padding: '6px 12px'
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontFamily: 'Barlow',
+                                    fontWeight: 400,
+                                    fontSize: '15px',
+                                    color: '#374151'
+                                  }}
+                                >
+                                  Adults
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontFamily: 'Barlow',
+                                    fontWeight: 700,
+                                    fontSize: '15px',
+                                    color: '#374151'
+                                  }}
+                                >
+                                  65$
+                                </Text>
+                              </Flex>
+
+                              <Flex
+                                h={38}
+                                align={"center"}
+                                gap={5}
+                                style={{
+                                  backgroundColor: '#F3F4F6',
+                                  borderRadius: '12px',
+                                  padding: '6px 12px'
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontFamily: 'Barlow',
+                                    fontWeight: 400,
+                                    fontSize: '15px',
+                                    color: '#374151'
+                                  }}
+                                >
+                                  Kids
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontFamily: 'Barlow',
+                                    fontWeight: 700,
+                                    fontSize: '15px',
+                                    color: '#374151'
+                                  }}
+                                >
+                                  32.5$
+                                </Text>
+                              </Flex>
+                              <Flex
+                                h={38}
+                                align={"center"}
+                                gap={5}
+                                style={{
+                                  backgroundColor: '#F3F4F6',
+                                  borderRadius: '12px',
+                                  padding: '6px 12px'
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontFamily: 'Barlow',
+                                    fontWeight: 400,
+                                    fontSize: '15px',
+                                    color: '#374151'
+                                  }}
+                                >
+                                  Infants
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontFamily: 'Barlow',
+                                    fontWeight: 700,
+                                    fontSize: '15px',
+                                    color: '#374151'
+                                  }}
+                                >
+                                  0$
+                                </Text>
+                              </Flex>
+                            </Flex>
+                          </Group>
+
+                          {/* Activity Details Grid */}
+                          <Flex gap={20}>
+                            <Stack gap={8} py={30}>
+                              <Text
+                                style={{
+                                  fontFamily: 'Barlow',
+                                  fontWeight: 700,
+                                  fontSize: '18px',
+                                  color: '#6B7280'
+                                }}
+                              >
+                                Price Per Person
+                              </Text>
+                              <TextInput
+                                leftSection={
+                                  <Text style={{
+                                    fontFamily: 'Barlow',
+                                    fontWeight: 400,
+                                    fontSize: '18px',
+                                    color: '#3D3D3DB2'
+                                  }}>
+                                    $
+                                  </Text>
+                                }
+                                type='number'
+                                rightSectionWidth={80}
+                                rightSection={
+                                  <Text
+                                    style={{
+                                      fontFamily: 'Barlow',
+                                      fontWeight: 400,
+                                      fontSize: '18px',
+                                      color: '#3D3D3DB2'
+                                    }}>
+                                    /person
+                                  </Text>
+
+                                }
+                                styles={{
+                                  input: {
+                                    border: "1px solid #3D3D3D14",
+                                    fontFamily: 'Barlow',
+                                    height: "54px",
+                                    fontWeight: 400,
+                                    borderRadius: "10px",
+                                    fontSize: '16px',
+                                    color: '#3D3D3DB2'
+                                  }
+                                }}
+                              />
+
                             </Stack>
+
+                          </Flex>
+
+
+                        </Stack>
+                      </Paper>
+
+                    </Paper>
+                  </Stack>
+                  <Stack gap={"lg"}>
+                    <Radio
+                      value="package"
+                      checked={infantPricing === 'package'}
+                      onChange={() => setInfantPricing('package')}
+                      label="Package Pricing"
+                      styles={{
+                        label: {
+                          fontFamily: 'Barlow',
+                          fontSize: '24px',
+                          fontWeight: 700,
+                          color: '#3D3D3DB2'
+                        },
+                        radio: {
+                          borderColor: '#0D2E61',
+                          '&:checked': {
+                            backgroundColor: '#0D2E61',
+                            borderColor: '#0D2E61'
+                          }
+                        }
+                      }}
+                    />
+                    <Paper
+                      p={20}
+                      px={41}
+                      radius="lg"
+                      style={{
+                        backgroundColor: '#0D2E610D',
+                        border: '1px solid #0D2E6199'
+                      }}
+                    >
+                      <Stack gap={"lg"}>
+                        <Paper
+                          p={20}
+                          px={30}
+                          radius="lg"
+                          style={{
+                            backgroundColor: '#F9FAFB',
+                            border: '1px solid #3D3D3D1A'
+                          }}
+                        >
+                          <Stack gap={20} >
+                            {/* Dahshur Activity Header */}
+                            <Group align="center" justify="space-between" pb={15} style={{
+                              borderBottom: "1px solid #3D3D3D1A"
+                            }}>
+                              <Group gap={5}>
+                                <IconWalk
+                                  size={20}
+                                  color="#0D2E61"
+                                  style={{
+                                    flexShrink: 0
+                                  }}
+                                />
+                                <Text
+                                  style={{
+                                    fontFamily: 'Barlow',
+                                    fontWeight: 700,
+                                    fontSize: '23px',
+                                    color: '#0D2E61'
+                                  }}
+                                >
+                                  Package Pricing
+                                </Text>
+                                <Flex
+                                  ml={"sm"}
+                                  gap={5}
+                                  h={38}
+                                  align={"center"}
+                                  style={{
+                                    backgroundColor: '#0D2E611A',
+                                    borderRadius: '12px',
+                                    padding: '6px 12px'
+                                  }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontFamily: 'Barlow',
+                                      fontWeight: 400,
+                                      fontSize: '18px',
+                                      color: '#0D2E61'
+                                    }}
+                                  >
+                                    1-4 Travelers
+                                  </Text>
+                                </Flex>
+                              </Group>
+                              <Flex gap={10}>
+                                <Flex
+                                  gap={5}
+                                  h={38}
+                                  align={"center"}
+                                  style={{
+                                    backgroundColor: '#FB8B2433',
+                                    borderRadius: '12px',
+                                    padding: '6px 12px'
+                                  }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontFamily: 'Barlow',
+                                      fontWeight: 400,
+                                      fontSize: '15px',
+                                      color: '#CB4628'
+                                    }}
+                                  >
+                                    Adults
+                                  </Text>
+                                  <Text
+                                    style={{
+                                      fontFamily: 'Barlow',
+                                      fontWeight: 700,
+                                      fontSize: '15px',
+                                      color: '#CB4628'
+                                    }}
+                                  >
+                                    65$
+                                  </Text>
+                                </Flex>
+
+                                <Flex
+                                  h={38}
+                                  align={"center"}
+                                  gap={5}
+                                  style={{
+                                    backgroundColor: '#FB8B2433',
+                                    borderRadius: '12px',
+                                    padding: '6px 12px'
+                                  }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontFamily: 'Barlow',
+                                      fontWeight: 400,
+                                      fontSize: '15px',
+                                      color: '#CB4628'
+                                    }}
+                                  >
+                                    Kids
+                                  </Text>
+                                  <Text
+                                    style={{
+                                      fontFamily: 'Barlow',
+                                      fontWeight: 700,
+                                      fontSize: '15px',
+                                      color: '#CB4628'
+                                    }}
+                                  >
+                                    32.5$
+                                  </Text>
+                                </Flex>
+                                <Flex
+                                  h={38}
+                                  align={"center"}
+                                  gap={5}
+                                  style={{
+                                    backgroundColor: '#FB8B2433',
+                                    borderRadius: '12px',
+                                    padding: '6px 12px'
+                                  }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontFamily: 'Barlow',
+                                      fontWeight: 400,
+                                      fontSize: '15px',
+                                      color: '#CB4628'
+                                    }}
+                                  >
+                                    Infants
+                                  </Text>
+                                  <Text
+                                    style={{
+                                      fontFamily: 'Barlow',
+                                      fontWeight: 700,
+                                      fontSize: '15px',
+                                      color: '#CB4628'
+                                    }}
+                                  >
+                                    0$
+                                  </Text>
+                                </Flex>
+                              </Flex>
+                              <Button m={0} p={0} style={{ background: "transparent" }}>
+                                <IconTrash color='#CB4628' size={18} />
+                              </Button>
+                            </Group>
+
+                            {/* Activity Details Grid */}
+                            <Flex gap={20}>
+                              <Stack gap={8} py={30}>
+                                <Text
+                                  style={{
+                                    fontFamily: 'Barlow',
+                                    fontWeight: 700,
+                                    fontSize: '18px',
+                                    color: '#6B7280'
+                                  }}
+                                >
+                                  Minimum no. of travelers
+                                </Text>
+                                <TextInput
+                                  type='number'
+                                  styles={{
+                                    input: {
+                                      border: "1px solid #3D3D3D14",
+                                      fontFamily: 'Barlow',
+                                      height: "54px",
+                                      fontWeight: 400,
+                                      borderRadius: "10px",
+                                      fontSize: '16px',
+                                      color: '#3D3D3DB2'
+                                    }
+                                  }}
+                                />
+
+                              </Stack>
+                              <Stack gap={8} py={30}>
+                                <Text
+                                  style={{
+                                    fontFamily: 'Barlow',
+                                    fontWeight: 700,
+                                    fontSize: '18px',
+                                    color: '#6B7280'
+                                  }}
+                                >
+                                  Maximum no. of travelers
+                                </Text>
+                                <TextInput
+                                  type='number'
+                                  styles={{
+                                    input: {
+                                      border: "1px solid #3D3D3D14",
+                                      fontFamily: 'Barlow',
+                                      height: "54px",
+                                      fontWeight: 400,
+                                      borderRadius: "10px",
+                                      fontSize: '16px',
+                                      color: '#3D3D3DB2'
+                                    }
+                                  }}
+                                />
+
+                              </Stack>
+                              <Stack gap={8} py={30}>
+                                <Text
+                                  style={{
+                                    fontFamily: 'Barlow',
+                                    fontWeight: 700,
+                                    fontSize: '18px',
+                                    color: '#6B7280'
+                                  }}
+                                >
+                                  Price Per Person
+                                </Text>
+                                <TextInput
+                                  leftSection={
+                                    <Text style={{
+                                      fontFamily: 'Barlow',
+                                      fontWeight: 400,
+                                      fontSize: '18px',
+                                      color: '#3D3D3DB2'
+                                    }}>
+                                      $
+                                    </Text>
+                                  }
+                                  type='number'
+                                  rightSectionWidth={80}
+                                  rightSection={
+                                    <Text
+                                      style={{
+                                        fontFamily: 'Barlow',
+                                        fontWeight: 400,
+                                        fontSize: '18px',
+                                        color: '#3D3D3DB2'
+                                      }}>
+                                      /person
+                                    </Text>
+
+                                  }
+                                  styles={{
+                                    input: {
+                                      border: "1px solid #3D3D3D14",
+                                      fontFamily: 'Barlow',
+                                      height: "54px",
+                                      fontWeight: 400,
+                                      borderRadius: "10px",
+                                      fontSize: '16px',
+                                      color: '#3D3D3DB2'
+                                    }
+                                  }}
+                                />
+
+                              </Stack>
+
+
+                            </Flex>
+
+
                           </Stack>
-                        </Box>
+                        </Paper>
+                        <Button
+                          leftSection={<IconPlus size={16} />}
+                          style={{
+                            width: '191px',
+                            height: '50px',
+                            borderRadius: '10px',
+                            gap: '6px',
+                            paddingTop: '15px',
+                            paddingRight: '20px',
+                            paddingBottom: '15px',
+                            paddingLeft: '20px',
+                            backgroundColor: '#0D2E61',
+                            border: 'none',
+                            fontFamily: 'Barlow',
+                            fontWeight: 500,
+                            fontSize: '14px',
+                            color: 'white'
+                          }}
+                        >
+                          Add Package
+                        </Button>
+                      </Stack>
+                    </Paper>
 
-                      </Flex>
+                  </Stack>
 
-
-                    </Stack>
-                  </Paper>
-
-                  {/* Add Itinerary Item Button */}
-                  <Button
-                    leftSection={<IconPlus size={16} />}
-                    style={{
-                      width: '191px',
-                      height: '50px',
-                      borderRadius: '10px',
-                      gap: '6px',
-                      paddingTop: '15px',
-                      paddingRight: '20px',
-                      paddingBottom: '15px',
-                      paddingLeft: '20px',
-                      backgroundColor: '#0D2E61',
-                      border: 'none',
-                      fontFamily: 'Barlow',
-                      fontWeight: 500,
-                      fontSize: '14px',
-                      color: 'white'
-                    }}
-                  >
-                    Add itinerary item
-                  </Button>
                 </Stack>
               </Paper>
 
