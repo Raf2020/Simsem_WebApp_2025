@@ -4,8 +4,8 @@ import { Box, Container, Text, Button, Flex, Progress } from '@mantine/core';
 import { IconEye } from '@tabler/icons-react';
 
 interface CreateTourHeaderProps {
-  currentStep: 'basic' | 'details' | 'review';
-  onStepChange: (step: 'basic' | 'details' | 'review') => void;
+  currentStep: 'basic' | 'details' | 'pricing';
+  onStepChange: (step: 'basic' | 'details' | 'pricing') => void;
   onPreview: () => void;
   onPublish: () => void;
 }
@@ -20,7 +20,7 @@ export default function CreateTourHeader({
     switch (currentStep) {
       case 'basic': return 0;
       case 'details': return 1;
-      case 'review': return 2;
+      case 'pricing': return 2;
       default: return 0;
     }
   };
@@ -92,7 +92,7 @@ export default function CreateTourHeader({
                   variant="filled"
                   onClick={() => {
                     if (currentStep === 'details') onStepChange('basic');
-                    if (currentStep === 'review') onStepChange('details');
+                    if (currentStep === 'pricing') onStepChange('details');
                   }}
                   style={{
                     backgroundColor: '#d1d5db',
@@ -111,11 +111,11 @@ export default function CreateTourHeader({
               <Button
                 onClick={() => {
                   if (currentStep === 'basic') onStepChange('details');
-                  else if (currentStep === 'details') onStepChange('review');
+                  else if (currentStep === 'details') onStepChange('pricing');
                   else onPublish();
                 }}
                 style={{
-                  backgroundColor: currentStep === 'review' ? '#16a34a' : '#1e3a8a',
+                  backgroundColor: currentStep === 'pricing' ? '#16a34a' : '#1e3a8a',
                   color: 'white',
                   border: 'none',
                   borderRadius: '6px',
@@ -124,7 +124,7 @@ export default function CreateTourHeader({
                   fontFamily: 'Barlow'
                 }}
               >
-                {currentStep === 'review' ? 'Publish Tour' : 'Next'}
+                {currentStep === 'pricing' ? 'Publish Tour' : 'Next'}
               </Button>
             </Flex>
           </Flex>

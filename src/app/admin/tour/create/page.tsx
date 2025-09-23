@@ -5,9 +5,9 @@ import { Box, Container, Paper, Stack } from '@mantine/core';
 import CreateTourHeader from './components/CreateTourHeader';
 import BasicInformationStep from './components/BasicInformationStep';
 import TourDetailsStep from './components/TourDetailsStep';
-import ReviewStep from './components/ReviewStep';
+import PricingPolicy from './components/PricingPolicy';
 
-type TourStep = 'basic' | 'details' | 'review';
+type TourStep = 'basic' | 'details' | 'pricing';
 
 export default function CreateTourPage() {
   const [currentStep, setCurrentStep] = useState<TourStep>('basic');
@@ -38,14 +38,14 @@ export default function CreateTourPage() {
       case 'details':
         return (
           <TourDetailsStep
-            onNext={() => handleStepChange('review')}
+            onNext={() => handleStepChange('pricing')}
             onBack={() => setCurrentStep('basic')}
           />
         );
-      case 'review':
+      case 'pricing':
         return (
-          <ReviewStep
-            onComplete={handlePublish}
+          <PricingPolicy
+            onNext={handlePublish}
             onBack={() => setCurrentStep('details')}
           />
         );
@@ -78,7 +78,7 @@ export default function CreateTourPage() {
         <Paper
           shadow="xl"
           radius="lg"
-          px={{base: 10, sm: 30}}
+          px={{base: 10, sm: 50}}
           py={"xl"}
           my={{ base: 'lg', sm: 'xl' }}
           maw={1204}
