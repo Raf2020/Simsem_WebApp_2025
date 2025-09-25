@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import {
   Title,
   Stack,
@@ -13,16 +12,20 @@ import TourInclusionsSection from './TourInclusionsSection';
 import TourItinerarySection from './TourItinerarySection';
 import TourThingsToKnowSection from './TourThingsToKnowSection';
 import TourPickupPointSection from './TourPickupPointSection';
+import { useTourDetails } from '../contexts/TourDetailsContext';
 
 interface BasicInformationStepProps {
   onNext: () => void;
   onBack: () => void;
 }
 
-export default function BasicInformationStep({ onNext, onBack }: BasicInformationStepProps) {
-  const [tourTitle, setTourTitle] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [tourOverview, setTourOverview] = useState('');
+export default function TourDetailsStep({ onNext, onBack }: BasicInformationStepProps) {
+  const { form, isFormValid } = useTourDetails();
+
+  const { watch } = form;
+
+  // Watch form values for passing to child components that still need props
+  const whatToExpect = watch('whatToExpect');
 
   return (
     <Box
@@ -51,14 +54,7 @@ export default function BasicInformationStep({ onNext, onBack }: BasicInformatio
           Tour Details
         </Title>
         {/* Basic Information Section */}
-        <TourBasicInfoSection
-          tourTitle={tourTitle}
-          setTourTitle={setTourTitle}
-          selectedCategories={selectedCategories}
-          setSelectedCategories={setSelectedCategories}
-          tourOverview={tourOverview}
-          setTourOverview={setTourOverview}
-        />
+        <TourBasicInfoSection />
 
         {/* Inclusions & Exclusions Section */}
         <TourInclusionsSection />

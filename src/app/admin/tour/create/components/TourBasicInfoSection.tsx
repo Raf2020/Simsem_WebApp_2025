@@ -13,15 +13,7 @@ import {
   Image
 } from '@mantine/core';
 import { IconUpload, IconX } from '@tabler/icons-react';
-
-interface TourBasicInfoSectionProps {
-  tourTitle: string;
-  setTourTitle: (value: string) => void;
-  selectedCategories: string[];
-  setSelectedCategories: (value: string[]) => void;
-  tourOverview: string;
-  setTourOverview: (value: string) => void;
-}
+import { useTourDetails } from '../contexts/TourDetailsContext';
 
 const tourCategories = [
   'Adventure & Outdoor',
@@ -43,20 +35,49 @@ const tourCategories = [
   'Boat Tours'
 ];
 
-export default function TourBasicInfoSection({
-  tourTitle,
-  setTourTitle,
-  selectedCategories,
-  setSelectedCategories,
-  tourOverview,
-  setTourOverview
-}: TourBasicInfoSectionProps) {
-  const toggleCategory = (category: string) => {
-    setSelectedCategories(prev =>
-      prev.includes(category)
-        ? prev.filter(c => c !== category)
-        : [...prev, category]
-    );
+export default function TourBasicInfoSection() {
+  const {
+    form,
+    addCoverPhoto,
+    removeCoverPhoto,
+    addGalleryPhoto,
+    removeGalleryPhoto,
+    createImageFile,
+    coverPhotosArray,
+    galleryPhotosArray
+  } = useTourDetails();
+
+  const { register, formState: { errors } } = form;
+
+  // Watch form values for real-time updates (removed unused variables)
+
+  // File upload handlers
+  const handleCoverPhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      Array.from(files).forEach(file => {
+        if (file.type.startsWith('image/')) {
+          const imageFile = createImageFile(file);
+          addCoverPhoto(imageFile);
+        }
+      });
+    }
+    // Reset input
+    event.target.value = '';
+  };
+
+  const handleGalleryPhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      Array.from(files).forEach(file => {
+        if (file.type.startsWith('image/')) {
+          const imageFile = createImageFile(file);
+          addGalleryPhoto(imageFile);
+        }
+      });
+    }
+    // Reset input
+    event.target.value = '';
   };
 
   return (
@@ -94,8 +115,8 @@ export default function TourBasicInfoSection({
           </Text>
           <Textarea
             placeholder="Create anticipation!  Describe the sensory details, activities, and moments that will make this experience unforgettable. What will they see, hear, taste, or feel?"
-            value={tourOverview}
-            onChange={(event) => setTourOverview(event.currentTarget.value)}
+            {...register('whatToExpect')}
+            error={errors.whatToExpect?.message}
             styles={{
               input: {
                 width: '100%',
@@ -109,7 +130,7 @@ export default function TourBasicInfoSection({
                 lineHeight: '100%',
                 letterSpacing: '0%',
                 textAlign: 'justify',
-                border: '1px solid #d1d5db',
+                border: errors.whatToExpect ? '1px solid #ef4444' : '1px solid #d1d5db',
                 '&::placeholder': {
                   color: '#3D3D3D80'
                 }
@@ -155,8 +176,17 @@ export default function TourBasicInfoSection({
               >
                 Cover Photos
               </Text>
+              <input
+                type="file"
+                id="cover-photos-input"
+                multiple
+                accept="image/*"
+                onChange={handleCoverPhotoUpload}
+                style={{ display: 'none' }}
+              />
               <Box
                 mih={221}
+                onClick={() => document.getElementById('cover-photos-input')?.click()}
                 style={{
                   width: '100%',
                   border: '1px solid #0D2E61',
@@ -208,34 +238,38 @@ export default function TourBasicInfoSection({
                 </Button>
               </Box>
               <Flex gap={10}>
-                <Box
-                  w={{ base: 118 }}
-                  h={{ base: 100 }}
-                  style={{
-                    overflow: "hidden",
-                    position: "relative"
-                  }}
-                >
-                  <Image fit="fill" alt={"Tour Cover"} src={"/images/building.png"} />
+                {coverPhotosArray.fields.map((photo: any, index: number) => (
                   <Box
-                    w={20}
-                    h={20}
-                    pos={"absolute"}
-                    top={"3.5px"}
-                    right={"3.5px"}
+                    key={photo.id}
+                    w={{ base: 118 }}
+                    h={{ base: 100 }}
                     style={{
-                      zIndex: 10,
-                      cursor: "pointer"
+                      overflow: "hidden",
+                      position: "relative"
                     }}
                   >
-                    <IconX
-                      width={"100%"}
-                      height={"100%"}
-                      color="#FFFFFF"
-                      style={{ opacity: 1 }}
-                    />
+                    <Image fit="fill" alt={"Tour Cover"} src={photo.url} />
+                    <Box
+                      w={20}
+                      h={20}
+                      pos={"absolute"}
+                      top={"3.5px"}
+                      right={"3.5px"}
+                      onClick={() => removeCoverPhoto(index)}
+                      style={{
+                        zIndex: 10,
+                        cursor: "pointer"
+                      }}
+                    >
+                      <IconX
+                        width={"100%"}
+                        height={"100%"}
+                        color="#FFFFFF"
+                        style={{ opacity: 1 }}
+                      />
+                    </Box>
                   </Box>
-                </Box>
+                ))}
               </Flex>
             </Stack>
             <Stack>
@@ -249,10 +283,19 @@ export default function TourBasicInfoSection({
                   color: '#3D3D3D'
                 }}
               >
-                Gallery Photo
+                Gallery Photos
               </Text>
+              <input
+                type="file"
+                id="gallery-photos-input"
+                multiple
+                accept="image/*"
+                onChange={handleGalleryPhotoUpload}
+                style={{ display: 'none' }}
+              />
               <Box
                 mih={221}
+                onClick={() => document.getElementById('gallery-photos-input')?.click()}
                 style={{
                   width: '100%',
                   border: '1px solid #0D2E61',
@@ -304,90 +347,38 @@ export default function TourBasicInfoSection({
                 </Button>
               </Box>
               <Flex gap={10}>
-                <Box
-                  w={{ base: 118 }}
-                  h={{ base: 100 }}
-                  style={{
-                    overflow: "hidden",
-                    position: "relative"
-                  }}
-                >
-                  <Image fit="fill" alt={"Tour Cover"} src={"/images/building.png"} />
+                {galleryPhotosArray.fields.map((photo: any, index: number) => (
                   <Box
-                    w={20}
-                    h={20}
-                    pos={"absolute"}
-                    top={"3.5px"}
-                    right={"3.5px"}
+                    key={photo.id}
+                    w={{ base: 118 }}
+                    h={{ base: 100 }}
                     style={{
-                      zIndex: 10,
-                      cursor: "pointer"
+                      overflow: "hidden",
+                      position: "relative"
                     }}
                   >
-                    <IconX
-                      width={"100%"}
-                      height={"100%"}
-                      color="#FFFFFF"
-                      style={{ opacity: 1 }}
-                    />
+                    <Image fit="fill" alt={"Tour Cover"} src={photo.url} />
+                    <Box
+                      w={20}
+                      h={20}
+                      pos={"absolute"}
+                      top={"3.5px"}
+                      right={"3.5px"}
+                      onClick={() => removeGalleryPhoto(index)}
+                      style={{
+                        zIndex: 10,
+                        cursor: "pointer"
+                      }}
+                    >
+                      <IconX
+                        width={"100%"}
+                        height={"100%"}
+                        color="#FFFFFF"
+                        style={{ opacity: 1 }}
+                      />
+                    </Box>
                   </Box>
-                </Box>
-                <Box
-                  w={{ base: 118 }}
-                  h={{ base: 100 }}
-                  style={{
-                    overflow: "hidden",
-                    position: "relative"
-                  }}
-                >
-                  <Image fit="fill" alt={"Tour Cover"} src={"/images/building.png"} />
-                  <Box
-                    w={20}
-                    h={20}
-                    pos={"absolute"}
-                    top={"3.5px"}
-                    right={"3.5px"}
-                    style={{
-                      zIndex: 10,
-                      cursor: "pointer"
-                    }}
-                  >
-                    <IconX
-                      width={"100%"}
-                      height={"100%"}
-                      color="#FFFFFF"
-                      style={{ opacity: 1 }}
-                    />
-                  </Box>
-                </Box>
-                <Box
-                  w={{ base: 118 }}
-                  h={{ base: 100 }}
-                  style={{
-                    overflow: "hidden",
-                    position: "relative"
-                  }}
-                >
-                  <Image fit="fill" alt={"Tour Cover"} src={"/images/building.png"} />
-                  <Box
-                    w={20}
-                    h={20}
-                    pos={"absolute"}
-                    top={"3.5px"}
-                    right={"3.5px"}
-                    style={{
-                      zIndex: 10,
-                      cursor: "pointer"
-                    }}
-                  >
-                    <IconX
-                      width={"100%"}
-                      height={"100%"}
-                      color="#FFFFFF"
-                      style={{ opacity: 1 }}
-                    />
-                  </Box>
-                </Box>
+                ))}
               </Flex>
             </Stack>
           </Stack>

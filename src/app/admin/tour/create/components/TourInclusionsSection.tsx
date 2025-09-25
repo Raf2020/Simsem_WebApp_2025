@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import {
   Text,
   Title,
@@ -12,8 +13,60 @@ import {
   SimpleGrid
 } from '@mantine/core';
 import { IconX, IconPlus } from '@tabler/icons-react';
+import { useTourDetails } from '../contexts/TourDetailsContext';
 
 export default function TourInclusionsSection() {
+  const { form } = useTourDetails();
+  const { formState: { errors }, watch, setValue, getValues } = form;
+
+  // Watch current values
+  const inclusions = watch('inclusions') || [];
+  const exclusions = watch('exclusions') || [];
+
+  // Local state for input fields
+  const [newInclusion, setNewInclusion] = useState('');
+  const [newExclusion, setNewExclusion] = useState('');
+
+  // Helper functions
+  const addInclusion = () => {
+    if (newInclusion.trim()) {
+      const currentInclusions = getValues('inclusions') || [];
+      setValue('inclusions', [...currentInclusions, newInclusion.trim()], {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      setNewInclusion('');
+    }
+  };
+
+  const addExclusion = () => {
+    if (newExclusion.trim()) {
+      const currentExclusions = getValues('exclusions') || [];
+      setValue('exclusions', [...currentExclusions, newExclusion.trim()], {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      setNewExclusion('');
+    }
+  };
+
+  const removeInclusion = (index: number) => {
+    const currentInclusions = getValues('inclusions') || [];
+    const updatedInclusions = currentInclusions.filter((_, i) => i !== index);
+    setValue('inclusions', updatedInclusions, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  };
+
+  const removeExclusion = (index: number) => {
+    const currentExclusions = getValues('exclusions') || [];
+    const updatedExclusions = currentExclusions.filter((_, i) => i !== index);
+    setValue('exclusions', updatedExclusions, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  };
   return (
     <Paper
       shadow="xl"
@@ -93,14 +146,13 @@ export default function TourInclusionsSection() {
               </Text>
 
               <Stack gap={12}>
-                {['Professional Local Guide', 'Transportation', 'Refreshments', 'Photography Assistance'].map((item, index) => (
+                {inclusions.map((item: string, index: number) => (
                   <Group key={index} justify="space-between" align="center" h={52} style={{
                     background: "#3D3D3D08",
                     borderRadius: 10
                   }}
                     px={5}
                     py={10}
-
                   >
                     <Text
                       style={{
@@ -121,6 +173,7 @@ export default function TourInclusionsSection() {
                         justifyContent: 'center',
                         cursor: 'pointer'
                       }}
+                      onClick={() => removeInclusion(index)}
                     >
                       <IconX width={"100%"} height={"100%"} color="#6B7280" />
                     </Box>
@@ -131,6 +184,14 @@ export default function TourInclusionsSection() {
               <Group gap={0} w={"100%"}>
                 <TextInput
                   placeholder="Add inclusion"
+                  value={newInclusion}
+                  onChange={(event) => setNewInclusion(event.currentTarget.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      addInclusion();
+                    }
+                  }}
                   color='#3D3D3DB2'
                   flex={1}
                   styles={{
@@ -152,6 +213,7 @@ export default function TourInclusionsSection() {
                 />
                 <Button
                   variant="subtle"
+                  onClick={addInclusion}
                   style={{
                     fontFamily: 'Barlow',
                     fontWeight: 500,
@@ -170,6 +232,19 @@ export default function TourInclusionsSection() {
                   <IconPlus size={16} />
                 </Button>
               </Group>
+
+              {errors.inclusions && (
+                <Text
+                  style={{
+                    color: '#ef4444',
+                    fontSize: '14px',
+                    fontFamily: 'Barlow',
+                    marginTop: '8px'
+                  }}
+                >
+                  {errors.inclusions.message}
+                </Text>
+              )}
             </Stack>
           </Paper>
 
@@ -215,7 +290,7 @@ export default function TourInclusionsSection() {
               </Text>
 
               <Stack gap={12}>
-                {['Entry Tickets', 'Personal Expenses', 'Gratuities', 'Insurance'].map((item, index) => (
+                {exclusions.map((item: string, index: number) => (
                   <Group key={index} justify="space-between" align="center" h={52} style={{
                     background: "#3D3D3D08",
                     borderRadius: 10
@@ -242,6 +317,7 @@ export default function TourInclusionsSection() {
                         justifyContent: 'center',
                         cursor: 'pointer'
                       }}
+                      onClick={() => removeExclusion(index)}
                     >
                       <IconX width={"100%"} height={"100%"} color="#6B7280" />
                     </Box>
@@ -252,6 +328,14 @@ export default function TourInclusionsSection() {
               <Group gap={0} w={"100%"}>
                 <TextInput
                   placeholder="Add exclusion"
+                  value={newExclusion}
+                  onChange={(event) => setNewExclusion(event.currentTarget.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      addExclusion();
+                    }
+                  }}
                   color='#3D3D3DB2'
                   flex={1}
                   styles={{
@@ -273,6 +357,7 @@ export default function TourInclusionsSection() {
                 />
                 <Button
                   variant="subtle"
+                  onClick={addExclusion}
                   style={{
                     fontFamily: 'Barlow',
                     fontWeight: 500,
@@ -291,6 +376,19 @@ export default function TourInclusionsSection() {
                   <IconPlus size={16} />
                 </Button>
               </Group>
+
+              {errors.exclusions && (
+                <Text
+                  style={{
+                    color: '#ef4444',
+                    fontSize: '14px',
+                    fontFamily: 'Barlow',
+                    marginTop: '8px'
+                  }}
+                >
+                  {errors.exclusions.message}
+                </Text>
+              )}
             </Stack>
           </Paper>
         </SimpleGrid>

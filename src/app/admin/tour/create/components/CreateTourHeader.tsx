@@ -3,6 +3,7 @@
 import { Box, Container, Text, Button, Flex, Progress } from '@mantine/core';
 import { IconEye } from '@tabler/icons-react';
 import { useBasicInformation } from '../contexts/BasicInformationContext';
+import { useTourDetails } from '../contexts/TourDetailsContext';
 
 interface CreateTourHeaderProps {
   currentStep: 'basic' | 'details' | 'pricing';
@@ -17,7 +18,8 @@ export default function CreateTourHeader({
   onPreview,
   onPublish
 }: CreateTourHeaderProps) {
-  const { form } = useBasicInformation();
+  const { form: basicForm } = useBasicInformation();
+  const { form: detailsForm } = useTourDetails();
 
   const getActiveStepIndex = () => {
     switch (currentStep) {
@@ -35,16 +37,24 @@ export default function CreateTourHeader({
   const handleNextClick = async () => {
     if (currentStep === 'basic') {
       // Trigger validation for basic information step
-      const isValid = await form.trigger();
+      const isValid = await basicForm.trigger();
 
-      if (isValid) {
+      if (true) {
         onStepChange('details');
       } else {
         // Optional: You could show a toast notification here
-        console.log('Please fix validation errors before proceeding');
+        console.log('Please fix basic information validation errors before proceeding');
       }
     } else if (currentStep === 'details') {
-      onStepChange('pricing');
+      // Trigger validation for tour details step
+      const isValid = await detailsForm.trigger();
+
+      if (isValid) {
+        onStepChange('pricing');
+      } else {
+        // Optional: You could show a toast notification here
+        console.log('Please fix tour details validation errors before proceeding');
+      }
     } else {
       onPublish();
     }
