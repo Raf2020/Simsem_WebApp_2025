@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import {
   Text,
   Title,
@@ -9,12 +8,9 @@ import {
   Box,
   Group,
   TextInput,
-  Textarea,
-  Paper,
-  Flex,
-  Badge
+  Textarea
 } from '@mantine/core';
-import { IconEye, IconUpload } from '@tabler/icons-react';
+import { useBasicInformation } from '../contexts/BasicInformationContext';
 
 interface BasicInformationStepProps {
   onNext: () => void;
@@ -41,19 +37,12 @@ const tourCategories = [
 ];
 
 export default function BasicInformationStep({ onNext }: BasicInformationStepProps) {
-  const [tourTitle, setTourTitle] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [tourOverview, setTourOverview] = useState('');
+  const { form, toggleCategory, isFormValid } = useBasicInformation();
 
-  const toggleCategory = (category: string) => {
-    setSelectedCategories(prev =>
-      prev.includes(category)
-        ? prev.filter(c => c !== category)
-        : [...prev, category]
-    );
-  };
+  const { register, watch, formState: { errors } } = form;
 
-  const isFormValid = tourTitle.trim() !== '' && selectedCategories.length > 0 && tourOverview.trim() !== '';
+  // Watch selected categories for real-time updates
+  const selectedCategories = watch('selectedCategories');
 
   return (
     <Box
@@ -108,8 +97,8 @@ export default function BasicInformationStep({ onNext }: BasicInformationStepPro
           </Text>
           <TextInput
             placeholder="e.g., Hidden Gems of Dahshur Pyramids"
-            value={tourTitle}
-            onChange={(event) => setTourTitle(event.currentTarget.value)}
+            {...register('tourTitle')}
+            error={errors.tourTitle?.message}
             styles={{
               input: {
                 width: '100%',
@@ -123,7 +112,7 @@ export default function BasicInformationStep({ onNext }: BasicInformationStepPro
                 lineHeight: '100%',
                 letterSpacing: '0%',
                 textAlign: 'justify',
-                border: '1px solid #d1d5db',
+                border: errors.tourTitle ? '1px solid #ef4444' : '1px solid #d1d5db',
                 '&::placeholder': {
                   color: '#3D3D3D80'
                 }
@@ -182,6 +171,18 @@ export default function BasicInformationStep({ onNext }: BasicInformationStepPro
               </Button>
             ))}
           </Group>
+          {errors.selectedCategories && (
+            <Text
+              style={{
+                color: '#ef4444',
+                fontSize: '14px',
+                fontFamily: 'Barlow',
+                marginTop: '8px'
+              }}
+            >
+              {errors.selectedCategories.message}
+            </Text>
+          )}
         </Stack>
 
         {/* Tour Overview */}
@@ -201,8 +202,8 @@ export default function BasicInformationStep({ onNext }: BasicInformationStepPro
           </Text>
           <Textarea
             placeholder="Write a captivating overview that gives travelers a taste of the adventure ahead..."
-            value={tourOverview}
-            onChange={(event) => setTourOverview(event.currentTarget.value)}
+            {...register('tourOverview')}
+            error={errors.tourOverview?.message}
             styles={{
               input: {
                 maxWidth: '100%',
@@ -217,7 +218,7 @@ export default function BasicInformationStep({ onNext }: BasicInformationStepPro
                 lineHeight: '100%',
                 letterSpacing: '0%',
                 textAlign: 'justify',
-                border: '1px solid #d1d5db',
+                border: errors.tourOverview ? '1px solid #ef4444' : '1px solid #d1d5db',
                 '&::placeholder': {
                   color: '#3D3D3D80'
                 }

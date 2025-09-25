@@ -2,6 +2,7 @@
 
 import { Box, Container, Text, Button, Flex, Progress } from '@mantine/core';
 import { IconEye } from '@tabler/icons-react';
+import { useBasicInformation } from '../contexts/BasicInformationContext';
 
 interface CreateTourHeaderProps {
   currentStep: 'basic' | 'details' | 'pricing';
@@ -16,6 +17,8 @@ export default function CreateTourHeader({
   onPreview,
   onPublish
 }: CreateTourHeaderProps) {
+  const { form } = useBasicInformation();
+
   const getActiveStepIndex = () => {
     switch (currentStep) {
       case 'basic': return 0;
@@ -27,6 +30,24 @@ export default function CreateTourHeader({
 
   const getProgressValue = () => {
     return ((getActiveStepIndex() + 1) / 3) * 100;
+  };
+
+  const handleNextClick = async () => {
+    if (currentStep === 'basic') {
+      // Trigger validation for basic information step
+      const isValid = await form.trigger();
+
+      if (isValid) {
+        onStepChange('details');
+      } else {
+        // Optional: You could show a toast notification here
+        console.log('Please fix validation errors before proceeding');
+      }
+    } else if (currentStep === 'details') {
+      onStepChange('pricing');
+    } else {
+      onPublish();
+    }
   };
 
   return (
@@ -109,11 +130,7 @@ export default function CreateTourHeader({
               )}
 
               <Button
-                onClick={() => {
-                  if (currentStep === 'basic') onStepChange('details');
-                  else if (currentStep === 'details') onStepChange('pricing');
-                  else onPublish();
-                }}
+                onClick={handleNextClick}
                 style={{
                   backgroundColor: currentStep === 'pricing' ? '#16a34a' : '#1e3a8a',
                   color: 'white',
