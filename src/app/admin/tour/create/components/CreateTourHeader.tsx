@@ -39,7 +39,7 @@ export default function CreateTourHeader({
       // Trigger validation for basic information step
       const isValid = await basicForm.trigger();
 
-      if (true) {
+      if (isValid) {
         onStepChange('details');
       } else {
         // Optional: You could show a toast notification here
@@ -49,7 +49,7 @@ export default function CreateTourHeader({
       // Trigger validation for tour details step
       const isValid = await detailsForm.trigger();
 
-      if (true) {
+      if (isValid) {
         onStepChange('pricing');
       } else {
         // Optional: You could show a toast notification here

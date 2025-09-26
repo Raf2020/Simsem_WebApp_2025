@@ -105,6 +105,7 @@ export default function TourItinerarySection() {
               type="number"
               h={59}
               min={1}
+              max={30}
               value={tourDuration?.value || ''}
               onChange={(e) => setValue('tourDuration.value', parseInt(e.target.value) || 1, {
                 shouldValidate: true,
