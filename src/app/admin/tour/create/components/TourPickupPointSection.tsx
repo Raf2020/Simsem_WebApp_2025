@@ -11,8 +11,15 @@ import {
   Paper
 } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
+import { useTourDetails } from '../contexts/TourDetailsContext';
 
 export default function TourPickupPointSection() {
+  const {
+    form,
+    pickupPointsArray
+  } = useTourDetails();
+  const { watch, setValue, formState: { errors } } = form;
+  const pickupPoints = watch('pickupPoints');
   return (
     <Paper
       shadow="xl"
@@ -71,52 +78,57 @@ export default function TourPickupPointSection() {
           }}
         >
           <Stack gap={20}>
-            {/* Day 1 Header */}
-            <Paper
-              p={20}
-              radius="lg"
-              style={{
-                backgroundColor: 'white',
-                border: '1px solid #E5E7EB'
-              }}
-            >
-              <Stack gap={20}>
-                {/* Checkbox Header */}
-                <Group gap={12} align="center">
-                  <Box
-                    style={{
-                      width: '20px',
-                      height: '20px',
-                      backgroundColor: '#0D2E61',
-                      borderRadius: '4px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <Text
+            {/* Dynamic Pickup Points */}
+            {pickupPointsArray.fields.map((field: any, index: number) => (
+              <Paper
+                key={field.id}
+                p={20}
+                radius="lg"
+                style={{
+                  backgroundColor: 'white',
+                  border: '1px solid #E5E7EB'
+                }}
+              >
+                <Stack gap={20}>
+                  {/* Checkbox Header */}
+                  <Group gap={12} align="center">
+                    <Box
                       style={{
-                        color: 'white',
-                        fontSize: '12px',
-                        fontWeight: 'bold'
+                        width: '20px',
+                        height: '20px',
+                        backgroundColor: (pickupPoints?.[index]?.address && pickupPoints?.[index]?.address.trim() !== '') ? '#0D2E61' : 'transparent',
+                        border: (pickupPoints?.[index]?.address && pickupPoints?.[index]?.address.trim() !== '') ? 'none' : '2px solid #D1D5DB',
+                        borderRadius: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'default'
                       }}
                     >
-                      ✓
-                    </Text>
-                  </Box>
-                  <Title
-                    order={4}
-                    style={{
-                      fontFamily: 'Barlow',
-                      fontWeight: 600,
-                      fontSize: '20px',
-                      color: '#0D2E61'
-                    }}
-                  >
-                    Pickup from any airport
-                  </Title>
-                </Group>
+                      {(pickupPoints?.[index]?.address && pickupPoints?.[index]?.address.trim() !== '') && (
+                        <Text
+                          style={{
+                            color: 'white',
+                            fontSize: '12px',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          ✓
+                        </Text>
+                      )}
+                    </Box>
+                    <Title
+                      order={4}
+                      style={{
+                        fontFamily: 'Barlow',
+                        fontWeight: 600,
+                        fontSize: '20px',
+                        color: '#0D2E61'
+                      }}
+                    >
+                      {pickupPoints?.[index]?.name || field.name}
+                    </Title>
+                  </Group>
 
                 {/* Address Section */}
                 <Stack gap={8}>
@@ -131,7 +143,15 @@ export default function TourPickupPointSection() {
                     Address
                   </Text>
                   <TextInput
-                    defaultValue="Egypt Airport, Egypt"
+                    placeholder="Enter address"
+                    value={pickupPoints?.[index]?.address || ''}
+                    onChange={(e) => {
+                      setValue(`pickupPoints.${index}.address`, e.target.value, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                    }}
+                    error={errors?.pickupPoints?.[index]?.address?.message}
                     styles={{
                       input: {
                         fontFamily: 'Barlow',
@@ -139,7 +159,9 @@ export default function TourPickupPointSection() {
                         height: 54,
                         fontSize: '16px',
                         backgroundColor: '#F9FAFB',
-                        border: '1px solid #E5E7EB',
+                        border: errors?.pickupPoints?.[index]?.address
+                          ? '1px solid #dc2626'
+                          : '1px solid #E5E7EB',
                         borderRadius: '8px',
                         padding: '12px 16px',
                         color: '#374151'
@@ -203,13 +225,14 @@ export default function TourPickupPointSection() {
                     </Text>
                   </Stack>
                 </Box>
-              </Stack>
+                </Stack>
+              </Paper>
+            ))}
 
-
-            </Paper>
             {/* Add Pickup Point Button */}
             <Button
               leftSection={<IconPlus size={16} />}
+              onClick={() => pickupPointsArray.append({ name: '', address: '' })}
               style={{
                 width: '191px',
                 height: '50px',

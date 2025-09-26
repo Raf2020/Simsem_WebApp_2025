@@ -33,7 +33,6 @@ const guidelineSchema = z.object({
 const pickupPointSchema = z.object({
   name: z.string().min(1, 'Pickup point name is required'),
   address: z.string().min(1, 'Address is required'),
-  isSelected: z.boolean(),
 });
 
 export const tourDetailsSchema = z.object({
@@ -124,9 +123,16 @@ const defaultValues: TourDetailsFormData = {
   ],
   pickupPoints: [
     {
+      name: 'Pickup from any hotel',
+      address: '',
+    },
+    {
       name: 'Pickup from any airport',
-      address: 'Egypt Airport, Egypt',
-      isSelected: true,
+      address: '',
+    },
+    {
+      name: 'Pickup from a specific location',
+      address: '',
     },
   ],
 };
