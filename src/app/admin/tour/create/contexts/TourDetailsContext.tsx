@@ -49,9 +49,10 @@ export const tourDetailsSchema = z.object({
   // Itinerary Section
   tourDuration: z.object({
     value: z.number().min(1, 'Duration must be at least 1'),
-    unit: z.enum(['Day', 'Days', 'Hour', 'Hours']),
+    unit: z.enum(['Day', 'Week']),
   }),
-  itinerary: z.array(itineraryDaySchema).min(1, 'At least one day is required'),
+  // Dynamic itinerary structure - each day gets its own field
+  itinerary: z.record(z.string(), z.array(itineraryItemSchema)).optional(),
   
   // Things to Know Section
   guidelines: z.array(guidelineSchema).min(1, 'At least one guideline is required'),
@@ -75,16 +76,15 @@ export interface TourDetailsContextType {
   // Field Arrays for dynamic lists (arrays of objects)
   coverPhotosArray: any;
   galleryPhotosArray: any;
-  itineraryArray: any;
   guidelinesArray: any;
   pickupPointsArray: any;
-  
-  // Helper functions
-  addItineraryItem: (dayIndex: number) => void;
-  removeItineraryItem: (dayIndex: number, itemIndex: number) => void;
-  addItineraryDay: () => void;
-  removeItineraryDay: (dayIndex: number) => void;
-  
+
+  // Helper functions for new itinerary structure
+  addItineraryItem: (dayNumber: number) => void;
+  removeItineraryItem: (dayNumber: number, itemIndex: number) => void;
+  getItineraryDay: (dayNumber: number) => ItineraryItem[];
+  initializeDay: (dayNumber: number) => void;
+
   // File upload helpers
   addCoverPhoto: (imageFile: ImageFile) => void;
   removeCoverPhoto: (index: number) => void;
@@ -107,22 +107,19 @@ const defaultValues: TourDetailsFormData = {
     value: 1,
     unit: 'Day',
   },
-  itinerary: [
-    {
-      dayNumber: 1,
-      items: [
-        {
-          time: '',
-          activity: '',
-          description: '',
-        },
-      ],
-    },
-  ],
+  itinerary: {
+    day1: [
+      {
+        time: '',
+        activity: '',
+        description: '',
+      },
+    ],
+  },
   guidelines: [
     {
-      title: 'Dress Code',
-      details: '• Opt for modest but breathable clothing as we\'ll be visiting religious sites.\n• Wear comfortable shoes\n\nPress \'Enter\' to add a new detail',
+      title: '',
+      details: '',
     },
   ],
   pickupPoints: [
@@ -160,11 +157,6 @@ export function TourDetailsProvider({ children }: TourDetailsProviderProps) {
     name: 'galleryPhotos',
   });
 
-  const itineraryArray = useFieldArray({
-    control: form.control,
-    name: 'itinerary',
-  });
-
   const guidelinesArray = useFieldArray({
     control: form.control,
     name: 'guidelines',
@@ -175,57 +167,56 @@ export function TourDetailsProvider({ children }: TourDetailsProviderProps) {
     name: 'pickupPoints',
   });
 
-  // Helper functions for itinerary management
-  const addItineraryItem = (dayIndex: number) => {
-    const currentDay = form.getValues(`itinerary.${dayIndex}`);
-    const newItem: ItineraryItem = {
+  // Helper functions for itinerary management with new structure
+  const addItineraryItem = (dayNumber: number) => {
+    const dayKey = `day${dayNumber}`;
+    const currentDayItems = form.getValues(`itinerary.${dayKey}`) || [];
+    const newItem = {
       time: '',
       activity: '',
       description: '',
     };
-    
-    form.setValue(`itinerary.${dayIndex}.items`, [...currentDay.items, newItem], {
+
+    form.setValue(`itinerary.${dayKey}`, [...currentDayItems, newItem], {
       shouldValidate: true,
       shouldDirty: true,
     });
   };
 
-  const removeItineraryItem = (dayIndex: number, itemIndex: number) => {
-    const currentDay = form.getValues(`itinerary.${dayIndex}`);
-    const updatedItems = currentDay.items.filter((_, index) => index !== itemIndex);
-    
-    form.setValue(`itinerary.${dayIndex}.items`, updatedItems, {
+  const removeItineraryItem = (dayNumber: number, itemIndex: number) => {
+    const dayKey = `day${dayNumber}`;
+    const currentDayItems = form.getValues(`itinerary.${dayKey}`) || [];
+    const updatedItems = currentDayItems.filter((_, index) => index !== itemIndex);
+
+    form.setValue(`itinerary.${dayKey}`, updatedItems, {
       shouldValidate: true,
       shouldDirty: true,
     });
   };
 
-  const addItineraryDay = () => {
-    const currentItinerary = form.getValues('itinerary');
-    const newDay: ItineraryDay = {
-      dayNumber: currentItinerary.length + 1,
-      items: [
+  // Helper to get itinerary items for a specific day
+  const getItineraryDay = (dayNumber: number) => {
+    const dayKey = `day${dayNumber}`;
+    return form.watch(`itinerary.${dayKey}`) || [];
+  };
+
+  // Helper to initialize a new day if it doesn't exist
+  const initializeDay = (dayNumber: number) => {
+    const dayKey = `day${dayNumber}`;
+    const existingDay = form.getValues(`itinerary.${dayKey}`);
+
+    if (!existingDay) {
+      form.setValue(`itinerary.${dayKey}`, [
         {
           time: '',
           activity: '',
           description: '',
         },
-      ],
-    };
-    
-    itineraryArray.append(newDay);
-  };
-
-  const removeItineraryDay = (dayIndex: number) => {
-    itineraryArray.remove(dayIndex);
-    
-    // Update day numbers for remaining days
-    const currentItinerary = form.getValues('itinerary');
-    currentItinerary.forEach((_, index) => {
-      if (index >= dayIndex) {
-        form.setValue(`itinerary.${index}.dayNumber`, index + 1);
-      }
-    });
+      ], {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
   };
 
   // File upload helpers
@@ -262,13 +253,12 @@ export function TourDetailsProvider({ children }: TourDetailsProviderProps) {
     form,
     coverPhotosArray,
     galleryPhotosArray,
-    itineraryArray,
     guidelinesArray,
     pickupPointsArray,
     addItineraryItem,
     removeItineraryItem,
-    addItineraryDay,
-    removeItineraryDay,
+    getItineraryDay,
+    initializeDay,
     addCoverPhoto,
     removeCoverPhoto,
     addGalleryPhoto,

@@ -84,6 +84,7 @@ export default function CreateTourPage() {
               radius="lg"
               px={{base: 10, sm: 50}}
               py={"xl"}
+              mx={"auto"}
               my={{ base: 'lg', sm: 'xl' }}
               maw={1204}
               w={"100%"}
