@@ -19,29 +19,49 @@ export default function Home() {
             style={{
               color: 'white',
               fontSize: '48px',
-              fontFamily: 'cursive',
+              fontFamily: 'Barlow',
               letterSpacing: '2px'
             }}
           >
             Simsem
           </Title>
 
-          <Link href="/signup" style={{ textDecoration: 'none' }}>
-            <Button
-              size="lg"
-              style={{
-                backgroundColor: '#f59e0b',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '12px 32px',
-                fontSize: '18px',
-                fontWeight: 500
-              }}
-            >
-              Start Signup Process
-            </Button>
-          </Link>
+          <Stack align="center" gap="md">
+            <Link href="/signup" style={{ textDecoration: 'none' }}>
+              <Button
+                size="lg"
+                style={{
+                  backgroundColor: '#f59e0b',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '12px 32px',
+                  fontSize: '18px',
+                  fontWeight: 500
+                }}
+              >
+                Start Signup Process
+              </Button>
+            </Link>
+
+            <Link href="/admin/tour/create" style={{ textDecoration: 'none' }}>
+              <Button
+                size="lg"
+                variant="outline"
+                style={{
+                  borderColor: 'white',
+                  color: 'white',
+                  borderRadius: '8px',
+                  padding: '12px 32px',
+                  fontSize: '18px',
+                  fontWeight: 500,
+                  backgroundColor: 'transparent'
+                }}
+              >
+                Create Tour
+              </Button>
+            </Link>
+          </Stack>
         </Stack>
       </Container>
     </Box>
