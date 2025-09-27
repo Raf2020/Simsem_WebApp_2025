@@ -1,14 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import {
   Text,
   Title,
   Button,
   Stack,
   Box,
-  Group,
   Paper,
   PasswordInput,
   Flex
@@ -20,7 +18,6 @@ interface AccountStepProps {
 }
 
 export default function AccountStep({ onComplete, onBack }: AccountStepProps) {
-  const router = useRouter();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showValidation, setShowValidation] = useState(false);
@@ -31,8 +28,9 @@ export default function AccountStep({ onComplete, onBack }: AccountStepProps) {
 
   const handleComplete = () => {
     setShowValidation(true); // Trigger validation display
+
     if (isFormValid) {
-      router.push('/signup/success');
+      onComplete();
     }
   };
 
