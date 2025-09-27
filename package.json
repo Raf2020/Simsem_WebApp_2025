@@ -39,6 +39,7 @@
     "react-hook-form": "^7.63.0",
     "react-phone-input-2": "^2.15.1",
     "recharts": "^3.2.0",
+    "swr": "^2.3.6",
     "world-countries": "^5.1.0",
     "zod": "^4.1.11"
   },

@@ -10,6 +10,7 @@ import { Box, Image, Container, Paper } from '@mantine/core';
 import SignupStepper from './components/SignupStepper';
 import { IdentificationProvider } from './contexts/IdentificationContext';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { PaymentProvider } from './contexts/PaymentContext';
 
 type SignupStep = 'identification' | 'profile' | 'language' | 'services' | 'payment' | 'account';
 
@@ -160,7 +161,11 @@ export default function SignUp () {
   return (
     <LanguageProvider>
       <IdentificationProvider>
-        <SignupPage />
+        
+          <PaymentProvider>
+            <SignupPage />
+          </PaymentProvider>
+      
       </IdentificationProvider>
     </LanguageProvider>
   );
