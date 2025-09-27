@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, ReactNode, useState } from 'react';
+import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -105,6 +105,14 @@ export function PaymentProvider({ children }: PaymentProviderProps) {
     },
     mode: 'onChange',
   });
+
+  // Watch IBAN field for changes and reset verification
+  const ibanValue = form.watch('iban');
+  useEffect(() => {
+    // Reset verification when IBAN changes
+    setIbanVerified(false);
+    setIbanVerificationData(null);
+  }, [ibanValue]);
 
   // Verify IBAN function
   const verifyIban = async (iban: string) => {

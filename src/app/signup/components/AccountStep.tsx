@@ -23,10 +23,14 @@ export default function AccountStep({ onComplete, onBack }: AccountStepProps) {
   const router = useRouter();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showValidation, setShowValidation] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const isFormValid = password.length >= 6 && password === confirmPassword;
 
   const handleComplete = () => {
+    setShowValidation(true); // Trigger validation display
     if (isFormValid) {
       router.push('/signup/success');
     }
@@ -69,6 +73,9 @@ export default function AccountStep({ onComplete, onBack }: AccountStepProps) {
                 placeholder="Create Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                error={showValidation && password.length > 0 && password.length < 6 ? 'Password must be at least 6 characters' : undefined}
+                visible={showPassword}
+                onVisibilityChange={setShowPassword}
                 styles={{
                   input: {
                     backgroundColor: '#f3f4f6',
@@ -97,10 +104,12 @@ export default function AccountStep({ onComplete, onBack }: AccountStepProps) {
                       fontFamily: 'Barlow',
                       fontSize: '14px',
                       color: '#6b7280',
-                      marginRight: '12px'
+                      marginRight: '12px',
+                      cursor: 'pointer'
                     }}
+                    onClick={() => setShowPassword(!showPassword)}
                   >
-                    Show
+                    {showPassword ? 'Hide' : 'Show'}
                   </Text>
                 }
               />
@@ -109,6 +118,9 @@ export default function AccountStep({ onComplete, onBack }: AccountStepProps) {
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                error={showValidation && confirmPassword.length > 0 && password !== confirmPassword ? 'Passwords do not match' : undefined}
+                visible={showConfirmPassword}
+                onVisibilityChange={setShowConfirmPassword}
                 styles={{
                   input: {
                     backgroundColor: '#f3f4f6',
@@ -137,10 +149,12 @@ export default function AccountStep({ onComplete, onBack }: AccountStepProps) {
                       fontFamily: 'Barlow',
                       fontSize: '14px',
                       color: '#6b7280',
-                      marginRight: '12px'
+                      marginRight: '12px',
+                      cursor: 'pointer'
                     }}
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
-                    Show
+                    {showConfirmPassword ? 'Hide' : 'Show'}
                   </Text>
                 }
               />
@@ -191,15 +205,10 @@ export default function AccountStep({ onComplete, onBack }: AccountStepProps) {
         <Button
           size="md"
           onClick={handleComplete}
-          disabled={!password || !confirmPassword || password !== confirmPassword}
           w={{ base: '100%', sm: 'auto' }}
           style={{
-            backgroundColor: (!password || !confirmPassword || password !== confirmPassword)
-              ? '#d1d5db'
-              : '#f59e0b',
-            color: (!password || !confirmPassword || password !== confirmPassword)
-              ? '#6b7280'
-              : 'white',
+            backgroundColor: '#f59e0b',
+            color: 'white',
             border: 'none',
             borderRadius: '6px',
             height: '44px',

@@ -238,19 +238,22 @@ export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) 
 
         <Button
           size="md"
-          onClick={onComplete}
-          disabled={!isFormValid}
+          onClick={() => {
+            form.trigger()
+            if (isFormValid) {
+              onComplete();
+            }
+          }}
           w={{ base: '100%', sm: 'auto' }}
           style={{
-            backgroundColor: isFormValid ? '#f59e0b' : '#d1d5db',
-            color: isFormValid ? 'white' : '#6b7280',
+            backgroundColor: '#f59e0b',
+            color: 'white',
             border: 'none',
             borderRadius: '6px',
             height: '44px',
             fontSize: '14px',
             fontWeight: 500,
             minWidth: '120px',
-            cursor: isFormValid ? 'pointer' : 'not-allowed'
           }}
         >
           Proceed

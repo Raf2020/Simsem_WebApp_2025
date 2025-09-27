@@ -961,12 +961,16 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
 
         <Button
           size="md"
-          onClick={handleSubmit}
+          onClick={() => {
+            form.trigger(); // Trigger validation to show errors
+            if (isFormValid) {
+              handleSubmit();
+            }
+          }}
           w={{ base: '100%', sm: 'auto' }}
-          disabled={!isFormValid}
           style={{
-            backgroundColor: isFormValid ? '#f59e0b' : '#d1d5db',
-            color: isFormValid ? 'white' : '#6b7280',
+            backgroundColor: '#f59e0b',
+            color: 'white',
             border: 'none',
             borderRadius: '6px',
             height: '44px',

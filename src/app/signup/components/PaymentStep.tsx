@@ -24,8 +24,7 @@ export default function PaymentStep({ onComplete, onBack }: PaymentStepProps) {
     form,
     isVerifyingIban,
     ibanVerified,
-    verifyIban,
-    canProceed
+    verifyIban
   } = usePayment();
 
   const { register, formState: { errors }, watch } = form;
@@ -310,19 +309,28 @@ export default function PaymentStep({ onComplete, onBack }: PaymentStepProps) {
 
         <Button
           size="md"
-          onClick={onComplete}
-          disabled={!canProceed}
+          onClick={async () => {
+            const isValid = await form.trigger();
+
+            if (!ibanVerified) {
+              form.setError('iban', { message: 'Please verify your IBAN before proceeding' });
+              return;
+            }
+
+            if (isValid && ibanVerified) {
+              onComplete();
+            }
+          }}
           w={{ base: "100%", sm: "auto" }}
           style={{
-            backgroundColor: canProceed ? "#f59e0b" : "#d1d5db",
-            color: canProceed ? "white" : "#6b7280",
+            backgroundColor: "#f59e0b",
+            color: "white",
             border: "none",
             borderRadius: "6px",
             height: "44px",
             fontSize: "14px",
             fontWeight: 500,
             minWidth: "120px",
-            cursor: canProceed ? "pointer" : "not-allowed",
           }}
         >
           Proceed
