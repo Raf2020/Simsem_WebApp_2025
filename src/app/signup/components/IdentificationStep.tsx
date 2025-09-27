@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef } from 'react';
 import {
   Text,
   Title,
@@ -18,10 +18,11 @@ import {
   Image,
   Flex
 } from '@mantine/core';
-import { IconUpload, IconUser, IconCamera } from '@tabler/icons-react';
+import { IconUpload, IconUser, IconCamera, IconTrash } from '@tabler/icons-react';
 import { Country, City, State } from 'country-state-city';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import { useIdentification } from '../contexts/IdentificationContext';
 
 interface IdentificationStepProps {
   onComplete: () => void;
@@ -29,18 +30,17 @@ interface IdentificationStepProps {
 }
 
 export default function IdentificationStep({ onComplete, onCancel }: IdentificationStepProps) {
-  const [frontSideFile, setFrontSideFile] = useState<File | null>(null);
-  const [backSideFile, setBackSideFile] = useState<File | null>(null);
-  const [isCertifiedGuide, setIsCertifiedGuide] = useState(false);
+  const { form, handleFileUpload, removeFile, toggleCertification, isFormValid, isCertifiedGuide } = useIdentification();
 
-  // Profile form state
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [country, setCountry] = useState('');
-  const [city, setCity] = useState('');
-  const [introduction, setIntroduction] = useState('');
+  // File input refs
+  const profilePhotoRef = useRef<HTMLInputElement>(null);
+  const frontSideRef = useRef<HTMLInputElement>(null);
+  const backSideRef = useRef<HTMLInputElement>(null);
+  const certificateRef = useRef<HTMLInputElement>(null);
+
+  // Get form values
+  const formValues = form.watch();
+  const formErrors = form.formState.errors;
 
   // Prepare countries data for Select component using country-state-city
   const countryOptions = Country.getAllCountries()
@@ -52,8 +52,8 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
 
   // Get states for selected country using country-state-city
   const getCityOptions = () => {
-    if (!country) return [];
-    const states = State.getStatesOfCountry(country);
+    if (!formValues.country) return [];
+    const states = State.getStatesOfCountry(formValues.country);
     if (!states) return [];
 
     return states
@@ -66,8 +66,32 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
 
   // Handle country change - reset city when country changes
   const handleCountryChange = (value: string | null) => {
-    setCountry(value || '');
-    setCity(''); // Reset city when country changes
+    form.setValue('country', value || '', { shouldValidate: true, shouldDirty: true });
+    form.setValue('city', '', { shouldValidate: true, shouldDirty: true }); // Reset city when country changes
+  };
+
+  // File upload handlers
+  const handleFileSelect = (fieldName: keyof typeof formValues, inputRef: React.RefObject<HTMLInputElement | null>) => {
+    inputRef.current?.click();
+  };
+
+  const handleFileChange = (fieldName: keyof typeof formValues, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      handleFileUpload(fieldName, file);
+    }
+    // Reset the input value so the same file can be selected again
+    event.target.value = '';
+  };
+
+  // Handle form submission
+  const handleSubmit = () => {
+    if (isFormValid) {
+      onComplete();
+    } else {
+      // Trigger validation to show errors
+      form.trigger();
+    }
   };
 
   return (
@@ -94,16 +118,50 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
             align={"center"}
             gap={"md"}
           >
-            <Avatar
-              size={80}
-              radius="xl"
-              style={{
-                backgroundColor: '#e5e7eb',
-                color: '#6b7280'
-              }}
-            >
-              <IconUser size={40} />
-            </Avatar>
+            <Box style={{ position: 'relative' }}>
+              <Avatar
+                size={80}
+                radius="xl"
+                src={formValues.profilePhoto?.url}
+                style={{
+                  backgroundColor: '#e5e7eb',
+                  color: '#6b7280',
+                  cursor: 'pointer',
+                  transition: 'opacity 0.2s ease'
+                }}
+                onClick={() => handleFileSelect('profilePhoto', profilePhotoRef)}
+              >
+                {!formValues.profilePhoto && <IconUser size={40} />}
+              </Avatar>
+              {formValues.profilePhoto && (
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeFile('profilePhoto');
+                  }}
+                  p={0}
+                  m={0}
+                  style={{
+                    position: 'absolute',
+                    top: -4,
+                    right: -4,
+                    backgroundColor: '#ef4444',
+                    borderRadius: '50%',
+                    width: 24,
+                    height: 24,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    border: '2px solid white',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                  }}
+                >
+                  <IconTrash size={12} color="white" />
+                </Button>
+              )}
+            </Box>
             <Flex
               direction={"column"}
               align={{ base: "center", sm: "flex-start" }}
@@ -112,18 +170,52 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
                 variant="outline"
                 leftSection={<IconCamera size={16} />}
                 size="sm"
+                onClick={() => handleFileSelect('profilePhoto', profilePhotoRef)}
                 style={{
                   borderColor: '#d1d5db',
                   color: '#6b7280'
                 }}
               >
-                Change Photo
+                {formValues.profilePhoto ? 'Change Photo' : 'Add Photo'}
               </Button>
               <Text size="xs" c="dimmed" mt={4}>
                 JPG, PNG, Max 2MB
               </Text>
+              <Text size="xs" c="dimmed" mt={2}>
+                Click avatar or button to {formValues.profilePhoto ? 'change' : 'upload'}
+              </Text>
             </Flex>
           </Flex>
+
+          {/* Hidden file inputs */}
+          <input
+            type="file"
+            ref={profilePhotoRef}
+            style={{ display: 'none' }}
+            accept="image/*"
+            onChange={(e) => handleFileChange('profilePhoto', e)}
+          />
+          <input
+            type="file"
+            ref={frontSideRef}
+            style={{ display: 'none' }}
+            accept="image/*"
+            onChange={(e) => handleFileChange('idCardFrontSide', e)}
+          />
+          <input
+            type="file"
+            ref={backSideRef}
+            style={{ display: 'none' }}
+            accept="image/*"
+            onChange={(e) => handleFileChange('idCardBackSide', e)}
+          />
+          <input
+            type="file"
+            ref={certificateRef}
+            style={{ display: 'none' }}
+            accept="image/*,application/pdf"
+            onChange={(e) => handleFileChange('tourGuideCertificate', e)}
+          />
 
           {/* Name Fields */}
           <Grid>
@@ -131,8 +223,8 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
               <TextInput
                 label="First Name"
                 placeholder="Ahmed"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                {...form.register('firstName')}
+                error={formErrors.firstName?.message}
                 styles={{
                   label: {
                     fontFamily: 'Barlow',
@@ -172,8 +264,8 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
               <TextInput
                 label="Last Name"
                 placeholder="Ahmed"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                {...form.register('lastName')}
+                error={formErrors.lastName?.message}
                 styles={{
                   label: {
                     fontFamily: 'Barlow',
@@ -218,8 +310,8 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
                 label="Email"
                 placeholder="ahmed@gmail.com"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                {...form.register('email')}
+                error={formErrors.email?.message}
                 styles={{
                   label: {
                     fontFamily: 'Barlow',
@@ -271,10 +363,9 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
                   Phone
                 </Text>
                 <PhoneInput
-
                   country={'us'}
-                  value={phone}
-                  onChange={(value) => setPhone(value)}
+                  value={formValues.phone}
+                  onChange={(value) => form.setValue('phone', value, { shouldValidate: true, shouldDirty: true })}
                   inputStyle={{
                     fontFamily: 'Barlow',
                     fontWeight: 400,
@@ -300,6 +391,11 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
                     width: '100%'
                   }}
                 />
+                {formErrors.phone && (
+                  <Text size="sm" c="red" mt={4}>
+                    {formErrors.phone.message}
+                  </Text>
+                )}
               </Box>
             </Grid.Col>
           </Grid>
@@ -310,10 +406,11 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
               <Select
                 label="Country"
                 placeholder="Select Country"
-                value={country}
+                value={formValues.country}
                 onChange={handleCountryChange}
                 data={countryOptions}
                 searchable
+                error={formErrors.country?.message}
                 styles={{
                   label: {
                     fontFamily: 'Barlow',
@@ -350,11 +447,12 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
               <Select
                 label="State/Province"
                 placeholder="Select State/Province"
-                value={city}
-                onChange={(value) => setCity(value || '')}
+                value={formValues.city}
+                onChange={(value) => form.setValue('city', value || '', { shouldValidate: true, shouldDirty: true })}
                 data={getCityOptions()}
                 searchable
-                disabled={!country}
+                disabled={!formValues.country}
+                error={formErrors.city?.message}
                 styles={{
                   label: {
                     fontFamily: 'Barlow',
@@ -406,8 +504,8 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
             </Text>
             <Textarea
               placeholder="Welcome to Jordan! I'm Ahmed, a passionate local guide with 8 years of experience showing travelers the hidden gems of my beautiful country. From the ancient wonders of Petra to the magical deserts of Wadi Rum, I love sharing authentic experiences that connect you with our rich culture and history."
-              value={introduction}
-              onChange={(e) => setIntroduction(e.target.value)}
+              {...form.register('introduction')}
+              error={formErrors.introduction?.message}
               minRows={4}
               styles={{
                 input: {
@@ -500,21 +598,73 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
               </Text>
             </Group>
 
-            <Box
-              style={{
-                border: '2px dashed #0D2E61',
-                borderRadius: '8px',
-                padding: '40px 20px',
-                textAlign: 'center',
-                backgroundColor: '#0D2E611A',
-                cursor: 'pointer'
-              }}
-            >
-              <IconUpload size={24} color="#6b7280" style={{ marginBottom: '8px' }} />
-              <Text size="sm" style={{ color: '#6b7280' }}>
-                Upload Document
+            {formValues.idCardFrontSide ? (
+              <Box style={{ position: 'relative', maxWidth: '400px', width: '100%' }} mx={"auto"}>
+                <Image
+                  src={formValues.idCardFrontSide.url}
+                  alt="ID Card Front Side"
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    borderRadius: '8px',
+                    border: '2px solid #e5e7eb'
+                  }}
+                />
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeFile('idCardFrontSide');
+                  }}
+                  p={0}
+                  m={0}
+                  style={{
+                    position: 'absolute',
+                    top: -4,
+                    right: -4,
+                    backgroundColor: '#ef4444',
+                    borderRadius: '50%',
+                    width: 24,
+                    height: 24,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    border: '2px solid white',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                  }}
+                >
+                  <IconTrash size={12} color="white" />
+                </Button>
+              </Box>
+            ) : (
+              <Box
+                onClick={() => handleFileSelect('idCardFrontSide', frontSideRef)}
+                style={{
+                  border: '2px dashed #0D2E61',
+                  borderRadius: '8px',
+                  padding: '40px 20px',
+                  textAlign: 'center',
+                  backgroundColor: '#0D2E611A',
+                  cursor: 'pointer',
+                  minHeight: '120px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <IconUpload size={24} color="#6b7280" style={{ marginBottom: '8px' }} />
+                <Text size="sm" style={{ color: '#6b7280' }}>
+                  Upload Document
+                </Text>
+              </Box>
+            )}
+            {formErrors.idCardFrontSide && (
+              <Text size="sm" c="red" mt={4}>
+                {formErrors.idCardFrontSide.message}
               </Text>
-            </Box>
+            )}
           </Box>
 
           {/* ID Card Back Side */}
@@ -540,21 +690,73 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
               </Text>
             </Group>
 
-            <Box
-              style={{
-                border: '2px dashed #0D2E61',
-                borderRadius: '8px',
-                padding: '40px 20px',
-                textAlign: 'center',
-                backgroundColor: '#0D2E611A',
-                cursor: 'pointer'
-              }}
-            >
-              <IconUpload size={24} color="#6b7280" style={{ marginBottom: '8px' }} />
-              <Text size="sm" style={{ color: '#6b7280' }}>
-                Upload Document
+            {formValues.idCardBackSide ? (
+              <Box style={{ position: 'relative', maxWidth: '400px', width: '100%' }} mx={"auto"}>
+                <Image
+                  src={formValues.idCardBackSide.url}
+                  alt="ID Card Back Side"
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    borderRadius: '8px',
+                    border: '2px solid #e5e7eb'
+                  }}
+                />
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeFile('idCardBackSide');
+                  }}
+                  p={0}
+                  m={0}
+                  style={{
+                    position: 'absolute',
+                    top: -4,
+                    right: -4,
+                    backgroundColor: '#ef4444',
+                    borderRadius: '50%',
+                    width: 24,
+                    height: 24,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    border: '2px solid white',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                  }}
+                >
+                  <IconTrash size={12} color="white" />
+                </Button>
+              </Box>
+            ) : (
+              <Box
+                onClick={() => handleFileSelect('idCardBackSide', backSideRef)}
+                style={{
+                  border: '2px dashed #0D2E61',
+                  borderRadius: '8px',
+                  padding: '40px 20px',
+                  textAlign: 'center',
+                  backgroundColor: '#0D2E611A',
+                  cursor: 'pointer',
+                  minHeight: '120px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <IconUpload size={24} color="#6b7280" style={{ marginBottom: '8px' }} />
+                <Text size="sm" style={{ color: '#6b7280' }}>
+                  Upload Document
+                </Text>
+              </Box>
+            )}
+            {formErrors.idCardBackSide && (
+              <Text size="sm" c="red" mt={4}>
+                {formErrors.idCardBackSide.message}
               </Text>
-            </Box>
+            )}
           </Box>
         </Box>
       </Paper>
@@ -574,7 +776,7 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
         <Group gap="xs" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
           <Checkbox
             checked={isCertifiedGuide}
-            onChange={(event) => setIsCertifiedGuide(event.currentTarget.checked)}
+            onChange={toggleCertification}
             size="sm"
             style={{ marginTop: '2px' }}
           />
@@ -619,8 +821,6 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
                 size="sm"
                 style={{
                   color: '#0D2E61',
-
-
                   fontWeight: 500
                 }}
               >
@@ -637,21 +837,98 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
               </Text>
             </Group>
 
-            <Box
-              style={{
-                border: '2px dashed #0D2E61',
-                borderRadius: '8px',
-                padding: '40px 20px',
-                textAlign: 'center',
-                backgroundColor: '#0D2E611A',
-                cursor: 'pointer'
-              }}
-            >
-              <IconUpload size={24} color="#6b7280" style={{ marginBottom: '8px' }} />
-              <Text size="sm" style={{ color: '#6b7280' }}>
-                Upload Document
+            {formValues.tourGuideCertificate ? (
+              <Box style={{ position: 'relative', maxWidth: '400px', width: '100%' }} mx={"auto"}>
+                {formValues.tourGuideCertificate.type.startsWith('image/') ? (
+                  <Image
+                    src={formValues.tourGuideCertificate.url}
+                    alt="Tour Guide Certificate"
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      borderRadius: '8px',
+                      border: '2px solid #e5e7eb'
+                    }}
+                  />
+                ) : (
+                  <Box
+                    style={{
+                      border: '2px solid #e5e7eb',
+                      borderRadius: '8px',
+                      padding: '40px 20px',
+                      textAlign: 'center',
+                      backgroundColor: '#0D2E611A',
+                      minHeight: '120px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <IconUpload size={48} color="#0D2E61" />
+                    <Text size="sm" style={{ color: '#0D2E61', fontWeight: 500, marginTop: '8px' }}>
+                      {formValues.tourGuideCertificate.name}
+                    </Text>
+                    <Text size="xs" style={{ color: '#6b7280', marginTop: '4px' }}>
+                      PDF Document
+                    </Text>
+                  </Box>
+                )}
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeFile('tourGuideCertificate');
+                  }}
+                  p={0}
+                  m={0}
+                  style={{
+                    position: 'absolute',
+                    top: -4,
+                    right: -4,
+                    backgroundColor: '#ef4444',
+                    borderRadius: '50%',
+                    width: 24,
+                    height: 24,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    border: '2px solid white',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                  }}
+                >
+                  <IconTrash size={12} color="white" />
+                </Button>
+              </Box>
+            ) : (
+              <Box
+                onClick={() => handleFileSelect('tourGuideCertificate', certificateRef)}
+                style={{
+                  border: '2px dashed #0D2E61',
+                  borderRadius: '8px',
+                  padding: '40px 20px',
+                  textAlign: 'center',
+                  backgroundColor: '#0D2E611A',
+                  cursor: 'pointer',
+                  minHeight: '120px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <IconUpload size={24} color="#6b7280" style={{ marginBottom: '8px' }} />
+                <Text size="sm" style={{ color: '#6b7280' }}>
+                  Upload Document
+                </Text>
+              </Box>
+            )}
+            {formErrors.tourGuideCertificate && (
+              <Text size="sm" c="red" mt={4}>
+                {formErrors.tourGuideCertificate.message}
               </Text>
-            </Box>
+            )}
           </Box>
         )}
 
@@ -684,11 +961,12 @@ export default function IdentificationStep({ onComplete, onCancel }: Identificat
 
         <Button
           size="md"
-          onClick={onComplete}
+          onClick={handleSubmit}
           w={{ base: '100%', sm: 'auto' }}
+          disabled={!isFormValid}
           style={{
-            backgroundColor: '#f59e0b',
-            color: 'white',
+            backgroundColor: isFormValid ? '#f59e0b' : '#d1d5db',
+            color: isFormValid ? 'white' : '#6b7280',
             border: 'none',
             borderRadius: '6px',
             height: '44px',

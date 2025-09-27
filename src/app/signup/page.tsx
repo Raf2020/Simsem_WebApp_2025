@@ -8,10 +8,11 @@ import PaymentStep from './components/PaymentStep';
 import AccountStep from './components/AccountStep';
 import { Box, Image, Container, Paper } from '@mantine/core';
 import SignupStepper from './components/SignupStepper';
+import { IdentificationProvider } from './contexts/IdentificationContext';
 
 type SignupStep = 'identification' | 'profile' | 'language' | 'services' | 'payment' | 'account';
 
-export default function SignupPage() {
+export function SignupPage() {
   const [currentStep, setCurrentStep] = useState<SignupStep>('identification');
 
   const handleStepComplete = (nextStep: SignupStep) => {
@@ -38,13 +39,9 @@ export default function SignupPage() {
       case 'identification':
         return (
           <IdentificationStep
-            onComplete={() => handleStepComplete('language')}
-            onCancel={handleCancel}
+              onComplete={() => handleStepComplete('language')}
+              onCancel={handleCancel}
           />
-        );
-      case 'profile':
-        return (
-          <div>Profile Step - Coming Soon</div>
         );
       case 'language':
         return (
@@ -154,5 +151,14 @@ export default function SignupPage() {
         </Paper>
       </Container>
     </Box >
+  );
+}
+
+
+export default function SignUp () {
+  return (
+    <IdentificationProvider>
+      <SignupPage />
+    </IdentificationProvider>
   );
 }
