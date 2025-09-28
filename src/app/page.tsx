@@ -23,7 +23,7 @@ export default function Home() {
               letterSpacing: '2px'
             }}
           >
-            Simsem
+            Simsem App
           </Title>
 
           <Stack align="center" gap="md">
