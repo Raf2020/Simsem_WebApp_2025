@@ -44,7 +44,7 @@ export default function Home() {
               </Button>
             </Link>
 
-            <Link href="/admin/tour/create" style={{ textDecoration: 'none' }}>
+            <Link href="/admin/tour/getaway/create" style={{ textDecoration: 'none' }}>
               <Button
                 size="lg"
                 variant="outline"
@@ -59,6 +59,24 @@ export default function Home() {
                 }}
               >
                 Create Tour
+              </Button>
+            </Link>
+
+            <Link href="/admin/tour/dining/create" style={{ textDecoration: 'none' }}>
+              <Button
+                size="lg"
+                variant="outline"
+                style={{
+                  borderColor: 'white',
+                  color: 'white',
+                  borderRadius: '8px',
+                  padding: '12px 32px',
+                  fontSize: '18px',
+                  fontWeight: 500,
+                  backgroundColor: 'transparent'
+                }}
+              >
+                Create Dining Experience
               </Button>
             </Link>
           </Stack>
