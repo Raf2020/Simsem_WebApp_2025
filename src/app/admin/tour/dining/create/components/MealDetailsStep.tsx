@@ -261,87 +261,100 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                   return indexA - indexB;
                 })
                 .map((categoryId) => {
-                const category = mealCategories.find(c => c.id === categoryId);
-                if (!category) return null;
+                  const category = mealCategories.find(c => c.id === categoryId);
+                  if (!category) return null;
 
-                return (
-                  <Card
-                    key={categoryId}
-                    style={{
-                      backgroundColor: '#FFFFFF',
-                      border: '1px solid #0D2E614D',
-                      borderRadius: '10px',
-                    }}
-                    px={30}
-                    py={20}
-                  >
-                    <Stack gap={10}>
-                      {/* Category Header */}
-                      <Group gap={10}>
-                        {category.icon === 'coffee' && <IconCoffee size={36} color="#0D2E61" />}
-                        {category.icon === 'kitchen' && <IconToolsKitchen2 size={36} color="#0D2E61" />}
-                        {category.icon === 'cake' && <IconCake size={36} color="#0D2E61" />}
-                        <Text
-                          style={{
-                            fontFamily: 'Barlow',
-                            fontWeight: 600,
-                            fontSize: '23px',
-                            color: '#0D2E61'
-                          }}
-                        >
-                          {category.name}
-                        </Text>
-                      </Group>
-                      <Divider />
-                      {/* Food Items Grid */}
-                      <SimpleGrid cols={3} spacing={15} px={20} py={40}>
-                        {/* Sample food items - you can make this dynamic */}
-                        {[1, 2, 3].map((item) => (
-                          <Card
-                            key={item}
+                  return (
+                    <Card
+                      key={categoryId}
+                      style={{
+                        backgroundColor: '#FFFFFF',
+                        border: '1px solid #0D2E614D',
+                        borderRadius: '10px',
+                      }}
+                      px={30}
+                      py={20}
+                    >
+                      <Stack gap={10}>
+                        {/* Category Header */}
+                        <Group gap={10}>
+                          {category.icon === 'coffee' && <IconCoffee size={36} color="#0D2E61" />}
+                          {category.icon === 'kitchen' && <IconToolsKitchen2 size={36} color="#0D2E61" />}
+                          {category.icon === 'cake' && <IconCake size={36} color="#0D2E61" />}
+                          <Text
                             style={{
-                              backgroundColor: 'white',
-                              border: '1px solid #E5E7EB',
-                              borderRadius: '8px',
-                              padding: '15px',
-                              position: 'relative'
+                              fontFamily: 'Barlow',
+                              fontWeight: 600,
+                              fontSize: '23px',
+                              color: '#0D2E61'
                             }}
                           >
-                            <Stack gap={10}>
-                              <Box style={{ position: 'relative' }}>
-                                <Image
-                                  src="/api/placeholder/150/100"
-                                  alt="Hummus & Pita"
-                                  style={{
-                                    borderRadius: '6px',
-                                    height: '100px',
-                                    objectFit: 'cover'
-                                  }}
-                                />
-                                <Button
-                                  size="xs"
-                                  color="red"
-                                  style={{
-                                    position: 'absolute',
-                                    top: '5px',
-                                    right: '5px',
-                                    minWidth: '24px',
-                                    width: '24px',
-                                    height: '24px',
-                                    padding: 0
-                                  }}
-                                >
-                                  <IconTrash size={12} />
-                                </Button>
-                              </Box>
+                            {category.name}
+                          </Text>
+                        </Group>
+                        <Divider />
+                        {/* Food Items Grid */}
+                        <SimpleGrid cols={3} spacing={15} px={20} py={40}>
+                          {/* Sample food items - you can make this dynamic */}
 
-                              <Box>
+                          {[1, 2, 3].map((item) => (
+                            <Card
+                              key={item}
+                              style={{
+                                width: '268.33px',
+                                height: '236.95px',
+                                borderRadius: '10px',
+                                padding: '20px',
+                                gap: '10px',
+                                opacity: 1,
+                                borderWidth: '1px',
+                                backgroundColor: 'white',
+                                border: '1px solid #0D2E614D',
+                                position: 'relative',
+                                overflow: "unset"
+                              }}
+                            >
+                              <Button
+                                size="xs"
+                                color="red"
+                                style={{
+                                  zIndex: 100,
+                                  position: 'absolute',
+                                  top: '-5px',
+                                  right: '-5px',
+                                  width: '30px',
+                                  height: '28px',
+                                  borderRadius: '5px',
+                                  gap: '10px',
+                                  opacity: 1,
+                                  padding: 0,
+                                  minWidth: 'unset'
+                                }}
+                              >
+                                <IconTrash size={22}/>
+                              </Button>
+                              <Stack gap={10}>
+                                <Box style={{ position: 'relative' }}>
+                                  <Image
+                                    src="/api/placeholder/150/100"
+                                    alt="Hummus & Pita"
+                                    style={{
+                                      width: '228.33px',
+                                      height: '114.95px',
+                                      borderRadius: '10px',
+                                      opacity: 1,
+                                      objectFit: 'cover'
+                                    }}
+                                  />
+                                </Box>
                                 <Group justify="space-between" align="flex-start">
                                   <Text
                                     style={{
                                       fontFamily: 'Barlow',
-                                      fontWeight: 600,
-                                      fontSize: '14px',
+                                      fontWeight: 700,
+                                      fontSize: '18px',
+                                      lineHeight: '100%',
+                                      letterSpacing: '0%',
                                       color: '#3D3D3D'
                                     }}
                                   >
@@ -350,11 +363,19 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                                   <Badge
                                     size="xs"
                                     style={{
-                                      backgroundColor: '#FF8C00',
+                                      height: '24px',
+                                      borderRadius: '10px',
+                                      gap: '10px',
+                                      opacity: 1,
+                                      paddingTop: '5px',
+                                      paddingRight: '10px',
+                                      paddingBottom: '5px',
+                                      paddingLeft: '10px',
+                                      backgroundColor: '#FB8B24',
                                       color: 'white',
                                       fontFamily: 'Barlow',
-                                      fontWeight: 600,
-                                      fontSize: '8px'
+                                      fontWeight: 700,
+                                      fontSize: '12px'
                                     }}
                                   >
                                     VEGAN
@@ -365,50 +386,65 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                                   style={{
                                     fontFamily: 'Barlow',
                                     fontWeight: 400,
-                                    fontSize: '12px',
-                                    color: '#6b7280',
-                                    lineHeight: '1.3'
+                                    fontSize: '16px',
+                                    lineHeight: '100%',
+                                    letterSpacing: '0%',
+                                    color: '#3D3D3D',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis'
                                   }}
                                 >
                                   Chickpeas, garlic, lemon, sesame paste (Tahini) and olive oil
                                 </Text>
-                              </Box>
-                            </Stack>
-                          </Card>
-                        ))}
+                              </Stack>
+                            </Card>
+                          ))}
 
-                        {/* Add Item Button */}
-                        <UnstyledButton
-                          style={{
-                            height: '200px',
-                            border: '2px dashed #D1D5DB',
-                            borderRadius: '8px',
-                            backgroundColor: '#F9FAFB',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease'
-                          }}
-                        >
-                          <Center style={{ height: '100%' }}>
-                            <Stack align="center" gap={10}>
-                              <IconPlus size={32} color="#6B7280" />
-                              <Text
-                                style={{
-                                  fontFamily: 'Barlow',
-                                  fontWeight: 600,
-                                  fontSize: '14px',
-                                  color: '#6B7280'
-                                }}
-                              >
-                                Add a {category.name.toLowerCase()}
-                              </Text>
-                            </Stack>
-                          </Center>
-                        </UnstyledButton>
-                      </SimpleGrid>
-                    </Stack>
-                  </Card>
-                );
-              })}
+                          {/* Add Item Button */}
+                          <UnstyledButton
+                            style={{
+                              width: '268.33px',
+                              height: '235px',
+                              borderRadius: '10px',
+                              padding: '20px',
+                              gap: '10px',
+                              opacity: 1,
+                              borderWidth: '3px',
+                              borderStyle: 'dashed',
+                              border: '3px dashed #0D2E6180',
+                              backgroundColor: '#0D2E611A',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s ease'
+                            }}
+                          >
+                            <Center style={{ height: '100%' }}>
+                              <Stack align="center" gap={10}>
+
+                                <IconPlus size={48} color="#0D2E61" />
+
+                                <Text
+                                  style={{
+                                    fontFamily: 'Barlow',
+                                    fontWeight: 700,
+                                    fontSize: '18px',
+                                    lineHeight: '100%',
+                                    letterSpacing: '0%',
+                                    color: '#0D2E61'
+                                  }}
+                                >
+                                  Add a {category.name.toLowerCase()}
+                                </Text>
+                              </Stack>
+                            </Center>
+                          </UnstyledButton>
+                        </SimpleGrid>
+                      </Stack>
+                    </Card>
+                  );
+                })}
             </Paper>
 
           </Stack>
