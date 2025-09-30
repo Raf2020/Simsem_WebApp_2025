@@ -5,17 +5,20 @@ import { BasicInformationProvider } from './contexts/BasicInformationContext';
 import { MealDetailsProvider } from './contexts/MealDetailsContext';
 import { PricingPolicyProvider } from './contexts/PricingPolicyContext';
 import { TourDetailsProvider } from './contexts/TourDetailsContext';
+import { FoodDataProvider } from './contexts/FoodDataContext';
 
 export default function CreateTourPage() {
   return (
-    <BasicInformationProvider>
-      <MealDetailsProvider>
-        <TourDetailsProvider>
-          <PricingPolicyProvider>
-            <TourFormManager />
-          </PricingPolicyProvider>
-        </TourDetailsProvider>
-      </MealDetailsProvider>
-    </BasicInformationProvider>
+    <FoodDataProvider>
+      <BasicInformationProvider>
+        <MealDetailsProvider>
+          <TourDetailsProvider>
+            <PricingPolicyProvider>
+              <TourFormManager />
+            </PricingPolicyProvider>
+          </TourDetailsProvider>
+        </MealDetailsProvider>
+      </BasicInformationProvider>
+    </FoodDataProvider>
   );
 }

@@ -20,16 +20,51 @@ import {
 } from '@mantine/core';
 import { IconCoffee, IconToolsKitchen2, IconCake, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useMealDetails, mealCategories } from '../contexts/MealDetailsContext';
+import { useState } from 'react';
+import FoodSelectionModal from './FoodSelectionModal';
 
 interface MealDetailsStepProps {
   onNext: () => void;
   onBack: () => void;
 }
 
+interface FoodItem {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  dietaryTags: string[];
+  category: string;
+}
+
 export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps) {
   const { form, toggleMealCategory, selectedCategories, isFormValid } = useMealDetails();
+  const [selectedFoodItems, setSelectedFoodItems] = useState<Record<string, FoodItem[]>>({});
+  const [modalOpened, setModalOpened] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState<{ id: string; name: string } | null>(null);
 
   const { register, formState: { errors } } = form;
+
+  const handleAddItems = (categoryId: string, categoryName: string) => {
+    setCurrentCategory({ id: categoryId, name: categoryName });
+    setModalOpened(true);
+  };
+
+  const handleModalConfirm = (items: FoodItem[]) => {
+    if (currentCategory) {
+      setSelectedFoodItems(prev => ({
+        ...prev,
+        [currentCategory.id]: [...(prev[currentCategory.id] || []), ...items]
+      }));
+    }
+  };
+
+  const handleRemoveItem = (categoryId: string, itemId: string) => {
+    setSelectedFoodItems(prev => ({
+      ...prev,
+      [categoryId]: prev[categoryId]?.filter(item => item.id !== itemId) || []
+    }));
+  };
 
   return (
     <Box
@@ -297,9 +332,9 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                         <SimpleGrid cols={3} spacing={15} px={20} py={40}>
                           {/* Sample food items - you can make this dynamic */}
 
-                          {[1, 2, 3].map((item) => (
+                          {(selectedFoodItems[category.id] || []).map((item) => (
                             <Card
-                              key={item}
+                              key={item.id}
                               style={{
                                 width: '268.33px',
                                 height: '236.95px',
@@ -317,6 +352,7 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                               <Button
                                 size="xs"
                                 color="red"
+                                onClick={() => handleRemoveItem(category.id, item.id)}
                                 style={{
                                   zIndex: 100,
                                   position: 'absolute',
@@ -336,8 +372,9 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                               <Stack gap={10}>
                                 <Box style={{ position: 'relative' }}>
                                   <Image
-                                    src="/api/placeholder/150/100"
-                                    alt="Hummus & Pita"
+                                    src={item.image}
+                                    alt={item.name}
+                                    fallbackSrc="/images/temp-dish.png"
                                     style={{
                                       width: '228.33px',
                                       height: '114.95px',
@@ -347,7 +384,7 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                                     }}
                                   />
                                 </Box>
-                                <Group justify="space-between" align="flex-start">
+                                <Group justify="space-between" align="center" gap="xs" wrap="nowrap">
                                   <Text
                                     style={{
                                       fontFamily: 'Barlow',
@@ -355,10 +392,15 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                                       fontSize: '18px',
                                       lineHeight: '100%',
                                       letterSpacing: '0%',
-                                      color: '#3D3D3D'
+                                      color: '#3D3D3D',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      whiteSpace: 'nowrap',
+                                      flex: 1,
+                                      minWidth: 0
                                     }}
                                   >
-                                    Hummus & Pita
+                                    {item.name}
                                   </Text>
                                   <Badge
                                     size="xs"
@@ -375,10 +417,11 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                                       color: 'white',
                                       fontFamily: 'Barlow',
                                       fontWeight: 700,
-                                      fontSize: '12px'
+                                      fontSize: '12px',
+                                      flexShrink: 0
                                     }}
                                   >
-                                    VEGAN
+                                    {item.dietaryTags[0]}
                                   </Badge>
                                 </Group>
 
@@ -397,7 +440,7 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                                     textOverflow: 'ellipsis'
                                   }}
                                 >
-                                  Chickpeas, garlic, lemon, sesame paste (Tahini) and olive oil
+                                  {item.description}
                                 </Text>
                               </Stack>
                             </Card>
@@ -405,6 +448,7 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
 
                           {/* Add Item Button */}
                           <UnstyledButton
+                            onClick={() => handleAddItems(category.id, category.name)}
                             style={{
                               width: '268.33px',
                               height: '235px',
@@ -451,6 +495,15 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
         </Box>
 
       </Stack>
+
+      {/* Food Selection Modal */}
+      <FoodSelectionModal
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        onConfirm={handleModalConfirm}
+        categoryId={currentCategory?.id || ''}
+        categoryName={currentCategory?.name || ''}
+      />
     </Box>
   );
 }
