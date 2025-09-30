@@ -46,6 +46,7 @@ interface FoodDataContextType {
   getItemsByCategoryAndType: (category: string, type: string) => FoodItem[];
   searchItems: (searchQuery: string, category?: string, type?: string) => Promise<FoodItem[]>;
   mutate: () => void;
+  fetchData: () => void; // Manual fetch trigger
 }
 
 const FoodDataContext = createContext<FoodDataContextType | undefined>(undefined);
@@ -59,6 +60,8 @@ const API_CONFIG = {
 
 // Fetcher function for SWR
 const fetcher = async (url: string): Promise<FoodItem[]> => {
+  console.log('Fetching from URL:', url);
+
   const response = await fetch(url, {
     headers: {
       'accept': '*/*',
@@ -67,22 +70,45 @@ const fetcher = async (url: string): Promise<FoodItem[]> => {
     },
   });
 
+  console.log('Response status:', response.status);
+  console.log('Response ok:', response.ok);
+
   if (!response.ok) {
+    console.error(`HTTP error! status: ${response.status}`);
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  const data: ApiResponse = await response.json();
-  
+  // Check if response has content
+  const contentLength = response.headers.get('content-length');
+  console.log('Content-Length:', contentLength);
+
+  let data: ApiResponse;
+  try {
+    data = await response.json();
+    console.log('Parsed data:', data);
+  } catch (parseError) {
+    console.error('JSON parse error:', parseError);
+    throw new Error('Failed to parse response as JSON');
+  }
+
+  if (!data.results || !Array.isArray(data.results)) {
+    console.error('Invalid data structure:', data);
+    throw new Error('Invalid response structure');
+  }
+
   // Transform the data to match our UI interface
-  return data.results.map((item: RawFoodItem): FoodItem => ({
+  const transformedData = data.results.map((item: RawFoodItem): FoodItem => ({
     id: item.objectId,
     name: item.name,
     description: item.ingredients,
-    image: item.image.url,
+    image: item.image?.url || '/images/temp-dish.png', // Handle missing image
     dietaryTags: [item.type.toUpperCase()],
     category: item.course === 'main' ? 'main-course' : item.course,
     country: item.country,
   }));
+
+  console.log('Transformed data count:', transformedData.length);
+  return transformedData;
 };
 
 // Build the API URL with query parameters
@@ -114,22 +140,37 @@ interface FoodDataProviderProps {
   limit?: number;
 }
 
-export function FoodDataProvider({ 
-  children, 
-  country = 'Egypt', 
-  limit = 500 
+export function FoodDataProvider({
+  children,
+  country = 'Egypt',
+  limit = 500
 }: FoodDataProviderProps) {
   const apiUrl = buildApiUrl(country, limit);
-  
+
+  // Don't fetch automatically - only fetch when explicitly requested
   const { data: foodItems = [], error, isLoading, mutate } = useSWR(
-    apiUrl,
+    null, // Set to null to prevent automatic fetching
     fetcher,
     {
       revalidateOnFocus: false,
-      revalidateOnReconnect: true,
-      dedupingInterval: 300000, // 5 minutes
+      revalidateOnReconnect: false,
+      dedupingInterval: 60000,
+      errorRetryCount: 3,
+      errorRetryInterval: 1000,
+      onError: (error) => {
+        console.error('SWR Error:', error);
+      },
+      onSuccess: (data) => {
+        console.log('SWR Success, data length:', data?.length);
+      }
     }
   );
+
+  // Manual fetch function
+  const fetchData = () => {
+    console.log('Manual fetch triggered');
+    mutate(fetcher(apiUrl));
+  };
 
   // Helper functions
   const getItemsByCategory = (category: string): FoodItem[] => {
@@ -194,6 +235,7 @@ export function FoodDataProvider({
     getItemsByCategoryAndType,
     searchItems,
     mutate,
+    fetchData,
   };
 
   return (

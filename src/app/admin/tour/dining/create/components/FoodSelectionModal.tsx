@@ -19,6 +19,7 @@ import { IconCoffee, IconToolsKitchen2, IconCake, IconSearch, IconPlus } from '@
 import { useState, useEffect } from 'react';
 import { useFoodData, FoodItem } from '../contexts/FoodDataContext';
 import BunnyCDNImage from '@/components/BunnyCDNImage';
+import CreateDishModal, { CreateDishFormData } from './CreateDishModal';
 
 interface FoodSelectionModalProps {
   opened: boolean;
@@ -43,15 +44,24 @@ export default function FoodSelectionModal({
   const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [createDishModalOpened, setCreateDishModalOpened] = useState(false);
 
   // Use the food data context
-  const { getItemsByCategory, isLoading, error, searchItems } = useFoodData();
+  const { getItemsByCategory, isLoading, error, searchItems, fetchData } = useFoodData();
 
   // Debounce search query
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
 
   // Get items for the current category (default items)
   const categoryItems = getItemsByCategory(categoryId);
+
+  // Effect to fetch data only when modal opens
+  useEffect(() => {
+    if (opened) {
+      console.log('Modal opened, fetching data...');
+      fetchData();
+    }
+  }, [opened, fetchData]);
 
   // Effect for debounced search
   useEffect(() => {
@@ -100,6 +110,30 @@ export default function FoodSelectionModal({
     onClose();
   };
 
+  const handleCreateDish = () => {
+    setCreateDishModalOpened(true);
+  };
+
+  const handleCreateDishConfirm = (dishData: CreateDishFormData) => {
+    // Convert the created dish to FoodItem format and add to selected items
+    const newDish: FoodItem = {
+      id: `custom-${Date.now()}`, // Temporary ID for custom dishes
+      name: dishData.name,
+      description: dishData.ingredients,
+      image: dishData.image ? URL.createObjectURL(dishData.image) : '/images/temp-dish.png',
+      dietaryTags: [dishData.type.toUpperCase()],
+      category: dishData.course === 'main' ? 'main-course' : dishData.course,
+      country: 'Custom'
+    };
+
+    setSelectedItems(prev => [...prev, newDish]);
+    setCreateDishModalOpened(false);
+  };
+
+  const handleCreateDishClose = () => {
+    setCreateDishModalOpened(false);
+  };
+
   const getCategoryIcon = () => {
     switch (categoryId) {
       case 'starter':
@@ -124,6 +158,7 @@ export default function FoodSelectionModal({
   const isMobile = useMediaQuery('(max-width: 768px)')
 
   return (
+    <>
     <Modal
       opened={opened}
       onClose={handleCancel}
@@ -218,9 +253,21 @@ export default function FoodSelectionModal({
           )}
 
           {(error || searchError) && (
-            <Text style={{ textAlign: 'center', padding: '40px', color: 'red' }}>
-              {searchError || 'Error loading food items. Please try again.'}
-            </Text>
+            <Stack align="center" gap="md" style={{ padding: '40px' }}>
+              <Text style={{ textAlign: 'center', color: 'red' }}>
+                {searchError || 'Error loading food items. Please try again.'}
+              </Text>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  console.log('Manual refresh triggered');
+                  fetchData();
+                }}
+              >
+                Refresh Data
+              </Button>
+            </Stack>
           )}
 
           {!isLoading && !searchLoading && !error && !searchError && (
@@ -325,7 +372,7 @@ export default function FoodSelectionModal({
               ))}
 
               {/* Add Your Own Recipe Card */}
-              <UnstyledButton>
+              <UnstyledButton onClick={handleCreateDish}>
                 <Card
                   style={{
                     width: '268.33px',
@@ -419,6 +466,16 @@ export default function FoodSelectionModal({
         </Button>
       </Group>
     </Modal>
+
+    {/* Create Dish Modal */}
+    <CreateDishModal
+      opened={createDishModalOpened}
+      onClose={handleCreateDishClose}
+      onConfirm={handleCreateDishConfirm}
+      categoryId={categoryId}
+      categoryName={categoryName}
+    />
+  </>
   );
 }
 
