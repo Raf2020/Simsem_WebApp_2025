@@ -11,9 +11,14 @@ import {
   Textarea,
   SimpleGrid,
   Center,
-  UnstyledButton
+  UnstyledButton,
+  Image,
+  Badge,
+  Flex,
+  Paper,
+  Divider
 } from '@mantine/core';
-import { IconCoffee, IconToolsKitchen2, IconCake } from '@tabler/icons-react';
+import { IconCoffee, IconToolsKitchen2, IconCake, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useMealDetails, mealCategories } from '../contexts/MealDetailsContext';
 
 interface MealDetailsStepProps {
@@ -29,14 +34,14 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
   return (
     <Box
       w={"100%"}
-      p={{ base: 0, sm: 50 }}
+      py={{ base: 0, sm: 50 }}
       style={{
         borderRadius: "20px",
         gap: "50px",
         backgroundColor: "#FFFFFF"
       }}
     >
-      <Stack gap={80}>
+      <Stack gap={40}>
         <Title
           order={2}
           style={{
@@ -54,6 +59,8 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
 
         {/* Meal Categories Section */}
         <Box
+          w={"100%"}
+          maw={1104}
           style={{
             border: '1px solid #E5E7EB',
             borderRadius: '10px',
@@ -65,7 +72,7 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
               style={{
                 fontFamily: 'Barlow',
                 fontWeight: 700,
-                fontSize: '20px',
+                fontSize: '28px',
                 lineHeight: '100%',
                 letterSpacing: '0%',
                 color: '#0D2E61'
@@ -73,85 +80,117 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
             >
               Meal Categories
             </Text>
-            
+
             <Text
               style={{
                 fontFamily: 'Barlow',
                 fontWeight: 400,
-                fontSize: '14px',
-                color: '#6b7280',
+                fontSize: '20px',
+                lineHeight: '150%',
+                letterSpacing: '0%',
+                color: '#3D3D3D',
                 marginBottom: '20px'
               }}
             >
-              Choose which meal categories you'd like to include in your dining experience.
+              Choose which meal categories you&apos;d like to include in your dining experience.
             </Text>
 
             <SimpleGrid cols={3} spacing={10}>
               {mealCategories.map((category) => (
-                <UnstyledButton
-                  key={category.id}
-                  onClick={() => toggleMealCategory(category.id)}
-                  style={{
-                    height: '140px',
-                    borderRadius: '10px',
-                    border: selectedCategories.includes(category.id) 
-                      ? '2px solid #0F4C5C' 
-                      : '1px solid #E5E7EB',
-                    backgroundColor: selectedCategories.includes(category.id) 
-                      ? '#F0F9FF' 
-                      : '#FFFFFF',
-                    padding: '20px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                  }}
-                >
-                  <Stack align="center" gap={15}>
-                    <Box
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '60px',
-                        height: '60px'
-                      }}
-                    >
-                      {category.icon === 'coffee' && <IconCoffee size={40} color={selectedCategories.includes(category.id) ? '#0F4C5C' : '#9CA3AF'} />}
-                      {category.icon === 'kitchen' && <IconToolsKitchen2 size={40} color={selectedCategories.includes(category.id) ? '#0F4C5C' : '#9CA3AF'} />}
-                      {category.icon === 'cake' && <IconCake size={40} color={selectedCategories.includes(category.id) ? '#0F4C5C' : '#9CA3AF'} />}
-                    </Box>
-                    
-                    <Text
-                      style={{
-                        fontFamily: 'Barlow',
-                        fontWeight: 600,
-                        fontSize: '16px',
-                        color: selectedCategories.includes(category.id) ? '#0F4C5C' : '#3D3D3D',
-                        textAlign: 'center'
-                      }}
-                    >
-                      {category.name}
-                    </Text>
-                    
-                    <Text
-                      style={{
-                        fontFamily: 'Barlow',
-                        fontWeight: 400,
-                        fontSize: '12px',
-                        color: '#6b7280',
-                        textAlign: 'center',
-                        lineHeight: '1.3'
-                      }}
-                    >
-                      {category.description}
-                    </Text>
-                  </Stack>
-                </UnstyledButton>
+                <Box key={category.id} style={{ position: 'relative' }}>
+                  <UnstyledButton
+                    onClick={() => toggleMealCategory(category.id)}
+                    style={{
+                      width: '322.67px',
+                      height: '219.19px',
+                      borderRadius: '10px',
+                      border: selectedCategories.includes(category.id)
+                        ? '2px solid #0D2E61'
+                        : '1px solid #0D2E614D',
+                      backgroundColor: selectedCategories.includes(category.id)
+                        ? '#F0F4FF'
+                        : '#FFFFFF',
+                      paddingTop: '20px',
+                      paddingRight: '30px',
+                      paddingBottom: '20px',
+                      paddingLeft: '30px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      position: 'relative'
+                    }}
+                  >
+                    <Stack align="center" gap={15} style={{ height: '100%', justifyContent: 'center' }}>
+                      <Box
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: '36.12px',
+                          height: '22.78px'
+                        }}
+                      >
+                        {category.icon === 'coffee' && <IconCoffee size={36} color={selectedCategories.includes(category.id) ? '#0D2E61' : '#9CA3AF'} />}
+                        {category.icon === 'kitchen' && <IconToolsKitchen2 size={36} color={selectedCategories.includes(category.id) ? '#0D2E61' : '#9CA3AF'} />}
+                        {category.icon === 'cake' && <IconCake size={36} color={selectedCategories.includes(category.id) ? '#0D2E61' : '#9CA3AF'} />}
+                      </Box>
+
+                      <Text
+                        style={{
+                          fontFamily: 'Barlow',
+                          fontWeight: 700,
+                          fontSize: '23px',
+                          lineHeight: '100%',
+                          letterSpacing: '0%',
+                          color: '#3D3D3D',
+                          textAlign: 'center'
+                        }}
+                      >
+                        {category.name}
+                      </Text>
+
+                      <Text
+                        style={{
+                          fontFamily: 'Barlow',
+                          fontWeight: 400,
+                          fontSize: '16px',
+                          lineHeight: '100%',
+                          letterSpacing: '0%',
+                          color: '#3D3D3D',
+                          textAlign: 'center',
+                          position: 'relative',
+                        }}
+                      >
+                        {category.description}
+                      </Text>
+
+                      {selectedCategories.includes(category.id) && (
+                        <Badge
+                          style={{
+                            position: 'absolute',
+                            bottom: '30px',
+                            backgroundColor: '#0D2E61',
+                            color: 'white',
+                            fontFamily: 'Barlow',
+                            fontWeight: 600,
+                            fontSize: '10px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px'
+                          }}
+                        >
+                          SELECTED
+                        </Badge>
+                      )}
+
+                    </Stack>
+                  </UnstyledButton>
+
+                </Box>
               ))}
             </SimpleGrid>
           </Stack>
         </Box>
 
-        {/* Menu Selection Section */}
+
         <Box
           style={{
             border: '1px solid #E5E7EB',
@@ -159,91 +198,222 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
             padding: '40px'
           }}
         >
-          <Stack gap={20}>
-            <Text
-              style={{
-                fontFamily: 'Barlow',
-                fontWeight: 700,
-                fontSize: '20px',
-                lineHeight: '100%',
-                letterSpacing: '0%',
-                color: '#0D2E61'
-              }}
-            >
-              Menu Selection
-            </Text>
-            
-            <Text
-              style={{
-                fontFamily: 'Barlow',
-                fontWeight: 400,
-                fontSize: '14px',
-                color: '#6b7280',
-                marginBottom: '20px'
-              }}
-            >
-              Choose from our food library or add your own custom recipes for each category you selected.
-            </Text>
+          <Stack gap={30}>
+            <Stack gap={20}>
+              <Text
+                style={{
+                  fontFamily: 'Barlow',
+                  fontWeight: 700,
+                  fontSize: '28px',
+                  lineHeight: '100%',
+                  letterSpacing: '0%',
+                  color: '#0D2E61'
+                }}
+              >
+                Menu Selection
+              </Text>
 
-            <Textarea
-              placeholder="Describe your menu selection or add custom recipes here..."
-              {...register('customMenuDescription')}
-              error={errors.customMenuDescription?.message}
-              styles={{
-                input: {
-                  width: '100%',
-                  height: '150px',
-                  borderRadius: '10px',
-                  padding: '20px',
+              <Text
+                style={{
                   fontFamily: 'Barlow',
                   fontWeight: 400,
-                  fontSize: '16px',
-                  lineHeight: '1.5',
-                  border: errors.customMenuDescription ? '1px solid #ef4444' : '1px solid #d1d5db',
-                  '&::placeholder': {
-                    color: '#9CA3AF'
-                  }
-                }
+                  fontSize: '20px',
+                  lineHeight: '150%',
+                  letterSpacing: '0%',
+                  color: '#3D3D3D',
+                  marginBottom: '20px'
+                }}
+              >
+                Choose from our food library or add your own custom recipes for each category you selected.
+              </Text>
+            </Stack>
+            <Paper
+              mx={"auto"}
+              style={{
+                width: '100%',
+                maxWidth: '1007px',
+                borderRadius: '10px',
+                display: "flex",
+                flexDirection: "column",
+                gap: '17px',
+                opacity: 1,
+                paddingTop: '20px',
+                paddingRight: '41px',
+                paddingBottom: '20px',
+                paddingLeft: '41px',
+                borderWidth: '1px',
+                backgroundColor: '#0D2E610D',
+                border: '1px solid #0D2E6199'
               }}
-            />
+            >
+              {selectedCategories
+                .sort((a, b) => {
+                  // Define the desired order
+                  const order = ['starter', 'main-course', 'dessert'];
+                  const categoryA = mealCategories.find(c => c.id === a);
+                  const categoryB = mealCategories.find(c => c.id === b);
+
+                  if (!categoryA || !categoryB) return 0;
+
+                  const indexA = order.indexOf(categoryA.id);
+                  const indexB = order.indexOf(categoryB.id);
+
+                  return indexA - indexB;
+                })
+                .map((categoryId) => {
+                const category = mealCategories.find(c => c.id === categoryId);
+                if (!category) return null;
+
+                return (
+                  <Card
+                    key={categoryId}
+                    style={{
+                      backgroundColor: '#FFFFFF',
+                      border: '1px solid #0D2E614D',
+                      borderRadius: '10px',
+                    }}
+                    px={30}
+                    py={20}
+                  >
+                    <Stack gap={10}>
+                      {/* Category Header */}
+                      <Group gap={10}>
+                        {category.icon === 'coffee' && <IconCoffee size={36} color="#0D2E61" />}
+                        {category.icon === 'kitchen' && <IconToolsKitchen2 size={36} color="#0D2E61" />}
+                        {category.icon === 'cake' && <IconCake size={36} color="#0D2E61" />}
+                        <Text
+                          style={{
+                            fontFamily: 'Barlow',
+                            fontWeight: 600,
+                            fontSize: '23px',
+                            color: '#0D2E61'
+                          }}
+                        >
+                          {category.name}
+                        </Text>
+                      </Group>
+                      <Divider />
+                      {/* Food Items Grid */}
+                      <SimpleGrid cols={3} spacing={15} px={20} py={40}>
+                        {/* Sample food items - you can make this dynamic */}
+                        {[1, 2, 3].map((item) => (
+                          <Card
+                            key={item}
+                            style={{
+                              backgroundColor: 'white',
+                              border: '1px solid #E5E7EB',
+                              borderRadius: '8px',
+                              padding: '15px',
+                              position: 'relative'
+                            }}
+                          >
+                            <Stack gap={10}>
+                              <Box style={{ position: 'relative' }}>
+                                <Image
+                                  src="/api/placeholder/150/100"
+                                  alt="Hummus & Pita"
+                                  style={{
+                                    borderRadius: '6px',
+                                    height: '100px',
+                                    objectFit: 'cover'
+                                  }}
+                                />
+                                <Button
+                                  size="xs"
+                                  color="red"
+                                  style={{
+                                    position: 'absolute',
+                                    top: '5px',
+                                    right: '5px',
+                                    minWidth: '24px',
+                                    width: '24px',
+                                    height: '24px',
+                                    padding: 0
+                                  }}
+                                >
+                                  <IconTrash size={12} />
+                                </Button>
+                              </Box>
+
+                              <Box>
+                                <Group justify="space-between" align="flex-start">
+                                  <Text
+                                    style={{
+                                      fontFamily: 'Barlow',
+                                      fontWeight: 600,
+                                      fontSize: '14px',
+                                      color: '#3D3D3D'
+                                    }}
+                                  >
+                                    Hummus & Pita
+                                  </Text>
+                                  <Badge
+                                    size="xs"
+                                    style={{
+                                      backgroundColor: '#FF8C00',
+                                      color: 'white',
+                                      fontFamily: 'Barlow',
+                                      fontWeight: 600,
+                                      fontSize: '8px'
+                                    }}
+                                  >
+                                    VEGAN
+                                  </Badge>
+                                </Group>
+
+                                <Text
+                                  style={{
+                                    fontFamily: 'Barlow',
+                                    fontWeight: 400,
+                                    fontSize: '12px',
+                                    color: '#6b7280',
+                                    lineHeight: '1.3'
+                                  }}
+                                >
+                                  Chickpeas, garlic, lemon, sesame paste (Tahini) and olive oil
+                                </Text>
+                              </Box>
+                            </Stack>
+                          </Card>
+                        ))}
+
+                        {/* Add Item Button */}
+                        <UnstyledButton
+                          style={{
+                            height: '200px',
+                            border: '2px dashed #D1D5DB',
+                            borderRadius: '8px',
+                            backgroundColor: '#F9FAFB',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease'
+                          }}
+                        >
+                          <Center style={{ height: '100%' }}>
+                            <Stack align="center" gap={10}>
+                              <IconPlus size={32} color="#6B7280" />
+                              <Text
+                                style={{
+                                  fontFamily: 'Barlow',
+                                  fontWeight: 600,
+                                  fontSize: '14px',
+                                  color: '#6B7280'
+                                }}
+                              >
+                                Add a {category.name.toLowerCase()}
+                              </Text>
+                            </Stack>
+                          </Center>
+                        </UnstyledButton>
+                      </SimpleGrid>
+                    </Stack>
+                  </Card>
+                );
+              })}
+            </Paper>
+
           </Stack>
         </Box>
 
-        {/* Navigation Buttons */}
-        <Group justify="space-between" mt={40}>
-          <Button
-            variant="outline"
-            onClick={onBack}
-            style={{
-              height: '50px',
-              borderRadius: '10px',
-              fontFamily: 'Barlow',
-              fontWeight: 600,
-              fontSize: '16px',
-              borderColor: '#0F4C5C',
-              color: '#0F4C5C',
-              minWidth: '120px'
-            }}
-          >
-            Back
-          </Button>
-          
-          <Button
-            onClick={onNext}
-            disabled={!isFormValid}
-            style={{
-              height: '50px',
-              borderRadius: '10px',
-              fontFamily: 'Barlow',
-              fontWeight: 600,
-              fontSize: '16px',
-              backgroundColor: isFormValid ? '#0F4C5C' : '#9CA3AF',
-              minWidth: '120px'
-            }}
-          >
-            Next Step
-          </Button>
-        </Group>
       </Stack>
     </Box>
   );

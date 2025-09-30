@@ -32,7 +32,7 @@ export default function BasicInformationStep({ onNext }: BasicInformationStepPro
   return (
     <Box
       w={"100%"}
-      p={{ base: 0, sm: 50 }}
+      py={{ base: 0, sm: 50 }}
       style={{
         borderRadius: "20px",
         gap: "50px",
