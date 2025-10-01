@@ -11,6 +11,7 @@ import {
   Flex
 } from '@mantine/core';
 import { usePricingPolicy } from '../contexts/PricingPolicyContext';
+import { ResponsiveFlex } from '@/components/ui';
 
 export default function ChildrenPricing() {
   const { form, shouldShowInfantPricing, shouldShowKidsPricing } = usePricingPolicy();
@@ -56,7 +57,7 @@ export default function ChildrenPricing() {
           <Flex
             justify={"space-between"}
             px={30}
-            h={85}
+            h={{ base: "auto", sm: 85 }}
             align={"center"}
             style={{
               borderRadius: 15,
@@ -66,7 +67,7 @@ export default function ChildrenPricing() {
               pointerEvents: shouldShowInfantPricing ? 'auto' : 'none'
             }}
           >
-            <Group justify="space-between" align="center" w={"100%"}>
+            <ResponsiveFlex variant="mobile-stack" justify="space-between" py={{ base: 10, sm: 0 }} w={"100%"}>
               <Group gap={12} align='center'>
                 <Text
                   style={{
@@ -152,10 +153,11 @@ export default function ChildrenPricing() {
                     })}
                     min={0}
                     max={100}
+                    w={{ base: 200, sm: 229 }}
                     disabled={!shouldShowInfantPricing || infantPricing !== 'discounted'}
                     styles={{
                       input: {
-                        width: 229,
+
                         height: 59,
                         textAlign: 'left',
                         fontFamily: 'Barlow',
@@ -180,14 +182,14 @@ export default function ChildrenPricing() {
                   </Text>
                 </Group>
               </Group>
-            </Group>
+            </ResponsiveFlex>
           </Flex>
 
           {/* Kids Pricing Card */}
           <Flex
             justify={"space-between"}
             px={30}
-            h={85}
+            h={{ base: "auto", sm: 85 }}
             align={"center"}
             style={{
               borderRadius: 15,
@@ -197,7 +199,7 @@ export default function ChildrenPricing() {
               pointerEvents: shouldShowKidsPricing ? 'auto' : 'none'
             }}
           >
-            <Group justify="space-between" align="center" w={"100%"}>
+            <ResponsiveFlex variant="mobile-stack" justify="space-between" py={{ base: 10, sm: 0 }} w={"100%"}>
               <Group gap={12} align='center'>
                 <Text
                   style={{
@@ -283,10 +285,10 @@ export default function ChildrenPricing() {
                     })}
                     min={0}
                     max={100}
+                    w={{ base: 200, sm: 229 }}
                     disabled={!shouldShowKidsPricing || kidsPricing !== 'discounted'}
                     styles={{
                       input: {
-                        width: 229,
                         height: 59,
                         textAlign: 'left',
                         fontFamily: 'Barlow',
@@ -311,7 +313,7 @@ export default function ChildrenPricing() {
                   </Text>
                 </Group>
               </Group>
-            </Group>
+            </ResponsiveFlex>
           </Flex>
         </Stack>
       </Stack>

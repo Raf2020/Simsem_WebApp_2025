@@ -47,7 +47,17 @@ const defaultValues: PricingPolicyFormData = {
   kidsDiscount: 50,
   pricingType: 'package',
   fixedPricePerPerson: 65,
-  packages: []
+  packages: [
+    {
+      name: '',
+      minTravelers: 1,
+      maxTravelers: 1,
+      pricePerPerson: 0,
+      adults: 0,
+      kids: 0,
+      infants: 0
+    }
+  ]
 };
 
 interface PricingPolicyContextType {
