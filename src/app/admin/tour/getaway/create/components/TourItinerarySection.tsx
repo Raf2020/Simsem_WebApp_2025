@@ -150,7 +150,7 @@ export default function TourItinerarySection() {
         {Array.from({ length: numberOfCards }, (_, dayIndex) => (
           <Paper
             key={dayIndex}
-            px={41}
+            px={{base: 10, sm: 41}}
             py={20}
             radius="lg"
             style={{
@@ -194,19 +194,20 @@ export default function TourItinerarySection() {
                 return dayItems.map((item: any, itemIndex: number) => (
                   <Paper
                     key={itemIndex}
-                    p={20}
+                    py={20}
+                    px={{base: 5, sm: 20}}
                     radius="lg"
                     style={{
                       backgroundColor: 'white',
                       border: '1px solid #E5E7EB'
                     }}
                   >
-                    <Stack gap={20} px={30}>
-                      {/* Dahshur Activity Header */}
+                    <Stack gap={20} px={{base: 0, sm: 30}}>
+                      {/* Itinerary Activity Header */}
                       <Group align="center" pb={15} style={{
                         borderBottom: "1px solid #3D3D3D1A"
-                      }}>
-                        <Group gap={10}>
+                      }} justify="space-between">
+                        <Group gap={10} style={{ flex: 1, minWidth: 0 }}>
                           <IconWalk
                             size={20}
                             color="#0D2E61"
@@ -220,18 +221,24 @@ export default function TourItinerarySection() {
                               fontFamily: 'Barlow',
                               fontWeight: 600,
                               fontSize: '20px',
-                              color: '#0D2E61'
+                              color: '#0D2E61',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              flex: 1,
+                              minWidth: 0
                             }}
                           >
-                            Dahshur
+                            {item.activity || 'Itinerary'}
                           </Title>
                         </Group>
-                        <Group gap={10}>
+                        <Group gap={10} style={{ flexShrink: 0 }}>
                           <Box
                             style={{
                               backgroundColor: '#F3F4F6',
                               borderRadius: '12px',
-                              padding: '6px 12px'
+                              padding: '6px 12px',
+                              flexShrink: 0
                             }}
                           >
                             <Text
@@ -283,8 +290,8 @@ export default function TourItinerarySection() {
                       </Group>
 
                       {/* Activity Details Grid */}
-                      <Flex gap={20}>
-                        <Stack gap={8} style={{ gridColumn: 'span 187px' }}>
+                      <Flex gap={20} direction={{base: "column", sm: "row"}}>
+                        <Stack gap={8} w={{base: "100%", sm: 187}}>
                           <Text
                             style={{
                               fontFamily: 'Barlow',
@@ -321,7 +328,7 @@ export default function TourItinerarySection() {
                           />
 
                         </Stack>
-                        <Box style={{ gridColumn: 'span auto' }}>
+                        <Stack gap={20} w={{base: "100%", sm: "auto"}}>
                           <Stack gap={8}>
                             <Text
                               style={{
@@ -407,7 +414,7 @@ export default function TourItinerarySection() {
                               </Text>
                             </Stack>
                           </Stack>
-                        </Box>
+                        </Stack>
 
                       </Flex>
 

@@ -106,7 +106,7 @@ export default function TourThingsToKnowSection() {
 
 
         <Paper
-          px={41}
+          px={{ base: 10, sm: 41 }}
           py={20}
           radius="lg"
           style={{
@@ -119,14 +119,15 @@ export default function TourThingsToKnowSection() {
             {guidelinesArray.fields.map((field: any, index: number) => (
               <Paper
                 key={field.id}
-                p={20}
+                py={20}
+                px={{ base: 5, sm: 20 }}
                 radius="lg"
                 style={{
                   backgroundColor: 'white',
                   border: '1px solid #E5E7EB'
                 }}
               >
-                <Stack gap={20} px={30} >
+                <Stack gap={20} px={{ base: 0, sm: 30 }}>
                   {/* Guideline Header */}
                   <Group align="center" pb={15} justify="space-between" style={{
                     borderBottom: "1px solid #3D3D3D1A"
