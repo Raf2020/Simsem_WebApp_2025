@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, ReactNode, useCallback } from 'react';
 import { useForm, UseFormReturn, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -83,6 +83,7 @@ export interface TourDetailsContextType {
   removeItineraryItem: (dayNumber: number, itemIndex: number) => void;
   getItineraryDay: (dayNumber: number) => ItineraryItem[];
   initializeDay: (dayNumber: number) => void;
+  cleanupExtraDays: (maxDays: number) => void;
 
   // File upload helpers
   addCoverPhoto: (imageFile: ImageFile) => void;
@@ -207,7 +208,7 @@ export function TourDetailsProvider({ children }: TourDetailsProviderProps) {
   };
 
   // Helper to initialize a new day if it doesn't exist
-  const initializeDay = (dayNumber: number) => {
+  const initializeDay = useCallback((dayNumber: number) => {
     const dayKey = `day${dayNumber}`;
     const existingDay = form.getValues(`itinerary.${dayKey}`);
 
@@ -223,7 +224,26 @@ export function TourDetailsProvider({ children }: TourDetailsProviderProps) {
         shouldDirty: true,
       });
     }
-  };
+  }, [form]);
+
+  // Helper to clean up extra days when duration is reduced
+  const cleanupExtraDays = useCallback((maxDays: number) => {
+    const currentItinerary = form.getValues('itinerary') || {};
+    const updatedItinerary = { ...currentItinerary };
+
+    // Remove days beyond the new duration
+    Object.keys(updatedItinerary).forEach(dayKey => {
+      const dayNumber = parseInt(dayKey.replace('day', ''));
+      if (dayNumber > maxDays) {
+        delete updatedItinerary[dayKey];
+      }
+    });
+
+    form.setValue('itinerary', updatedItinerary, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  }, [form]);
 
   // File upload helpers
   const createImageFile = (file: File): ImageFile => {
@@ -265,6 +285,7 @@ export function TourDetailsProvider({ children }: TourDetailsProviderProps) {
     removeItineraryItem,
     getItineraryDay,
     initializeDay,
+    cleanupExtraDays,
     addCoverPhoto,
     removeCoverPhoto,
     addGalleryPhoto,

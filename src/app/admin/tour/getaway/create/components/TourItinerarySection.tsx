@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import {
   Text,
   Title,
@@ -23,12 +24,32 @@ export default function TourItinerarySection() {
     addItineraryItem,
     removeItineraryItem,
     getItineraryDay,
-    initializeDay
+    initializeDay,
+    cleanupExtraDays
   } = useTourDetails();
   const { watch, setValue, formState: { errors } } = form;
 
   // Watch tour duration to generate day cards
   const tourDuration = watch('tourDuration');
+  const previousDurationRef = useRef<number | undefined>(undefined);
+
+  // Initialize days and clean up extra days when duration changes
+  useEffect(() => {
+    const currentDuration = tourDuration?.value || 1;
+    const previousDuration = previousDurationRef.current;
+
+    // Initialize all required days
+    for (let dayNumber = 1; dayNumber <= currentDuration; dayNumber++) {
+      initializeDay(dayNumber);
+    }
+
+    // Only cleanup if duration decreased (not on initial load or increase)
+    if (previousDuration !== undefined && currentDuration < previousDuration) {
+      cleanupExtraDays(currentDuration);
+    }
+
+    previousDurationRef.current = currentDuration;
+  }, [tourDuration?.value, initializeDay, cleanupExtraDays]);
 
   // Get number of cards and label based on duration
   const numberOfCards = tourDuration?.value || 1;
@@ -189,7 +210,6 @@ export default function TourItinerarySection() {
               {/* Show all itinerary items for this day */}
               {(() => {
                 const dayNumber = dayIndex + 1;
-                initializeDay(dayNumber);
                 const dayItems = getItineraryDay(dayNumber);
 
                 return dayItems.map((item: any, itemIndex: number) => (
