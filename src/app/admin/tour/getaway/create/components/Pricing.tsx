@@ -7,12 +7,12 @@ import {
   Stack,
   Group,
   TextInput,
-  Paper,
   Radio,
   Flex
 } from '@mantine/core';
 import { IconPlus, IconTrash, IconWalk } from '@tabler/icons-react';
 import { usePricingPolicy } from '../contexts/PricingPolicyContext';
+import { ResponsivePaper, ResponsiveFlex } from '@/components/ui';
 
 export default function Pricing() {
   const {
@@ -57,7 +57,7 @@ export default function Pricing() {
   };
 
   return (
-    <Paper
+    <ResponsivePaper
       shadow="xl"
       radius="lg"
       px={{ base: 10, sm: 30 }}
@@ -86,8 +86,8 @@ export default function Pricing() {
           >
             Pricing
           </Title>
-          <Paper
-            px={30}
+          <ResponsivePaper
+            variant="section"
             py={40}
             radius="lg"
             style={{
@@ -121,18 +121,17 @@ export default function Pricing() {
                     }
                   }}
                 />
-                <Paper
+                <ResponsivePaper
+                  variant="section"
                   p={20}
-                  px={41}
                   radius="lg"
                   style={{
                     backgroundColor: pricingType === 'fixed' ? '#0D2E610D' : '#3D3D3D08',
                     border: pricingType === 'fixed' ? '1px solid #0D2E6199' : '1px solid #3D3D3DB2'
                   }}
                 >
-                  <Paper
-                    p={20}
-                    px={30}
+                  <ResponsivePaper
+                    variant="default"
                     radius="lg"
                     style={{
                       backgroundColor: '#F9FAFB',
@@ -163,7 +162,7 @@ export default function Pricing() {
                             Fixed Price
                           </Text>
                         </Group>
-                        <Flex gap={10}>
+                        <Flex gap={10} wrap={"wrap"}>
                           <Flex
                             gap={5}
                             h={38}
@@ -267,7 +266,7 @@ export default function Pricing() {
                       </Group>
 
                       {/* Price Per Person Input */}
-                      <Flex gap={20}>
+                      <ResponsiveFlex variant="form">
                         <Stack gap={8} py={30}>
                           <Text
                             style={{
@@ -324,10 +323,10 @@ export default function Pricing() {
                             }}
                           />
                         </Stack>
-                      </Flex>
+                      </ResponsiveFlex>
                     </Stack>
-                  </Paper>
-                </Paper>
+                  </ResponsivePaper>
+                </ResponsivePaper>
               </Stack>
 
               {/* Package Pricing Section */}
@@ -356,9 +355,9 @@ export default function Pricing() {
                     }
                   }}
                 />
-                <Paper
+                <ResponsivePaper
+                  variant="section"
                   p={20}
-                  px={41}
                   radius="lg"
                   style={{
                     backgroundColor: pricingType === 'package' ? '#0D2E610D' : '#3D3D3D08',
@@ -367,10 +366,9 @@ export default function Pricing() {
                 >
                   <Stack gap={"lg"}>
                     {packagesArray.fields.map((field: any, index: number) => (
-                      <Paper
+                      <ResponsivePaper
                         key={field.id}
-                        p={20}
-                        px={30}
+                        variant="default"
                         radius="lg"
                         style={{
                           backgroundColor: '#F9FAFB',
@@ -379,51 +377,53 @@ export default function Pricing() {
                       >
                         <Stack gap={20}>
                           {/* Package Header */}
-                          <Group align="center" justify="space-between" pb={15} style={{
+                          <Group align="center" pos={"relative"} justify="space-between" pb={15} style={{
                             borderBottom: "1px solid #3D3D3D1A"
                           }}>
                             <Group gap={5}>
-                              <IconWalk
-                                size={20}
-                                color={pricingType === 'package' ? '#0D2E61' : '#3D3D3D'}
-                                style={{
-                                  flexShrink: 0
-                                }}
-                              />
-                              <Text
-                                style={{
-                                  fontFamily: 'Barlow',
-                                  fontWeight: 700,
-                                  fontSize: '23px',
-                                  color: pricingType === 'package' ? '#0D2E61' : '#3D3D3D'
-                                }}
-                              >
-                                Package Pricing
-                              </Text>
-                              <Flex
-                                ml={"sm"}
-                                gap={5}
-                                h={38}
-                                align={"center"}
-                                style={{
-                                  backgroundColor: pricingType === 'package' ? '#0D2E611A' : '#F3F4F6',
-                                  borderRadius: '12px',
-                                  padding: '6px 12px'
-                                }}
-                              >
+
+                              <Group gap={10}>
+                                <IconWalk
+                                  size={20}
+                                  color={pricingType === 'package' ? '#0D2E61' : '#3D3D3D'}
+                                  style={{
+                                    flexShrink: 0
+                                  }}
+                                />
                                 <Text
                                   style={{
                                     fontFamily: 'Barlow',
-                                    fontWeight: 400,
-                                    fontSize: '18px',
-                                    color: pricingType === 'package' ? '#0D2E61' : '#6B7280'
+                                    fontWeight: 700,
+                                    fontSize: '23px',
+                                    color: pricingType === 'package' ? '#0D2E61' : '#3D3D3D'
                                   }}
                                 >
-                                  {packages?.[index]?.minTravelers || 1}-{packages?.[index]?.maxTravelers || 1} Travelers
+                                  Package Pricing
                                 </Text>
-                              </Flex>
+                                <Flex
+                                  gap={5}
+                                  h={38}
+                                  align={"center"}
+                                  style={{
+                                    backgroundColor: pricingType === 'package' ? '#0D2E611A' : '#F3F4F6',
+                                    borderRadius: '12px',
+                                    padding: '6px 12px'
+                                  }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontFamily: 'Barlow',
+                                      fontWeight: 400,
+                                      fontSize: '18px',
+                                      color: pricingType === 'package' ? '#0D2E61' : '#6B7280'
+                                    }}
+                                  >
+                                    {packages?.[index]?.minTravelers || 1}-{packages?.[index]?.maxTravelers || 1} Travelers
+                                  </Text>
+                                </Flex>
+                              </Group>
                             </Group>
-                            <Flex gap={10}>
+                            <Flex gap={10}  wrap={"wrap"}>
                               <Flex
                                 gap={5}
                                 h={38}
@@ -524,13 +524,13 @@ export default function Pricing() {
                                 </Flex>
                               )}
                             </Flex>
-                            <Button m={0} p={0} style={{ background: "transparent" }} onClick={() => removePackage(index)}>
+                            <Button pos={{base: "absolute", sm: "static"}} top={0} right={0} m={0} p={0} style={{ background: "transparent" }} onClick={() => removePackage(index)}>
                               <IconTrash color={pricingType === 'package' ? '#CB4628' : '#6B7280'} size={18} />
                             </Button>
                           </Group>
 
                           {/* Package Input Fields */}
-                          <Flex gap={20}>
+                          <ResponsiveFlex variant="form">
                             <Stack gap={8} py={30}>
                               <Text
                                 style={{
@@ -655,9 +655,9 @@ export default function Pricing() {
                                 }}
                               />
                             </Stack>
-                          </Flex>
+                          </ResponsiveFlex>
                         </Stack>
-                      </Paper>
+                      </ResponsivePaper>
                     ))}
                     <Button
                       leftSection={<IconPlus size={16} />}
@@ -682,12 +682,12 @@ export default function Pricing() {
                       Add Package
                     </Button>
                   </Stack>
-                </Paper>
+                </ResponsivePaper>
               </Stack>
             </Stack>
-          </Paper>
+          </ResponsivePaper>
         </Stack>
       </Stack>
-    </Paper>
+    </ResponsivePaper>
   );
 }
