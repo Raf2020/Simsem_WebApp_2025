@@ -308,7 +308,7 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                         border: '1px solid #0D2E614D',
                         borderRadius: '10px',
                       }}
-                      px={30}
+                      px={{base: 12, sm: 30}}
                       py={20}
                     >
                       <Stack gap={10}>
