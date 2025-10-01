@@ -73,14 +73,13 @@ const fetcher = async (url: string): Promise<FoodItem[]> => {
   console.log('Response status:', response.status);
   console.log('Response ok:', response.ok);
 
-  if (!response.ok) {
+  // Treat 304/305 as successful responses (browser handles cached data)
+  const isSuccessful = response.ok || response.status === 304 || response.status === 305;
+
+  if (!isSuccessful) {
     console.error(`HTTP error! status: ${response.status}`);
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-
-  // Check if response has content
-  const contentLength = response.headers.get('content-length');
-  console.log('Content-Length:', contentLength);
 
   let data: ApiResponse;
   try {
@@ -112,7 +111,7 @@ const fetcher = async (url: string): Promise<FoodItem[]> => {
 };
 
 // Build the API URL with query parameters
-const buildApiUrl = (country: string = 'Egypt', limit: number = 500, searchQuery?: string, course?: string, type?: string) => {
+const buildApiUrl = (country: string = 'Philippines', limit: number = 500, searchQuery?: string, course?: string, type?: string) => {
   const whereConditions: any = { country };
 
   if (searchQuery) {
@@ -147,16 +146,13 @@ export function FoodDataProvider({
 }: FoodDataProviderProps) {
   const apiUrl = buildApiUrl(country, limit);
 
-  // Don't fetch automatically - only fetch when explicitly requested
   const { data: foodItems = [], error, isLoading, mutate } = useSWR(
-    null, // Set to null to prevent automatic fetching
+    apiUrl,
     fetcher,
     {
       revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      dedupingInterval: 60000,
-      errorRetryCount: 3,
-      errorRetryInterval: 1000,
+      revalidateOnReconnect: true,
+      dedupingInterval: 300000, // 5 minutes
       onError: (error) => {
         console.error('SWR Error:', error);
       },
