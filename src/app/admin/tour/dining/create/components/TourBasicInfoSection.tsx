@@ -137,6 +137,19 @@ export default function TourBasicInfoSection() {
               }
             }}
           />
+          {errors.whatToExpect && (
+            <Text
+              size="sm"
+              style={{
+                fontFamily: 'Barlow',
+                fontWeight: 400,
+                marginTop: '5px',
+                color: '#ef4444'
+              }}
+            >
+              {errors.whatToExpect.message}
+            </Text>
+          )}
         </Stack>
         <Stack>
           <Text

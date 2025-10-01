@@ -158,38 +158,54 @@ export default function TourFormManager() {
 
     // Compile the complete tour data - matching target JSON structure exactly
     const compiledTourData = {
-      // Match exact field order and structure from target JSON
-      thingsToKnow: formatThingsToKnow(detailsData.guidelines || []),
-      country: 'Turkey', // ❌ MISSING: Need location form
-      pickupPoints: formatPickupPoints(detailsData.pickupPoints || []),
-      city: 'ue', // ❌ MISSING: Need location form
-      difficultyLevel: 'Basic', // ❌ MISSING: Need difficulty selector
-      coverImageUrl: undefined, // ❌ IGNORE: Set to undefined for now
-      galleryImageUrls: [], // ❌ IGNORE: Set to empty array for now
-      guideId: 'kifpSShKKb', // ❌ MISSING: Need from authentication/user context
-      description: basicData.tourOverview || '',
-      exclusions: detailsData.exclusions || [],
-      itinerary: formatItinerary(detailsData.itinerary),
-      tourPackages: formatTourPackages(pricingData),
-      tourFeatures: [...(basicData.selectedCategories || []), ...(mealData.selectedMealCategories || [])],
-      whatToExpect: detailsData.whatToExpect || '',
-      otherTourFeature: mealData.customMenuDescription || '', // Include meal details
-      phone: '+8801703464048', // ❌ MISSING: Need contact form
-      countryCode: '+90', // ❌ MISSING: Need contact form
+      // ✅ BASIC INFORMATION DATA
       name: basicData.tourTitle || '',
-      tourTimes: ['08:00 AM', '11:00 AM'], // ❌ MISSING: Need time selector
-      tourDuration: `${detailsData.tourDuration?.value || 1} ${detailsData.tourDuration?.unit || 'hours'}`,
-      inclusions: detailsData.inclusions || [],
-      galleryVideoUrls: [], // ❌ MISSING: Need video upload functionality
-      isActive: false, // ✅ MATCHED: System field
-      isApproved: false, // ✅ MATCHED: System field
+      description: basicData.tourOverview || '',
+      tourFeatures: [...(basicData.selectedCategories || []), ...(mealData.selectedMealCategories || [])],
 
-      // ✅ NEW: Add meal-specific data
+      // ✅ MEAL DETAILS DATA
       selectedMealCategories: formatMealCategories(mealData.selectedMealCategories || []),
       selectedFoodItems: formatSelectedFoodItems(mealData.selectedFoodItems || {}),
       menuItems: mealData.menuItems || [],
+      otherTourFeature: mealData.customMenuDescription || '',
 
-      // ✅ ENHANCED: Add all form validation states
+      // ✅ TOUR DETAILS DATA
+      whatToExpect: detailsData.whatToExpect || '',
+      inclusions: detailsData.inclusions || [],
+      exclusions: detailsData.exclusions || [],
+      tourDuration: `${detailsData.tourDuration?.value || 1} ${detailsData.tourDuration?.unit || 'Day'}`,
+      itinerary: formatItinerary(detailsData.itinerary),
+      thingsToKnow: formatThingsToKnow(detailsData.guidelines || []),
+      pickupPoints: formatPickupPoints(detailsData.pickupPoints || []),
+      coverPhotos: detailsData.coverPhotos || [],
+      galleryPhotos: detailsData.galleryPhotos || [],
+
+      // ✅ PRICING POLICY DATA
+      tourPackages: formatTourPackages(pricingData),
+      minimumAge: pricingData.minimumAge || '0',
+      infantPricing: pricingData.infantPricing || 'free',
+      infantDiscount: pricingData.infantDiscount || 0,
+      kidsPricing: pricingData.kidsPricing || 'free',
+      kidsDiscount: pricingData.kidsDiscount || 0,
+      pricingType: pricingData.pricingType || 'package',
+      fixedPricePerPerson: pricingData.fixedPricePerPerson || 0,
+      packages: pricingData.packages || [],
+
+      // ❌ STATIC/MISSING FIELDS (need to be implemented later)
+      country: 'Turkey',
+      city: 'Istanbul',
+      difficultyLevel: 'Basic',
+      coverImageUrl: undefined,
+      galleryImageUrls: [],
+      guideId: 'kifpSShKKb',
+      phone: '+8801703464048',
+      countryCode: '+90',
+      tourTimes: ['08:00 AM', '11:00 AM'],
+      galleryVideoUrls: [],
+      isActive: false,
+      isApproved: false,
+
+      // ✅ ENHANCED: Add all form validation states for debugging
       formValidationStates: {
         basicInformation: {
           isValid: basicForm.formState.isValid,
