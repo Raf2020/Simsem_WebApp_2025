@@ -12,7 +12,8 @@ import {
   Select,
   UnstyledButton,
   Center,
-  Divider
+  Divider,
+  Image
 } from '@mantine/core';
 import { useMediaQuery, useDebouncedValue } from '@mantine/hooks';
 import { IconCoffee, IconToolsKitchen2, IconCake, IconSearch, IconPlus } from '@tabler/icons-react';
@@ -151,165 +152,259 @@ export default function FoodSelectionModal({
   const filteredItems = debouncedSearchQuery.trim()
     ? searchResults
     : categoryItems.filter(item => {
-        const matchesDiet = dietFilter === 'Any Diet' || item.dietaryTags.includes(dietFilter.toUpperCase());
-        return matchesDiet;
-      });
+      const matchesDiet = dietFilter === 'Any Diet' || item.dietaryTags.includes(dietFilter.toUpperCase());
+      return matchesDiet;
+    });
 
   const isMobile = useMediaQuery('(max-width: 768px)')
 
   return (
     <>
-    <Modal
-      opened={opened}
-      onClose={handleCancel}
-      size={925}
-      title={
-        <Group gap={10} justify="space-between" style={{ width: '100%', borderBottom: '1px solid #3D3D3D1A', paddingBottom: 20, }} flex={1}>
-          <Group>
-            {getCategoryIcon()}
-            <Text
-              style={{
-                fontFamily: 'Barlow',
-                fontWeight: 700,
-                fontSize: '23px',
-                color: '#0D2E61'
-              }}
-            >
-              {categoryName}
-            </Text>
-          </Group>
-          <Group gap={15}>
-            <TextInput
-              placeholder="Search starter"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              rightSection={<IconSearch size={16} />}
-              style={{ flex: 1 }}
-
-              styles={{
-                input: {
-                  fontSize: "16px",
-                  borderRadius: '8px',
+      <Modal
+        opened={opened}
+        onClose={handleCancel}
+        size={925}
+        title={
+          <Group gap={10} justify="space-between" style={{ width: '100%', borderBottom: '1px solid #3D3D3D1A', paddingBottom: 20, }} flex={1}>
+            <Group>
+              {getCategoryIcon()}
+              <Text
+                style={{
                   fontFamily: 'Barlow',
-                  height: 52,
-                  width: 239,
-                  color: "#3D3D3D"
-                }
-              }}
-            />
-            <Select
-
-              value={dietFilter}
-              onChange={(value) => setDietFilter(value || 'Any Diet')}
-              data={['Any Diet', 'Vegan', 'Vegetarian', 'Meat']}
-              style={{ minWidth: '150px' }}
-              styles={{
-                input: {
-                  fontSize: "16px",
-                  borderRadius: '8px',
-                  fontFamily: 'Barlow',
-                  height: 52,
-                  width: 239,
-                  color: "#3D3D3D"
-                }
-              }}
-            />
-          </Group>
-        </Group>
-      }
-      closeButtonProps={{
-        display: "none"
-      }}
-      styles={{
-        title: {
-          width: "100%",
-          paddingTop: 20,
-
-          paddingLeft: 30,
-          paddingRight: 30
-        },
-        header: {
-          padding: 0
-        },
-        body: {
-          paddingLeft: 30,
-          paddingRight: 30,
-          paddingBottom: 0
-        },
-      }}
-      px={0}
-      mx={0}
-      fullScreen={isMobile}
-
-    >
-
-      <Stack gap={30}>
-        {/* Food Items Grid */}
-        <Stack align='center' my={20}>
-          {(isLoading || searchLoading) && (
-            <Text style={{ textAlign: 'center', padding: '40px' }}>
-              {searchLoading ? 'Searching...' : 'Loading food items...'}
-            </Text>
-          )}
-
-          {(error || searchError) && (
-            <Stack align="center" gap="md" style={{ padding: '40px' }}>
-              <Text style={{ textAlign: 'center', color: 'red' }}>
-                {searchError || 'Error loading food items. Please try again.'}
-              </Text>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  console.log('Manual refresh triggered');
-                  fetchData();
+                  fontWeight: 700,
+                  fontSize: '23px',
+                  color: '#0D2E61'
                 }}
               >
-                Refresh Data
-              </Button>
-            </Stack>
-          )}
+                {categoryName}
+              </Text>
+            </Group>
+            <Group gap={15}>
+              <TextInput
+                placeholder="Search starter"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                rightSection={<IconSearch size={16} />}
+                style={{ flex: 1 }}
+                w={{ base: "100%", sm: 239 }}
+                styles={{
+                  input: {
+                    fontSize: "16px",
+                    borderRadius: '8px',
+                    fontFamily: 'Barlow',
+                    height: 52,
 
-          {!isLoading && !searchLoading && !error && !searchError && (
-            <SimpleGrid cols={3} spacing={15}>
-              {filteredItems.map((item) => (
-                <UnstyledButton
-                  key={item.id}
-                  onClick={() => handleItemSelect(item)}
+                    color: "#3D3D3D"
+                  }
+                }}
+              />
+              <Select
+
+                value={dietFilter}
+                onChange={(value) => setDietFilter(value || 'Any Diet')}
+                data={['Any Diet', 'Vegan', 'Vegetarian', 'Meat']}
+                style={{ minWidth: '150px' }}
+                w={{ base: "100%", sm: 239 }}
+                styles={{
+                  input: {
+                    fontSize: "16px",
+                    borderRadius: '8px',
+                    fontFamily: 'Barlow',
+                    height: 52,
+                    color: "#3D3D3D"
+                  }
+                }}
+              />
+            </Group>
+          </Group>
+        }
+        closeButtonProps={{
+          display: "none"
+        }}
+        styles={{
+          title: {
+            width: "100%",
+            paddingTop: 20,
+
+            paddingLeft: 30,
+            paddingRight: 30
+          },
+          header: {
+            padding: 0
+          },
+          body: {
+            paddingLeft: !isMobile ? 30 : 5,
+            paddingRight: !isMobile ? 30 : 5,
+            paddingBottom: 0
+          },
+        }}
+        px={0}
+        mx={0}
+        fullScreen={isMobile}
+
+      >
+
+        <Stack gap={30}>
+          {/* Food Items Grid */}
+          <Stack align='center' my={20}>
+            {(isLoading || searchLoading) && (
+              <Text style={{ textAlign: 'center', padding: '40px' }}>
+                {searchLoading ? 'Searching...' : 'Loading food items...'}
+              </Text>
+            )}
+
+            {(error || searchError) && (
+              <Stack align="center" gap="md" style={{ padding: '40px' }}>
+                <Text style={{ textAlign: 'center', color: 'red' }}>
+                  {searchError || 'Error loading food items. Please try again.'}
+                </Text>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    console.log('Manual refresh triggered');
+                    fetchData();
+                  }}
                 >
+                  Refresh Data
+                </Button>
+              </Stack>
+            )}
+
+            {!isLoading && !searchLoading && !error && !searchError && (
+              <SimpleGrid cols={{ base: 2, sm: 3 }} spacing={{ base: 5, sm: 15 }}>
+                {filteredItems.map((item) => (
+                  <UnstyledButton
+                    key={item.id}
+                    onClick={() => handleItemSelect(item)}
+                  >
+                    <Card
+                      w={{ base: "100%", sm: "268.33px" }}
+                      py={20}
+                      px={{ base: 5, sm: 20 }}
+                      style={{
+
+                        height: '236.95px',
+                        borderRadius: '10px',
+
+                        gap: '10px',
+                        opacity: 1,
+                        borderWidth: '1px',
+                        backgroundColor: selectedItems.some(selected => selected.id === item.id) ? '#F0F4FF' : 'white',
+                        border: selectedItems.some(selected => selected.id === item.id)
+                          ? '2px solid #0D2E61'
+                          : '1px solid #0D2E614D',
+                        position: 'relative',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}
+                    >
+                      <Stack gap={10}>
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          fallbackSrc="/images/temp-dish.png"
+                          w={{ base: "100%", sm: "228.33px" }}
+                          style={{
+                            height: '114.95px',
+                            borderRadius: '10px',
+                            opacity: 1,
+                            objectFit: 'cover'
+                          }}
+                        />
+
+                        <Group justify="space-between" align="center" gap="xs" wrap="nowrap">
+                          <Text
+                            style={{
+                              fontFamily: 'Barlow',
+                              fontWeight: 700,
+                              fontSize: '18px',
+                              lineHeight: '100%',
+                              letterSpacing: '0%',
+                              color: '#3D3D3D',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              flex: 1,
+                              minWidth: 0
+                            }}
+                          >
+                            {item.name}
+                          </Text>
+                          <Badge
+                            size="xs"
+                            style={{
+                              height: '24px',
+                              borderRadius: '10px',
+                              gap: '10px',
+                              opacity: 1,
+                              paddingTop: '5px',
+                              paddingRight: '10px',
+                              paddingBottom: '5px',
+                              paddingLeft: '10px',
+                              backgroundColor: '#FB8B24',
+                              color: 'white',
+                              fontFamily: 'Barlow',
+                              fontWeight: 700,
+                              fontSize: '12px',
+                              flexShrink: 0
+                            }}
+                          >
+                            {item.dietaryTags[0]}
+                          </Badge>
+                        </Group>
+                        <Text
+                          style={{
+                            fontFamily: 'Barlow',
+                            fontWeight: 400,
+                            fontSize: '16px',
+                            lineHeight: '100%',
+                            letterSpacing: '0%',
+                            color: '#3D3D3D',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis'
+                          }}
+                        >
+                          {item.description}
+                        </Text>
+                      </Stack>
+                    </Card>
+                  </UnstyledButton>
+                ))}
+
+                {/* Add Your Own Recipe Card */}
+                <UnstyledButton onClick={handleCreateDish}>
                   <Card
+                    w={{ base: "100%", sm: "268.33px" }}
                     style={{
-                      width: '268.33px',
-                      height: '236.95px',
+                      height: '235px',
                       borderRadius: '10px',
                       padding: '20px',
                       gap: '10px',
                       opacity: 1,
-                      borderWidth: '1px',
-                      backgroundColor: selectedItems.some(selected => selected.id === item.id) ? '#F0F4FF' : 'white',
-                      border: selectedItems.some(selected => selected.id === item.id)
-                        ? '2px solid #0D2E61'
-                        : '1px solid #0D2E614D',
-                      position: 'relative',
+                      borderWidth: '3px',
+                      borderStyle: 'dashed',
+                      border: '3px dashed #0D2E6180',
+                      backgroundColor: '#0D2E611A',
                       cursor: 'pointer',
                       transition: 'all 0.2s ease'
                     }}
                   >
-                    <Stack gap={10}>
-                      <BunnyCDNImage
-                        src={item.image}
-                        alt={item.name}
-                        width={228}
-                        height={115}
-                        fallbackSrc="/images/temp-dish.png"
-                        style={{
-                          borderRadius: '10px',
-                          opacity: 1,
-                          objectFit: 'cover'
-                        }}
-                      />
-
-                      <Group justify="space-between" align="center" gap="xs" wrap="nowrap">
+                    <Center style={{ height: '100%' }}>
+                      <Stack align="center" gap={10}>
+                        <Box
+                          style={{
+                            padding: '8px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <IconPlus size={48} color="#0D2E61" />
+                        </Box>
                         <Text
                           style={{
                             fontFamily: 'Barlow',
@@ -317,165 +412,74 @@ export default function FoodSelectionModal({
                             fontSize: '18px',
                             lineHeight: '100%',
                             letterSpacing: '0%',
-                            color: '#3D3D3D',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                            flex: 1,
-                            minWidth: 0
+                            color: '#0D2E61',
+                            textAlign: 'center'
                           }}
                         >
-                          {item.name}
+                          Add your own recipe
                         </Text>
-                        <Badge
-                          size="xs"
+                        <Text
                           style={{
-                            height: '24px',
-                            borderRadius: '10px',
-                            gap: '10px',
-                            opacity: 1,
-                            paddingTop: '5px',
-                            paddingRight: '10px',
-                            paddingBottom: '5px',
-                            paddingLeft: '10px',
-                            backgroundColor: '#FB8B24',
-                            color: 'white',
                             fontFamily: 'Barlow',
-                            fontWeight: 700,
-                            fontSize: '12px',
-                            flexShrink: 0
+                            fontWeight: 400,
+                            fontSize: '14px',
+                            color: '#6B7280',
+                            textAlign: 'center'
                           }}
                         >
-                          {item.dietaryTags[0]}
-                        </Badge>
-                      </Group>
-                      <Text
-                        style={{
-                          fontFamily: 'Barlow',
-                          fontWeight: 400,
-                          fontSize: '16px',
-                          lineHeight: '100%',
-                          letterSpacing: '0%',
-                          color: '#3D3D3D',
-                          display: '-webkit-box',
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }}
-                      >
-                        {item.description}
-                      </Text>
-                    </Stack>
+                          Couldn&apos;t find what you&apos;re looking for? Add your own recipe to the menu!
+                        </Text>
+                      </Stack>
+                    </Center>
                   </Card>
                 </UnstyledButton>
-              ))}
+              </SimpleGrid>
+            )}
+          </Stack>
 
-              {/* Add Your Own Recipe Card */}
-              <UnstyledButton onClick={handleCreateDish}>
-                <Card
-                  style={{
-                    width: '268.33px',
-                    height: '235px',
-                    borderRadius: '10px',
-                    padding: '20px',
-                    gap: '10px',
-                    opacity: 1,
-                    borderWidth: '3px',
-                    borderStyle: 'dashed',
-                    border: '3px dashed #0D2E6180',
-                    backgroundColor: '#0D2E611A',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  <Center style={{ height: '100%' }}>
-                    <Stack align="center" gap={10}>
-                      <Box
-                        style={{
-                          padding: '8px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}
-                      >
-                        <IconPlus size={48} color="#0D2E61" />
-                      </Box>
-                      <Text
-                        style={{
-                          fontFamily: 'Barlow',
-                          fontWeight: 700,
-                          fontSize: '18px',
-                          lineHeight: '100%',
-                          letterSpacing: '0%',
-                          color: '#0D2E61',
-                          textAlign: 'center'
-                        }}
-                      >
-                        Add your own recipe
-                      </Text>
-                      <Text
-                        style={{
-                          fontFamily: 'Barlow',
-                          fontWeight: 400,
-                          fontSize: '14px',
-                          color: '#6B7280',
-                          textAlign: 'center'
-                        }}
-                      >
-                        Couldn&apos;t find what you&apos;re looking for? Add your own recipe to the menu!
-                      </Text>
-                    </Stack>
-                  </Center>
-                </Card>
-              </UnstyledButton>
-            </SimpleGrid>
-          )}
+
+          {/* Action Buttons */}
         </Stack>
+        <Group justify="space-between" py={20} pos={"sticky"} bottom={0} bg={"white"} style={{
+          borderTop: '1px solid #3D3D3D1A'
+        }}>
+          <Button
+            variant="outline"
+            onClick={handleCancel}
+            style={{
+              borderRadius: '8px',
+              fontFamily: 'Barlow',
+              fontWeight: 600,
+              borderColor: '#E5E7EB',
+              color: '#6B7280'
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirm}
+            style={{
+              borderRadius: '8px',
+              fontFamily: 'Barlow',
+              fontWeight: 600,
+              backgroundColor: '#FB8B24',
+              color: 'white'
+            }}
+          >
+            Confirm
+          </Button>
+        </Group>
+      </Modal>
 
-
-        {/* Action Buttons */}
-      </Stack>
-      <Group justify="space-between" py={20} pos={"sticky"} bottom={0} bg={"white"} style={{
-        borderTop: '1px solid #3D3D3D1A'
-      }}>
-        <Button
-          variant="outline"
-          onClick={handleCancel}
-          style={{
-            borderRadius: '8px',
-            fontFamily: 'Barlow',
-            fontWeight: 600,
-            borderColor: '#E5E7EB',
-            color: '#6B7280'
-          }}
-        >
-          Cancel
-        </Button>
-        <Button
-          onClick={handleConfirm}
-          style={{
-            borderRadius: '8px',
-            fontFamily: 'Barlow',
-            fontWeight: 600,
-            backgroundColor: '#FB8B24',
-            color: 'white'
-          }}
-        >
-          Confirm
-        </Button>
-      </Group>
-    </Modal>
-
-    {/* Create Dish Modal */}
-    <CreateDishModal
-      opened={createDishModalOpened}
-      onClose={handleCreateDishClose}
-      onConfirm={handleCreateDishConfirm}
-      categoryId={categoryId}
-      categoryName={categoryName}
-    />
-  </>
+      {/* Create Dish Modal */}
+      <CreateDishModal
+        opened={createDishModalOpened}
+        onClose={handleCreateDishClose}
+        onConfirm={handleCreateDishConfirm}
+        categoryId={categoryId}
+        categoryName={categoryName}
+      />
+    </>
   );
 }
 

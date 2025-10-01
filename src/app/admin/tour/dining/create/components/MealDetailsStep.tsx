@@ -8,20 +8,19 @@ import {
   Box,
   Group,
   Card,
-  Textarea,
   SimpleGrid,
   Center,
   UnstyledButton,
   Image,
   Badge,
-  Flex,
-  Paper,
-  Divider
+  Divider,
+  Flex
 } from '@mantine/core';
 import { IconCoffee, IconToolsKitchen2, IconCake, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useMealDetails, mealCategories } from '../contexts/MealDetailsContext';
 import { useState } from 'react';
 import FoodSelectionModal from './FoodSelectionModal';
+import { ResponsivePaper } from '@/components/ui';
 
 interface MealDetailsStepProps {
   onNext: () => void;
@@ -93,13 +92,14 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
         </Title>
 
         {/* Meal Categories Section */}
-        <Box
+        <ResponsivePaper
+          variant="section"
           w={"100%"}
           maw={1104}
+          py={40}
           style={{
             border: '1px solid #E5E7EB',
-            borderRadius: '10px',
-            padding: '40px'
+            borderRadius: '10px'
           }}
         >
           <Stack gap={20}>
@@ -130,13 +130,13 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
               Choose which meal categories you&apos;d like to include in your dining experience.
             </Text>
 
-            <SimpleGrid cols={3} spacing={10}>
+            <SimpleGrid cols={{ nase: 1, sm: 3 }} spacing={20}>
               {mealCategories.map((category) => (
-                <Box key={category.id} style={{ position: 'relative' }}>
+                <Flex key={category.id} style={{ position: 'relative' }} align={{ base: 'center', sm: "stretch" }} direction={"column"}>
                   <UnstyledButton
                     onClick={() => toggleMealCategory(category.id)}
                     style={{
-                      width: '322.67px',
+                      width: '100%',
                       height: '219.19px',
                       borderRadius: '10px',
                       border: selectedCategories.includes(category.id)
@@ -219,18 +219,21 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                     </Stack>
                   </UnstyledButton>
 
-                </Box>
+                </Flex>
               ))}
             </SimpleGrid>
           </Stack>
-        </Box>
+        </ResponsivePaper>
 
 
-        <Box
+        <ResponsivePaper
+          variant="section"
+          w={"100%"}
+          maw={1104}
+          py={40}
           style={{
             border: '1px solid #E5E7EB',
-            borderRadius: '10px',
-            padding: '40px'
+            borderRadius: '10px'
           }}
         >
           <Stack gap={30}>
@@ -262,7 +265,9 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                 Choose from our food library or add your own custom recipes for each category you selected.
               </Text>
             </Stack>
-            <Paper
+            <ResponsivePaper
+              variant="section"
+              py={20}
               mx={"auto"}
               style={{
                 width: '100%',
@@ -272,10 +277,6 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                 flexDirection: "column",
                 gap: '17px',
                 opacity: 1,
-                paddingTop: '20px',
-                paddingRight: '41px',
-                paddingBottom: '20px',
-                paddingLeft: '41px',
                 borderWidth: '1px',
                 backgroundColor: '#0D2E610D',
                 border: '1px solid #0D2E6199'
@@ -329,14 +330,15 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                         </Group>
                         <Divider />
                         {/* Food Items Grid */}
-                        <SimpleGrid cols={3} spacing={15} px={20} py={40}>
+                        <SimpleGrid cols={{base: 1, sm: 3}} spacing={15} px={{base:0, sm: 20}} py={40}>
                           {/* Sample food items - you can make this dynamic */}
 
                           {(selectedFoodItems[category.id] || []).map((item) => (
                             <Card
                               key={item.id}
+                              w={{base: "100%", sm: "268.33px"}}
                               style={{
-                                width: '268.33px',
+                               
                                 height: '236.95px',
                                 borderRadius: '10px',
                                 padding: '20px',
@@ -367,7 +369,7 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                                   minWidth: 'unset'
                                 }}
                               >
-                                <IconTrash size={22}/>
+                                <IconTrash size={22} />
                               </Button>
                               <Stack gap={10}>
                                 <Box style={{ position: 'relative' }}>
@@ -375,8 +377,8 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                                     src={item.image}
                                     alt={item.name}
                                     fallbackSrc="/images/temp-dish.png"
+                                    w={{base: "100%", sm: "228.33px"}}
                                     style={{
-                                      width: '228.33px',
                                       height: '114.95px',
                                       borderRadius: '10px',
                                       opacity: 1,
@@ -449,9 +451,9 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                           {/* Add Item Button */}
                           <UnstyledButton
                             onClick={() => handleAddItems(category.id, category.name)}
+                            w={{base: "100%", sm: "268.33px"}}
                             style={{
-                              width: '268.33px',
-                              height: '235px',
+                              height: '230px',
                               borderRadius: '10px',
                               padding: '20px',
                               gap: '10px',
@@ -489,10 +491,10 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
                     </Card>
                   );
                 })}
-            </Paper>
+            </ResponsivePaper>
 
           </Stack>
-        </Box>
+        </ResponsivePaper>
 
       </Stack>
 
