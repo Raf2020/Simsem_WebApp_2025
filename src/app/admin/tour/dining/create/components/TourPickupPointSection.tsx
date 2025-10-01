@@ -7,11 +7,11 @@ import {
   Stack,
   Box,
   Group,
-  TextInput,
-  Paper
+  TextInput
 } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
 import { useTourDetails } from '../contexts/TourDetailsContext';
+import { ResponsivePaper } from '@/components/ui';
 
 export default function TourPickupPointSection() {
   const {
@@ -21,7 +21,7 @@ export default function TourPickupPointSection() {
   const { watch, setValue, formState: { errors } } = form;
   const pickupPoints = watch('pickupPoints');
   return (
-    <Paper
+    <ResponsivePaper
       shadow="xl"
       radius="lg"
       px={{ base: 10, sm: 30 }}
@@ -68,8 +68,8 @@ export default function TourPickupPointSection() {
 
 
 
-        <Paper
-          px={41}
+        <ResponsivePaper
+          variant="section"
           py={20}
           radius="lg"
           style={{
@@ -80,14 +80,10 @@ export default function TourPickupPointSection() {
           <Stack gap={20}>
             {/* Dynamic Pickup Points */}
             {pickupPointsArray.fields.map((field: any, index: number) => (
-              <Paper
+              <ResponsivePaper
                 key={field.id}
-                p={20}
+                variant="default"
                 radius="lg"
-                style={{
-                  backgroundColor: 'white',
-                  border: '1px solid #E5E7EB'
-                }}
               >
                 <Stack gap={20}>
                   {/* Checkbox Header */}
@@ -226,7 +222,7 @@ export default function TourPickupPointSection() {
                   </Stack>
                 </Box>
                 </Stack>
-              </Paper>
+              </ResponsivePaper>
             ))}
 
             {/* Add Pickup Point Button */}
@@ -254,9 +250,9 @@ export default function TourPickupPointSection() {
             </Button>
           </Stack>
 
-        </Paper>
+        </ResponsivePaper>
 
       </Stack>
-    </Paper>
+    </ResponsivePaper>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import {
   Text,
   Title,
@@ -13,8 +14,9 @@ import {
   Flex,
   Select
 } from '@mantine/core';
-import { IconPlus, IconCalendar, IconWalk, IconTrash } from '@tabler/icons-react';
+import { IconPlus, IconCalendar } from '@tabler/icons-react';
 import { useTourDetails } from '../contexts/TourDetailsContext';
+import { ResponsivePaper, ResponsiveStack, ResponsiveFlex, ResponsiveBox, ActivityHeader } from '@/components/ui';
 
 export default function TourItinerarySection() {
   const {
@@ -22,12 +24,32 @@ export default function TourItinerarySection() {
     addItineraryItem,
     removeItineraryItem,
     getItineraryDay,
-    initializeDay
+    initializeDay,
+    cleanupExtraDays
   } = useTourDetails();
   const { watch, setValue, formState: { errors } } = form;
 
   // Watch tour duration to generate day cards
   const tourDuration = watch('tourDuration');
+  const previousDurationRef = useRef<number | undefined>(undefined);
+
+  // Initialize days and clean up extra days when duration changes
+  useEffect(() => {
+    const currentDuration = tourDuration?.value || 1;
+    const previousDuration = previousDurationRef.current;
+
+    // Initialize all required days
+    for (let dayNumber = 1; dayNumber <= currentDuration; dayNumber++) {
+      initializeDay(dayNumber);
+    }
+
+    // Only cleanup if duration decreased (not on initial load or increase)
+    if (previousDuration !== undefined && currentDuration < previousDuration) {
+      cleanupExtraDays(currentDuration);
+    }
+
+    previousDurationRef.current = currentDuration;
+  }, [tourDuration?.value, initializeDay, cleanupExtraDays]);
 
   // Get number of cards and label based on duration
   const numberOfCards = tourDuration?.value || 1;
@@ -148,9 +170,9 @@ export default function TourItinerarySection() {
 
         {/* Dynamic Cards */}
         {Array.from({ length: numberOfCards }, (_, dayIndex) => (
-          <Paper
+          <ResponsivePaper
             key={dayIndex}
-            px={41}
+            variant="section"
             py={20}
             radius="lg"
             style={{
@@ -188,103 +210,32 @@ export default function TourItinerarySection() {
               {/* Show all itinerary items for this day */}
               {(() => {
                 const dayNumber = dayIndex + 1;
-                initializeDay(dayNumber);
                 const dayItems = getItineraryDay(dayNumber);
 
                 return dayItems.map((item: any, itemIndex: number) => (
-                  <Paper
+                  <ResponsivePaper
                     key={itemIndex}
-                    p={20}
+                    variant="card"
                     radius="lg"
-                    style={{
-                      backgroundColor: 'white',
-                      border: '1px solid #E5E7EB'
-                    }}
                   >
-                    <Stack gap={20} px={30}>
-                      {/* Dahshur Activity Header */}
-                      <Group align="center" pb={15} style={{
-                        borderBottom: "1px solid #3D3D3D1A"
-                      }}>
-                        <Group gap={10}>
-                          <IconWalk
-                            size={20}
-                            color="#0D2E61"
-                            style={{
-                              flexShrink: 0
-                            }}
-                          />
-                          <Title
-                            order={4}
-                            style={{
-                              fontFamily: 'Barlow',
-                              fontWeight: 600,
-                              fontSize: '20px',
-                              color: '#0D2E61'
-                            }}
-                          >
-                            Dahshur
-                          </Title>
-                        </Group>
-                        <Group gap={10}>
-                          <Box
-                            style={{
-                              backgroundColor: '#F3F4F6',
-                              borderRadius: '12px',
-                              padding: '6px 12px'
-                            }}
-                          >
-                            <Text
-                              style={{
-                                fontFamily: 'Barlow',
-                                fontWeight: 500,
-                                fontSize: '14px',
-                                color: '#374151'
-                              }}
-                            >
-                              {(() => {
-                                // Convert 24hr input to 12hr display
-                                const timeValue = item.time || '';
-                                if (!timeValue) return '12:00AM';
-
-                                const [hours, minutes] = timeValue.split(':');
-                                const hour24 = parseInt(hours);
-                                const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
-                                const ampm = hour24 >= 12 ? 'PM' : 'AM';
-
-                                return `${hour12}:${minutes}${ampm}`;
-                              })()}
-                            </Text>
-                          </Box>
-                        </Group>
-                        {(() => {
+                    <ResponsiveStack variant="inner">
+                      {/* Itinerary Activity Header */}
+                      <ActivityHeader
+                        title={item.activity || 'Itinerary'}
+                        time={item.time}
+                        onRemove={(() => {
                           const dayNumber = dayIndex + 1;
                           const dayItems = getItineraryDay(dayNumber);
-                          return dayItems.length > 1 && (
-                            <Box
-                             
-                              onClick={() => removeItineraryItem(dayNumber, itemIndex)}
-                              style={{
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: '24px',
-                                height: '24px',
-                                borderRadius: '50%',
-                                color: '#dc2626',
-                                marginLeft: "auto"
-                              }}
-                            >
-                              <IconTrash size={14} />
-                            </Box>
-                          );
+                          return dayItems.length > 1
+                            ? () => removeItineraryItem(dayNumber, itemIndex)
+                            : undefined;
                         })()}
-                      </Group>
+                      />
 
                       {/* Activity Details Grid */}
-                      <Flex gap={20}>
-                        <Stack gap={8} style={{ gridColumn: 'span 187px' }}>
+                      <ResponsiveFlex variant="form">
+                        <ResponsiveBox variant="form-field">
+                          <Stack gap={8}>
                           <Text
                             style={{
                               fontFamily: 'Barlow',
@@ -320,8 +271,10 @@ export default function TourItinerarySection() {
                             }}
                           />
 
-                        </Stack>
-                        <Box style={{ gridColumn: 'span auto' }}>
+                          </Stack>
+                        </ResponsiveBox>
+                        <ResponsiveBox variant="full-mobile">
+                          <Stack gap={20}>
                           <Stack gap={8}>
                             <Text
                               style={{
@@ -407,13 +360,14 @@ export default function TourItinerarySection() {
                               </Text>
                             </Stack>
                           </Stack>
-                        </Box>
+                          </Stack>
+                        </ResponsiveBox>
 
-                      </Flex>
+                      </ResponsiveFlex>
 
 
-                    </Stack>
-                  </Paper>
+                    </ResponsiveStack>
+                  </ResponsivePaper>
                 ));
               })()}
 
@@ -442,7 +396,7 @@ export default function TourItinerarySection() {
               </Button>
 
             </Stack>
-          </Paper>
+          </ResponsivePaper>
         ))}
 
       </Stack>

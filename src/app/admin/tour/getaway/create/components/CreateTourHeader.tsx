@@ -77,7 +77,7 @@ export default function CreateTourHeader({
     >
       <Container size="xl" px="md">
         <Box py="md">
-          <Flex justify="space-between" align="center" mb="lg">
+          <Flex justify="space-between" align={{base: "flex-start", sm: "center"}} mb="lg" direction={{base: "column", sm: "row"}} gap={{base: "md", sm: 0}}>
             <Box>
               <Text
                 style={{
@@ -101,7 +101,7 @@ export default function CreateTourHeader({
               </Text>
             </Box>
 
-            <Flex gap="sm" align="center">
+            <Flex gap="sm" align="center" wrap="wrap" justify={{base: "center", sm: "flex-end"}}>
               <Button
                 variant="outline"
                 leftSection={<IconEye size={16} />}
