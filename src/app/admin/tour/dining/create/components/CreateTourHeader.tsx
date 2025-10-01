@@ -55,7 +55,7 @@ export default function CreateTourHeader({
       if (isValid) {
         onStepChange('details');
       } else {
-        // Optional: You could show a toast notification here
+        // Validation errors are now displayed in the UI
         console.log('Please fix meal details validation errors before proceeding');
       }
     } else if (currentStep === 'details') {

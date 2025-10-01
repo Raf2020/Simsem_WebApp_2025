@@ -3,20 +3,17 @@
 import {
   Text,
   Title,
-  Button,
   Stack,
   Box,
   Group,
   TextInput
 } from '@mantine/core';
-import { IconPlus } from '@tabler/icons-react';
 import { useTourDetails } from '../contexts/TourDetailsContext';
 import { ResponsivePaper } from '@/components/ui';
 
 export default function TourPickupPointSection() {
   const {
-    form,
-    pickupPointsArray
+    form
   } = useTourDetails();
   const { watch, setValue, formState: { errors } } = form;
   const pickupPoints = watch('pickupPoints');
@@ -51,7 +48,7 @@ export default function TourPickupPointSection() {
               marginBottom: '0px'
             }}
           >
-            Pickup Point
+            Meeting Point
           </Title>
           <Text
             style={{
@@ -61,7 +58,7 @@ export default function TourPickupPointSection() {
               color: '#6B7280'
             }}
           >
-            Add a pickup point
+            Set the meeting point for your dining experience
           </Text>
 
         </Stack>
@@ -78,22 +75,20 @@ export default function TourPickupPointSection() {
           }}
         >
           <Stack gap={20}>
-            {/* Dynamic Pickup Points */}
-            {pickupPointsArray.fields.map((field: any, index: number) => (
-              <ResponsivePaper
-                key={field.id}
-                variant="default"
-                radius="lg"
-              >
+            {/* Single Meeting Point */}
+            <ResponsivePaper
+              variant="default"
+              radius="lg"
+            >
                 <Stack gap={20}>
-                  {/* Checkbox Header */}
+                  {/* Meeting Point Header */}
                   <Group gap={12} align="center">
                     <Box
                       style={{
                         width: '20px',
                         height: '20px',
-                        backgroundColor: (pickupPoints?.[index]?.address && pickupPoints?.[index]?.address.trim() !== '') ? '#0D2E61' : 'transparent',
-                        border: (pickupPoints?.[index]?.address && pickupPoints?.[index]?.address.trim() !== '') ? 'none' : '2px solid #D1D5DB',
+                        backgroundColor: (pickupPoints?.[0]?.address && pickupPoints?.[0]?.address.trim() !== '') ? '#0D2E61' : 'transparent',
+                        border: (pickupPoints?.[0]?.address && pickupPoints?.[0]?.address.trim() !== '') ? 'none' : '2px solid #D1D5DB',
                         borderRadius: '4px',
                         display: 'flex',
                         alignItems: 'center',
@@ -101,7 +96,7 @@ export default function TourPickupPointSection() {
                         cursor: 'default'
                       }}
                     >
-                      {(pickupPoints?.[index]?.address && pickupPoints?.[index]?.address.trim() !== '') && (
+                      {(pickupPoints?.[0]?.address && pickupPoints?.[0]?.address.trim() !== '') && (
                         <Text
                           style={{
                             color: 'white',
@@ -122,9 +117,49 @@ export default function TourPickupPointSection() {
                         color: '#0D2E61'
                       }}
                     >
-                      {pickupPoints?.[index]?.name || field.name}
+                      {pickupPoints?.[0]?.name || 'Meeting Point'}
                     </Title>
                   </Group>
+
+                {/* Meeting Point Name Section */}
+                <Stack gap={8}>
+                  <Text
+                    style={{
+                      fontFamily: 'Barlow',
+                      fontWeight: 500,
+                      fontSize: '16px',
+                      color: '#6B7280'
+                    }}
+                  >
+                    Meeting Point Name
+                  </Text>
+                  <TextInput
+                    placeholder="e.g., Restaurant Entrance, Café Main Door"
+                    value={pickupPoints?.[0]?.name || ''}
+                    onChange={(e) => {
+                      setValue(`pickupPoints.0.name`, e.target.value, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                    }}
+                    error={errors?.pickupPoints?.[0]?.name?.message}
+                    styles={{
+                      input: {
+                        fontFamily: 'Barlow',
+                        fontWeight: 400,
+                        height: 54,
+                        fontSize: '16px',
+                        backgroundColor: '#F9FAFB',
+                        border: errors?.pickupPoints?.[0]?.name
+                          ? '1px solid #dc2626'
+                          : '1px solid #E5E7EB',
+                        borderRadius: '8px',
+                        padding: '12px 16px',
+                        color: '#374151'
+                      }
+                    }}
+                  />
+                </Stack>
 
                 {/* Address Section */}
                 <Stack gap={8}>
@@ -139,15 +174,15 @@ export default function TourPickupPointSection() {
                     Address
                   </Text>
                   <TextInput
-                    placeholder="Enter address"
-                    value={pickupPoints?.[index]?.address || ''}
+                    placeholder="Enter meeting point address"
+                    value={pickupPoints?.[0]?.address || ''}
                     onChange={(e) => {
-                      setValue(`pickupPoints.${index}.address`, e.target.value, {
+                      setValue(`pickupPoints.0.address`, e.target.value, {
                         shouldValidate: true,
                         shouldDirty: true,
                       });
                     }}
-                    error={errors?.pickupPoints?.[index]?.address?.message}
+                    error={errors?.pickupPoints?.[0]?.address?.message}
                     styles={{
                       input: {
                         fontFamily: 'Barlow',
@@ -155,7 +190,7 @@ export default function TourPickupPointSection() {
                         height: 54,
                         fontSize: '16px',
                         backgroundColor: '#F9FAFB',
-                        border: errors?.pickupPoints?.[index]?.address
+                        border: errors?.pickupPoints?.[0]?.address
                           ? '1px solid #dc2626'
                           : '1px solid #E5E7EB',
                         borderRadius: '8px',
@@ -223,31 +258,6 @@ export default function TourPickupPointSection() {
                 </Box>
                 </Stack>
               </ResponsivePaper>
-            ))}
-
-            {/* Add Pickup Point Button */}
-            <Button
-              leftSection={<IconPlus size={16} />}
-              onClick={() => pickupPointsArray.append({ name: '', address: '' })}
-              style={{
-                width: '191px',
-                height: '50px',
-                borderRadius: '10px',
-                gap: '6px',
-                paddingTop: '15px',
-                paddingRight: '20px',
-                paddingBottom: '15px',
-                paddingLeft: '20px',
-                backgroundColor: '#0D2E61',
-                border: 'none',
-                fontFamily: 'Barlow',
-                fontWeight: 500,
-                fontSize: '14px',
-                color: 'white'
-              }}
-            >
-              Add pickup point
-            </Button>
           </Stack>
 
         </ResponsivePaper>

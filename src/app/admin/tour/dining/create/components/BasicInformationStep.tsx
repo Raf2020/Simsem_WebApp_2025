@@ -104,6 +104,19 @@ export default function BasicInformationStep({ onNext }: BasicInformationStepPro
               }
             }}
           />
+          {errors.tourTitle && (
+            <Text
+              size="sm"
+              style={{
+                fontFamily: 'Barlow',
+                fontWeight: 400,
+                marginTop: '5px',
+                color: '#ef4444'
+              }}
+            >
+              {errors.tourTitle.message}
+            </Text>
+          )}
         </Stack>
         {/* Tour Category */}
         <Stack gap={10}>
@@ -147,6 +160,20 @@ export default function BasicInformationStep({ onNext }: BasicInformationStepPro
             ))}
           </Group>
 
+          {errors.selectedCategories && (
+            <Text
+              size="sm"
+              style={{
+                fontFamily: 'Barlow',
+                fontWeight: 400,
+                marginTop: '5px',
+                color: '#ef4444'
+              }}
+            >
+              {errors.selectedCategories.message}
+            </Text>
+          )}
+
         </Stack>
 
         {/* Tour Overview */}
@@ -189,6 +216,19 @@ export default function BasicInformationStep({ onNext }: BasicInformationStepPro
               }
             }}
           />
+          {errors.tourOverview && (
+            <Text
+              size="sm"
+              style={{
+                fontFamily: 'Barlow',
+                fontWeight: 400,
+                marginTop: '5px',
+                color: '#ef4444'
+              }}
+            >
+              {errors.tourOverview.message}
+            </Text>
+          )}
         </Stack>
       </Stack>
     </Box>

@@ -114,7 +114,7 @@ export default function TourFormManager() {
           toPerson: "999"
         })];
       }
-      
+
       if (pricingData.pricingType === 'package' && pricingData.packages) {
         return pricingData.packages.map((pkg: any) => JSON.stringify({
           cost: pkg.pricePerPerson.toString(),
@@ -122,8 +122,36 @@ export default function TourFormManager() {
           toPerson: pkg.maxTravelers.toString()
         }));
       }
-      
+
       return [];
+    };
+
+    // Helper function to format selected food items
+    const formatSelectedFoodItems = (selectedFoodItems: Record<string, any[]>): string[] => {
+      const formattedItems: string[] = [];
+
+      Object.entries(selectedFoodItems).forEach(([categoryId, items]) => {
+        items.forEach((item) => {
+          formattedItems.push(JSON.stringify({
+            category: categoryId,
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            image: item.image,
+            dietaryTags: item.dietaryTags || []
+          }));
+        });
+      });
+
+      return formattedItems;
+    };
+
+    // Helper function to format meal categories
+    const formatMealCategories = (selectedCategories: string[]): string[] => {
+      return selectedCategories.map(category => JSON.stringify({
+        category: category,
+        selected: true
+      }));
     };
 
 
@@ -150,11 +178,40 @@ export default function TourFormManager() {
       countryCode: '+90', // ❌ MISSING: Need contact form
       name: basicData.tourTitle || '',
       tourTimes: ['08:00 AM', '11:00 AM'], // ❌ MISSING: Need time selector
-      tourDuration: `${detailsData.tourDuration.value} ${detailsData.tourDuration.unit}`,
+      tourDuration: `${detailsData.tourDuration?.value || 1} ${detailsData.tourDuration?.unit || 'hours'}`,
       inclusions: detailsData.inclusions || [],
       galleryVideoUrls: [], // ❌ MISSING: Need video upload functionality
       isActive: false, // ✅ MATCHED: System field
       isApproved: false, // ✅ MATCHED: System field
+
+      // ✅ NEW: Add meal-specific data
+      selectedMealCategories: formatMealCategories(mealData.selectedMealCategories || []),
+      selectedFoodItems: formatSelectedFoodItems(mealData.selectedFoodItems || {}),
+      menuItems: mealData.menuItems || [],
+
+      // ✅ ENHANCED: Add all form validation states
+      formValidationStates: {
+        basicInformation: {
+          isValid: basicForm.formState.isValid,
+          errors: basicForm.formState.errors,
+          data: basicData
+        },
+        mealDetails: {
+          isValid: mealForm.formState.isValid,
+          errors: mealForm.formState.errors,
+          data: mealData
+        },
+        tourDetails: {
+          isValid: detailsForm.formState.isValid,
+          errors: detailsForm.formState.errors,
+          data: detailsData
+        },
+        pricingPolicy: {
+          isValid: pricingForm.formState.isValid,
+          errors: pricingForm.formState.errors,
+          data: pricingData
+        }
+      }
     };
 
     return compiledTourData;
@@ -202,23 +259,23 @@ export default function TourFormManager() {
       console.log('=== COMPILED TOUR DATA ===');
       console.log(JSON.stringify(tourData, null, 2));
 
-      // Submit to API
-      console.log('🚀 Submitting tour to API...');
-      const result = await submitTourToAPI(tourData);
+      // // Submit to API
+      // console.log('🚀 Submitting tour to API...');
+      // const result = await submitTourToAPI(tourData);
 
-      console.log('✅ Tour submitted successfully!');
-      console.log('API Response:', result);
+      // console.log('✅ Tour submitted successfully!');
+      // console.log('API Response:', result);
 
-      // Update notification to success
-      notifications.update({
-        id: 'tour-submission',
-        color: 'green',
-        title: 'Tour Published Successfully!',
-        message: `Your tour has been created with ID: ${result.objectId}`,
-        icon: <IconCheck size={16} />,
-        loading: false,
-        autoClose: 5000,
-      });
+      // // Update notification to success
+      // notifications.update({
+      //   id: 'tour-submission',
+      //   color: 'green',
+      //   title: 'Tour Published Successfully!',
+      //   message: `Your tour has been created with ID: ${result.objectId}`,
+      //   icon: <IconCheck size={16} />,
+      //   loading: false,
+      //   autoClose: 5000,
+      // });
 
     } catch (error) {
       console.error('❌ Failed to submit tour:', error);

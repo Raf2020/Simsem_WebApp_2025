@@ -14,10 +14,11 @@ import {
   Image,
   Badge,
   Divider,
-  Flex
+  Flex,
+  Alert
 } from '@mantine/core';
-import { IconCoffee, IconToolsKitchen2, IconCake, IconPlus, IconTrash } from '@tabler/icons-react';
-import { useMealDetails, mealCategories } from '../contexts/MealDetailsContext';
+import { IconCoffee, IconToolsKitchen2, IconCake, IconPlus, IconTrash, IconAlertCircle } from '@tabler/icons-react';
+import { useMealDetails, mealCategories, type FoodItem } from '../contexts/MealDetailsContext';
 import { useState } from 'react';
 import FoodSelectionModal from './FoodSelectionModal';
 import { ResponsivePaper } from '@/components/ui';
@@ -27,22 +28,20 @@ interface MealDetailsStepProps {
   onBack: () => void;
 }
 
-interface FoodItem {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-  dietaryTags: string[];
-  category: string;
-}
-
 export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps) {
-  const { form, toggleMealCategory, selectedCategories, isFormValid } = useMealDetails();
-  const [selectedFoodItems, setSelectedFoodItems] = useState<Record<string, FoodItem[]>>({});
+  const {
+    form,
+    toggleMealCategory,
+    selectedCategories,
+    isFormValid,
+    selectedFoodItems,
+    addFoodItems,
+    removeFoodItem
+  } = useMealDetails();
   const [modalOpened, setModalOpened] = useState(false);
   const [currentCategory, setCurrentCategory] = useState<{ id: string; name: string } | null>(null);
 
-  const { register, formState: { errors } } = form;
+  const { formState: { errors } } = form;
 
   const handleAddItems = (categoryId: string, categoryName: string) => {
     setCurrentCategory({ id: categoryId, name: categoryName });
@@ -51,18 +50,12 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
 
   const handleModalConfirm = (items: FoodItem[]) => {
     if (currentCategory) {
-      setSelectedFoodItems(prev => ({
-        ...prev,
-        [currentCategory.id]: [...(prev[currentCategory.id] || []), ...items]
-      }));
+      addFoodItems(currentCategory.id, items);
     }
   };
 
   const handleRemoveItem = (categoryId: string, itemId: string) => {
-    setSelectedFoodItems(prev => ({
-      ...prev,
-      [categoryId]: prev[categoryId]?.filter(item => item.id !== itemId) || []
-    }));
+    removeFoodItem(categoryId, itemId);
   };
 
   return (
@@ -225,6 +218,27 @@ export default function MealDetailsStep({ onNext, onBack }: MealDetailsStepProps
           </Stack>
         </ResponsivePaper>
 
+        {/* Validation Errors */}
+        {(errors.selectedMealCategories || errors.selectedFoodItems) && (
+          <Alert
+            color="red"
+            title="Validation Error"
+            icon={<IconAlertCircle size={16} />}
+            style={{
+              maxWidth: '1104px',
+              width: '100%'
+            }}
+          >
+            <Stack gap={5}>
+              {errors.selectedMealCategories && (
+                <Text size="sm">{String(errors.selectedMealCategories.message)}</Text>
+              )}
+              {errors.selectedFoodItems && (
+                <Text size="sm">{String(errors.selectedFoodItems.message)}</Text>
+              )}
+            </Stack>
+          </Alert>
+        )}
 
         <ResponsivePaper
           variant="section"
