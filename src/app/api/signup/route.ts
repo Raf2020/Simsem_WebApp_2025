@@ -1,8 +1,58 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Types for the request body
+interface SignupRequestBody {
+  // Basic information
+  name: string;
+  email: string;
+  phone: string;
+  country: string;
+  city: string;
+  about: string;
+  firstLanguage: string;
+  firstLanguageLevel: string;
+  secondLanguage: string;
+  secondLanguageLevel: string;
+  thirdLanguage: string;
+  thirdLanguageLevel: string;
+  isLocalSeller: boolean;
+  isFamilyHost: boolean;
+  isTourGuide: boolean;
+  isSocialAuth: boolean;
+  // Optional password (defaults to temp password if not provided)
+  password?: string;
+  // Payment information
+  paymentData: PaymentData;
+  // Files
+  files?: {
+    profilePhoto?: FileData;
+    idCardFrontSide?: FileData;
+    idCardBackSide?: FileData;
+    tourGuideCertificate?: FileData;
+  };
+}
+
+interface PaymentData {
+  type: string;
+  phone: string;
+  fullName: string;
+  address: string;
+  bankName: string;
+  iban: string;
+  swiftOrBic: string;
+  bankAddress: string;
+}
+
+interface FileData {
+  name: string;
+  type: string;
+  size: number;
+  buffer: number[]; // Array of bytes from frontend
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body: SignupRequestBody = await request.json();
     console.log('📥 Received signup request');
 
     const {
@@ -23,9 +73,11 @@ export async function POST(request: NextRequest) {
       isFamilyHost,
       isTourGuide,
       isSocialAuth,
+      // Optional password
+      password,
       // Payment information
       paymentData,
-      // Files (as base64 or FormData)
+      // Files
       files
     } = body;
 
@@ -59,7 +111,7 @@ export async function POST(request: NextRequest) {
     console.log('🔄 Step 2: Uploading files...');
 
     // Step 2: Upload files
-    const uploadedFiles: { [key: string]: string } = {};
+    const uploadedFiles: Record<string, string> = {};
     const userId = `user_${Date.now()}`;
 
     if (files) {
@@ -70,7 +122,7 @@ export async function POST(request: NextRequest) {
           const filePath = `/profiles/${userId}/avatar/profile.${fileExtension}`;
           const uploadedUrl = await uploadFile(files.profilePhoto, filePath);
           uploadedFiles.imageUrl = uploadedUrl;
-          console.log('✅ Profile photo uploaded');
+          console.log('✅ Profile photo uploaded:', uploadedUrl);
         } catch (error) {
           console.error('❌ Profile photo upload failed:', error);
         }
@@ -83,7 +135,7 @@ export async function POST(request: NextRequest) {
           const filePath = `/profiles/${userId}/documents/id_front.${fileExtension}`;
           const uploadedUrl = await uploadFile(files.idCardFrontSide, filePath);
           uploadedFiles.idFrontFileUrl = uploadedUrl;
-          console.log('✅ ID front uploaded');
+          console.log('✅ ID front uploaded:', uploadedUrl);
         } catch (error) {
           console.error('❌ ID front upload failed:', error);
         }
@@ -96,7 +148,7 @@ export async function POST(request: NextRequest) {
           const filePath = `/profiles/${userId}/documents/id_back.${fileExtension}`;
           const uploadedUrl = await uploadFile(files.idCardBackSide, filePath);
           uploadedFiles.idBackFileUrl = uploadedUrl;
-          console.log('✅ ID back uploaded');
+          console.log('✅ ID back uploaded:', uploadedUrl);
         } catch (error) {
           console.error('❌ ID back upload failed:', error);
         }
@@ -109,7 +161,7 @@ export async function POST(request: NextRequest) {
           const filePath = `/profiles/${userId}/certificates/guide_cert.${fileExtension}`;
           const uploadedUrl = await uploadFile(files.tourGuideCertificate, filePath);
           uploadedFiles.certificateFileUrl = uploadedUrl;
-          console.log('✅ Certificate uploaded');
+          console.log('✅ Certificate uploaded:', uploadedUrl);
         } catch (error) {
           console.error('❌ Certificate upload failed:', error);
         }
@@ -167,9 +219,90 @@ export async function POST(request: NextRequest) {
     const serviceProviderResult = await serviceProviderResponse.json();
     console.log('✅ Service provider created:', serviceProviderResult.objectId);
 
+    console.log('🔄 Step 4: Creating tourist record...');
+
+    // Step 4: Create tourist record
+    const touristData = {
+      phone,
+      imageUrl: uploadedFiles.imageUrl || undefined,
+      name,
+      email,
+      isSocialAuth
+    };
+
+    const touristResponse = await fetch(`${process.env.BACKEND_URL}/classes/Tourist`, {
+      method: 'POST',
+      headers: {
+        'accept': '*/*',
+        'X-Parse-Application-Id': process.env.APPLICATION_ID!,
+        'X-Parse-REST-API-Key': process.env.REST_API_KEY!,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(touristData)
+    });
+
+    if (!touristResponse.ok) {
+      const touristError = await touristResponse.text();
+      console.error('❌ Tourist creation failed:', touristError);
+      return NextResponse.json(
+        { error: 'Tourist creation failed', details: touristError },
+        { status: 400 }
+      );
+    }
+
+    const touristResult = await touristResponse.json();
+    console.log('✅ Tourist created:', touristResult.objectId);
+
+    console.log('🔄 Step 5: Creating user account...');
+
+    // Step 5: Create user account with both tourist and service provider relationships
+    const userData = {
+      username: phone, // Use phone as username
+      email,
+      password: password || 'temp@1234', // Use provided password or temporary default
+      type: 'service_provider', // Primary type
+      name,
+      tourist: {
+        __type: "Pointer",
+        className: "Tourist",
+        objectId: touristResult.objectId
+      },
+      service_provider: {
+        __type: "Pointer",
+        className: "ServiceProvider",
+        objectId: serviceProviderResult.objectId
+      },
+      isSocialAuth
+    };
+
+    const userResponse = await fetch(`${process.env.BACKEND_URL}/users`, {
+      method: 'POST',
+      headers: {
+        'accept': '*/*',
+        'X-Parse-Application-Id': process.env.APPLICATION_ID!,
+        'X-Parse-REST-API-Key': process.env.REST_API_KEY!,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData)
+    });
+
+    if (!userResponse.ok) {
+      const userError = await userResponse.text();
+      console.error('❌ User creation failed:', userError);
+      return NextResponse.json(
+        { error: 'User creation failed', details: userError },
+        { status: 400 }
+      );
+    }
+
+    const userResult = await userResponse.json();
+    console.log('✅ User created:', userResult.objectId);
+
     return NextResponse.json({
       success: true,
+      user: userResult,
       serviceProvider: serviceProviderResult,
+      tourist: touristResult,
       payment: paymentResult,
       uploadedFiles
     });
@@ -184,20 +317,11 @@ export async function POST(request: NextRequest) {
 }
 
 // Helper function to upload files
-async function uploadFile(fileData: any, filePath: string): Promise<string> {
+async function uploadFile(fileData: FileData, filePath: string): Promise<string> {
   const uploadUrl = `${process.env.BUNNY_STORAGE_URL}${filePath}`;
-  
-  // Convert base64 to buffer if needed
-  let fileBuffer: Buffer;
-  if (typeof fileData === 'string') {
-    // Base64 string
-    fileBuffer = Buffer.from(fileData, 'base64');
-  } else if (fileData.buffer) {
-    // File buffer
-    fileBuffer = Buffer.from(fileData.buffer);
-  } else {
-    throw new Error('Invalid file data format');
-  }
+
+  // Convert number array to Buffer
+  const fileBuffer = Buffer.from(fileData.buffer);
 
   const response = await fetch(uploadUrl, {
     method: 'PUT',

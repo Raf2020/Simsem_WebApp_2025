@@ -52,8 +52,8 @@ export default function Success() {
         <Paper
           shadow="xl"
           radius="lg"
-          p={{ base: 'sm', sm: 'xl' }}
-          py={{ base: 'xl', sm: "xl" }}
+          px={{ base: 'sm', sm: 'xl' }}
+          py={{ base: 'xl', sm: 36 }}
           mb={{ base: 'lg', sm: 'xl' }}
           mx={{ base: 0, sm: 0 }}
           style={{
@@ -69,10 +69,10 @@ export default function Success() {
             textAlign: 'center'
           }}
         >
-          <Stack gap={32} align="center" style={{ maxWidth: '600px' }}>
+          <Stack gap={50} align="center" style={{ maxWidth: '600px' }}>
             <ThemeIcon
               size={80}
-              radius="xl"
+              radius="100%"
               style={{
                 backgroundColor: '#f97316',
                 color: '#ffffff'
@@ -81,13 +81,13 @@ export default function Success() {
               <IconCheck size={40} stroke={3} />
             </ThemeIcon>
 
-            <Box>
+            <Stack gap={40}>
               <Title
                 order={2}
                 style={{
                   fontFamily: 'Barlow',
-                  fontWeight: 600,
-                  fontSize: '32px',
+                  fontWeight: 700,
+                  fontSize: '29px',
                   color: '#0D2E61',
                   marginBottom: '16px',
                   lineHeight: '1.2'
@@ -109,7 +109,7 @@ export default function Success() {
               >
                 Expect an email from us within 24 hours — your path to sharing authentic experiences is about to unfold.
               </Text>
-            </Box>
+            </Stack>
           </Stack>
         </Paper>
       </Container>
