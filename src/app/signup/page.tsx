@@ -246,9 +246,9 @@ function SignupPageInner() {
         ...apiData,
         ...uploadedFiles, // Add all uploaded file URLs
         payment: {
-          id: paymentResult.objectId,
-          _objCount: 2,
-          className: "ServiceProviderPayment"
+          __type: "Pointer",
+          className: "ServiceProviderPayment",
+          objectId: paymentResult.objectId
         }
       };
 

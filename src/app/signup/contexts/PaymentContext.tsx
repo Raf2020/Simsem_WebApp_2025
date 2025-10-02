@@ -62,8 +62,8 @@ const verifyIbanAPI = async (iban: string): Promise<IBANVerificationData> => {
     method: 'POST',
     headers: {
       'accept': '*/*',
-      'X-Parse-Application-Id': process.env.NEXT_PUBLIC_PARSE_APPLICATION_ID!,
-      'X-Parse-REST-API-Key': process.env.NEXT_PUBLIC_PARSE_REST_API_KEY!,
+      'X-Parse-Application-Id': process.env.NEXT_PUBLIC_APPLICATION_ID!,
+      'X-Parse-REST-API-Key': process.env.NEXT_PUBLIC_REST_API_KEY!,
     },
     body: ''
   });

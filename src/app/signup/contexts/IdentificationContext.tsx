@@ -69,9 +69,6 @@ export interface IdentificationContextType {
   // Computed values
   isFormValid: boolean;
   isCertifiedGuide: boolean;
-
-  // Upload state
-  isUploadingAvatar: boolean;
 }
 
 // Create context
@@ -83,9 +80,6 @@ interface IdentificationProviderProps {
 }
 
 export function IdentificationProvider({ children }: IdentificationProviderProps) {
-  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
-  const [uploadedAvatarUrl, setUploadedAvatarUrl] = useState<string>('');
-
   const form = useForm<IdentificationFormData>({
     resolver: zodResolver(identificationSchema),
     defaultValues: {
@@ -106,7 +100,7 @@ export function IdentificationProvider({ children }: IdentificationProviderProps
   });
 
   // Custom file upload handler
-  const handleFileUpload = async (fieldName: keyof IdentificationFormData, file: File) => {
+  const handleFileUpload = (fieldName: keyof IdentificationFormData, file: File) => {
     const fileData: FileData = {
       file,
       url: URL.createObjectURL(file),
@@ -120,85 +114,23 @@ export function IdentificationProvider({ children }: IdentificationProviderProps
       shouldDirty: true
     });
 
-    // If this is a profile photo upload, call the API
-    if (fieldName === 'profilePhoto') {
-      setIsUploadingAvatar(true);
-      try {
-        console.log('🚀 Uploading avatar to API...');
-
-        // Generate a unique filename with timestamp
-        const timestamp = Date.now();
-        const fileExtension = file.name.split('.').pop() || 'jpeg';
-        const fileName = `avatar_${timestamp}.${fileExtension}`;
-        const sampleId = 'sampleId'; // You can replace this with actual user ID when available
-
-        const uploadUrl = `${process.env.NEXT_PUBLIC_BUNNY_STORAGE_URL}/profiles/${sampleId}/avatar/${fileName}`;
-
-        const response = await fetch(uploadUrl, {
-          method: 'PUT',
-          headers: {
-            'AccessKey': process.env.NEXT_PUBLIC_ACCESS_KEY!,
-            'Content-Type': 'application/octet-stream',
-          },
-          body: file
-        });
-
-        if (response.ok) {
-          console.log('✅ Avatar upload successful!');
-          console.log('📁 Upload URL:', uploadUrl);
-          console.log('📊 Response status:', response.status);
-          setUploadedAvatarUrl(uploadUrl);
-        } else {
-          console.error('❌ Avatar upload failed:', response.status, response.statusText);
-        }
-      } catch (error) {
-        console.error('❌ Avatar upload error:', error);
-      } finally {
-        setIsUploadingAvatar(false);
-      }
-    }
+    console.log(`� File stored locally for ${fieldName}:`, file.name);
   };
 
   // Remove file handler
-  const removeFile = async (fieldName: keyof IdentificationFormData) => {
+  const removeFile = (fieldName: keyof IdentificationFormData) => {
     const currentFile = form.getValues(fieldName as any);
     if (currentFile && typeof currentFile === 'object' && 'url' in currentFile) {
       // Revoke the object URL to prevent memory leaks
       URL.revokeObjectURL(currentFile.url);
     }
 
-    // If this is a profile photo and we have an uploaded URL, delete it from the server
-    if (fieldName === 'profilePhoto' && uploadedAvatarUrl) {
-      try {
-        console.log('🗑️  Deleting avatar from API...');
-        console.log('📁 Delete URL:', uploadedAvatarUrl);
-
-        const response = await fetch(uploadedAvatarUrl, {
-          method: 'DELETE',
-          headers: {
-            'accept': '*/*',
-            'X-Parse-Application-Id': process.env.NEXT_PUBLIC_APPLICATION_ID!,
-            'X-Parse-REST-API-Key': process.env.NEXT_PUBLIC_REST_API_KEY!,
-            'AccessKey': process.env.NEXT_PUBLIC_ACCESS_KEY!
-          }
-        });
-
-        if (response.ok) {
-          console.log('✅ Avatar deleted successfully from server!');
-          console.log('📊 Response status:', response.status);
-          setUploadedAvatarUrl('');
-        } else {
-          console.error('❌ Failed to delete avatar from server:', response.status, response.statusText);
-        }
-      } catch (error) {
-        console.error('❌ Avatar deletion error:', error);
-      }
-    }
-
     form.setValue(fieldName as any, undefined, {
       shouldValidate: true,
       shouldDirty: true
     });
+
+    console.log(`🗑️ File removed locally for ${fieldName}`);
   };
 
   // Toggle certification handler
@@ -228,7 +160,6 @@ export function IdentificationProvider({ children }: IdentificationProviderProps
     toggleCertification,
     isFormValid,
     isCertifiedGuide,
-    isUploadingAvatar,
   };
 
   return (
