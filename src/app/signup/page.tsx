@@ -89,42 +89,106 @@ function SignupPageInner() {
     console.log('\n=== MAPPED API DATA ===');
     console.log(JSON.stringify(apiData, null, 2));
 
+    // Prepare payment data for API
+    const paymentApiData = {
+      type: 'IBAN', // Fixed value as required by API
+      phone: identificationData?.phone || '', // Get phone from identification data
+      fullName: paymentData?.fullName || `${identificationData?.firstName || ''} ${identificationData?.lastName || ''}`.trim(),
+      address: paymentData?.address || '',
+      bankName: paymentData?.bankName || '',
+      iban: paymentData?.iban || '',
+      swiftOrBic: paymentData?.swiftBic || '',
+      bankAddress: paymentData?.bankAddress || ''
+    };
+
+    console.log('\n=== PAYMENT API DATA ===');
+    console.log(JSON.stringify(paymentApiData, null, 2));
+
     try {
-      console.log('\n=== MAKING API CALL ===');
+      console.log('\n=== CREATING PAYMENT FIRST ===');
 
       // Show loading notification
-      const loadingNotificationId = notifications.show({
+      notifications.show({
         id: 'creating-account',
-        title: 'Creating Account...',
-        message: 'Please wait while we create your account.',
+        title: 'Creating Payment Information...',
+        message: 'Please wait while we process your payment information.',
         color: 'blue',
         loading: true,
         autoClose: false,
       });
 
+      // Step 1: Create payment information
+      const paymentResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/classes/ServiceProviderPayment`, {
+        method: 'POST',
+        headers: {
+          'accept': '*/*',
+          'X-Parse-Application-Id': process.env.NEXT_PUBLIC_APPLICATION_ID!,
+          'X-Parse-REST-API-Key': process.env.NEXT_PUBLIC_REST_API_KEY!,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paymentApiData)
+      });
+
+      if (!paymentResponse.ok) {
+        const paymentError = await paymentResponse.text();
+        console.error('❌ Payment API Error:', paymentError);
+        throw new Error(`Payment API Error: ${paymentResponse.status} - ${paymentError}`);
+      }
+
+      const paymentResult = await paymentResponse.json();
+      console.log('✅ Payment API Success:', paymentResult);
+
+      // Update loading notification
+      notifications.update({
+        id: 'creating-account',
+        title: 'Creating Account...',
+        message: 'Payment information saved. Creating your account...',
+        color: 'blue',
+        loading: true,
+        autoClose: false,
+      });
+
+      console.log('\n=== CREATING SERVICE PROVIDER ACCOUNT ===');
+
+      // Add payment information to the API data
+      const serviceProviderData = {
+        ...apiData,
+        payment: {
+          id: paymentResult.objectId,
+          _objCount: 2,
+          className: "ServiceProviderPayment"
+        }
+      };
+
+      console.log('\n=== SERVICE PROVIDER DATA WITH PAYMENT ===');
+      console.log(JSON.stringify(serviceProviderData, null, 2));
+
+      // Step 2: Create service provider account
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/classes/ServiceProvider`, {
         method: 'POST',
         headers: {
           'accept': '*/*',
-          'X-Parse-Application-Id': process.env.NEXT_PUBLIC_PARSE_APPLICATION_ID!,
-          'X-Parse-REST-API-Key': process.env.NEXT_PUBLIC_PARSE_REST_API_KEY!,
+          'X-Parse-Application-Id': process.env.NEXT_PUBLIC_APPLICATION_ID!,
+          'X-Parse-REST-API-Key': process.env.NEXT_PUBLIC_REST_API_KEY!,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(apiData)
+        body: JSON.stringify(serviceProviderData)
       });
 
       if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
+        const accountError = await response.text();
+        console.error('❌ Account API Error:', accountError);
+        throw new Error(`Account API Error: ${response.status} - ${accountError}`);
       }
 
       const result = await response.json();
-      console.log('✅ API Success:', result);
+      console.log('✅ Account API Success:', result);
 
       // Hide loading notification and show success
       notifications.hide('creating-account');
       notifications.show({
         title: 'Account Created Successfully!',
-        message: 'Welcome to Simsem! Your account has been created.',
+        message: 'Welcome to Simsem! Your account and payment information have been saved.',
         color: 'green',
         autoClose: 3000,
       });
@@ -137,7 +201,7 @@ function SignupPageInner() {
       notifications.hide('creating-account');
       notifications.show({
         title: 'Account Creation Failed',
-        message: 'Failed to create account. Please try again.',
+        message: error instanceof Error ? error.message : 'Failed to create account. Please try again.',
         color: 'red',
         autoClose: 5000,
       });

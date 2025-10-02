@@ -91,6 +91,7 @@ export function PaymentProvider({ children }: PaymentProviderProps) {
   const [isVerifyingIban, setIsVerifyingIban] = useState(false);
   const [ibanVerified, setIbanVerified] = useState(false);
   const [ibanVerificationData, setIbanVerificationData] = useState<IBANVerificationData | null>(null);
+  const [lastVerifiedIban, setLastVerifiedIban] = useState<string>('');
 
   // Form setup
   const form = useForm<PaymentFormData>({
@@ -109,34 +110,39 @@ export function PaymentProvider({ children }: PaymentProviderProps) {
   // Watch IBAN field for changes and reset verification
   const ibanValue = form.watch('iban');
   useEffect(() => {
-    // Reset verification when IBAN changes
-    setIbanVerified(false);
-    setIbanVerificationData(null);
-  }, [ibanValue]);
+    // Only reset verification when IBAN changes and it's different from the last verified IBAN
+    if (ibanValue !== lastVerifiedIban) {
+      setIbanVerified(false);
+      setIbanVerificationData(null);
+    }
+  }, [ibanValue, lastVerifiedIban]);
 
   // Verify IBAN function
   const verifyIban = async (iban: string) => {
     if (!iban.trim()) return;
-    
+
     setIsVerifyingIban(true);
     setIbanVerified(false);
     setIbanVerificationData(null);
-    
+
     try {
       const verificationData = await verifyIbanAPI(iban);
-      
+
       if (verificationData.valid) {
         setIbanVerified(true);
         setIbanVerificationData(verificationData);
+        setLastVerifiedIban(verificationData.iban);
         // Update form with formatted IBAN
         form.setValue('iban', verificationData.iban, { shouldValidate: true });
       } else {
         setIbanVerified(false);
+        setLastVerifiedIban('');
         form.setError('iban', { message: 'Invalid IBAN' });
       }
     } catch (error) {
       console.error('IBAN verification error:', error);
       setIbanVerified(false);
+      setLastVerifiedIban('');
       form.setError('iban', { message: 'Failed to verify IBAN. Please try again.' });
     } finally {
       setIsVerifyingIban(false);
