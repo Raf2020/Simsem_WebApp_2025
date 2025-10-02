@@ -24,11 +24,6 @@ export const paymentFormSchema = z.object({
 // Types
 export type PaymentFormData = z.infer<typeof paymentFormSchema>;
 
-// IBAN verification response type
-interface IBANVerificationResponse {
-  result: string; // JSON string containing verification data
-}
-
 interface IBANVerificationData {
   valid: boolean;
   iban: string;
@@ -54,28 +49,28 @@ export interface PaymentContextType {
   canProceed: boolean;
 }
 
-// API function to verify IBAN
+// API function to verify IBAN using secure backend
 const verifyIbanAPI = async (iban: string): Promise<IBANVerificationData> => {
-  const cleanIban = iban.replace(/\s/g, ''); // Remove spaces
-  
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/functions/verifyIBAN?iban=${cleanIban}`, {
+  const response = await fetch('/api/verify-iban', {
     method: 'POST',
     headers: {
-      'accept': '*/*',
-      'X-Parse-Application-Id': process.env.NEXT_PUBLIC_APPLICATION_ID!,
-      'X-Parse-REST-API-Key': process.env.NEXT_PUBLIC_REST_API_KEY!,
+      'Content-Type': 'application/json',
     },
-    body: ''
+    body: JSON.stringify({ iban })
   });
-  
+
   if (!response.ok) {
-    throw new Error('Failed to verify IBAN');
+    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+    throw new Error(errorData.error || 'Failed to verify IBAN');
   }
-  
-  const data: IBANVerificationResponse = await response.json();
-  const verificationData: IBANVerificationData = JSON.parse(data.result);
-  
-  return verificationData;
+
+  const result = await response.json();
+
+  if (!result.success) {
+    throw new Error(result.error || 'IBAN verification failed');
+  }
+
+  return result.data;
 };
 
 // Create context

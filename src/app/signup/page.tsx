@@ -105,201 +105,92 @@ function SignupPageInner() {
     console.log(JSON.stringify(paymentApiData, null, 2));
 
     try {
-      console.log('\n=== CREATING PAYMENT FIRST ===');
+      console.log('\n=== CALLING BACKEND API ===');
 
       // Show loading notification
       notifications.show({
         id: 'creating-account',
-        title: 'Creating Payment Information...',
-        message: 'Please wait while we process your payment information.',
-        color: 'blue',
-        loading: true,
-        autoClose: false,
-      });
-
-      // Step 1: Create payment information
-      const paymentResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/classes/ServiceProviderPayment`, {
-        method: 'POST',
-        headers: {
-          'accept': '*/*',
-          'X-Parse-Application-Id': process.env.NEXT_PUBLIC_APPLICATION_ID!,
-          'X-Parse-REST-API-Key': process.env.NEXT_PUBLIC_REST_API_KEY!,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(paymentApiData)
-      });
-
-      if (!paymentResponse.ok) {
-        const paymentError = await paymentResponse.text();
-        console.error('❌ Payment API Error:', paymentError);
-        throw new Error(`Payment API Error: ${paymentResponse.status} - ${paymentError}`);
-      }
-
-      const paymentResult = await paymentResponse.json();
-      console.log('✅ Payment API Success:', paymentResult);
-      console.log('📊 Payment Result ObjectId:', paymentResult.objectId);
-
-      // Update loading notification
-      notifications.update({
-        id: 'creating-account',
-        title: 'Uploading Files...',
-        message: 'Payment information saved. Uploading your documents...',
-        color: 'blue',
-        loading: true,
-        autoClose: false,
-      });
-
-      console.log('\n=== UPLOADING FILES ===');
-
-      // Helper function to upload a file
-      const uploadFile = async (file: File, filePath: string): Promise<string> => {
-        const uploadUrl = `${process.env.NEXT_PUBLIC_BUNNY_STORAGE_URL}${filePath}`;
-
-        const response = await fetch(uploadUrl, {
-          method: 'PUT',
-          headers: {
-            'AccessKey': process.env.NEXT_PUBLIC_ACCESS_KEY!,
-            'Content-Type': 'application/octet-stream',
-          },
-          body: file
-        });
-
-        if (!response.ok) {
-          throw new Error(`Failed to upload file: ${response.status}`);
-        }
-
-        return `${process.env.NEXT_PUBLIC_BUNNY_CDN_URL}${filePath}`;
-      };
-
-      // Generate unique user ID for file paths (you can replace with actual user ID)
-      const userId = `user_${Date.now()}`;
-      const uploadedFiles: { [key: string]: string } = {};
-
-      // Upload profile photo
-      if (identificationData?.profilePhoto?.file) {
-        try {
-          const fileExtension = identificationData.profilePhoto.name.split('.').pop() || 'jpeg';
-          const filePath = `/profiles/${userId}/avatar/profile.${fileExtension}`;
-          const uploadedUrl = await uploadFile(identificationData.profilePhoto.file, filePath);
-          uploadedFiles.imageUrl = uploadedUrl;
-          console.log('✅ Profile photo uploaded:', uploadedUrl);
-        } catch (error) {
-          console.error('❌ Profile photo upload failed:', error);
-        }
-      }
-
-      // Upload ID card front side
-      if (identificationData?.idCardFrontSide?.file) {
-        try {
-          const fileExtension = identificationData.idCardFrontSide.name.split('.').pop() || 'jpeg';
-          const filePath = `/profiles/${userId}/documents/id_front.${fileExtension}`;
-          const uploadedUrl = await uploadFile(identificationData.idCardFrontSide.file, filePath);
-          uploadedFiles.idFrontFileUrl = uploadedUrl;
-          console.log('✅ ID front uploaded:', uploadedUrl);
-        } catch (error) {
-          console.error('❌ ID front upload failed:', error);
-        }
-      }
-
-      // Upload ID card back side
-      if (identificationData?.idCardBackSide?.file) {
-        try {
-          const fileExtension = identificationData.idCardBackSide.name.split('.').pop() || 'jpeg';
-          const filePath = `/profiles/${userId}/documents/id_back.${fileExtension}`;
-          const uploadedUrl = await uploadFile(identificationData.idCardBackSide.file, filePath);
-          uploadedFiles.idBackFileUrl = uploadedUrl;
-          console.log('✅ ID back uploaded:', uploadedUrl);
-        } catch (error) {
-          console.error('❌ ID back upload failed:', error);
-        }
-      }
-
-      // Upload tour guide certificate (if provided)
-      if (identificationData?.tourGuideCertificate?.file) {
-        try {
-          const fileExtension = identificationData.tourGuideCertificate.name.split('.').pop() || 'pdf';
-          const filePath = `/profiles/${userId}/certificates/guide_cert.${fileExtension}`;
-          const uploadedUrl = await uploadFile(identificationData.tourGuideCertificate.file, filePath);
-          uploadedFiles.certificateFileUrl = uploadedUrl;
-          console.log('✅ Certificate uploaded:', uploadedUrl);
-        } catch (error) {
-          console.error('❌ Certificate upload failed:', error);
-        }
-      }
-
-      console.log('\n=== UPLOADED FILES ===');
-      console.log(JSON.stringify(uploadedFiles, null, 2));
-
-      // Update loading notification
-      notifications.update({
-        id: 'creating-account',
         title: 'Creating Account...',
-        message: 'Files uploaded. Creating your account...',
+        message: 'Please wait while we process your information...',
         color: 'blue',
         loading: true,
         autoClose: false,
       });
 
-      console.log('\n=== CREATING SERVICE PROVIDER ACCOUNT ===');
+      // Prepare files for upload
+      const files: { [key: string]: any } = {};
 
-      // Create payment pointer object
-      const paymentPointer = {
-        __type: "Pointer",
-        className: "ServiceProviderPayment",
-        objectId: paymentResult.objectId
-      };
+      if (identificationData?.profilePhoto?.file) {
+        files.profilePhoto = {
+          name: identificationData.profilePhoto.name,
+          type: identificationData.profilePhoto.type,
+          size: identificationData.profilePhoto.size,
+          buffer: Array.from(new Uint8Array(await identificationData.profilePhoto.file.arrayBuffer()))
+        };
+      }
 
-      console.log('📊 Payment Pointer:', JSON.stringify(paymentPointer, null, 2));
+      if (identificationData?.idCardFrontSide?.file) {
+        files.idCardFrontSide = {
+          name: identificationData.idCardFrontSide.name,
+          type: identificationData.idCardFrontSide.type,
+          size: identificationData.idCardFrontSide.size,
+          buffer: Array.from(new Uint8Array(await identificationData.idCardFrontSide.file.arrayBuffer()))
+        };
+      }
 
-      // Add payment information and uploaded files to the API data
-      const serviceProviderData = {
-        ...apiData,
-        ...uploadedFiles, // Add all uploaded file URLs (currently undefined)
-        payment: paymentPointer
-      };
+      if (identificationData?.idCardBackSide?.file) {
+        files.idCardBackSide = {
+          name: identificationData.idCardBackSide.name,
+          type: identificationData.idCardBackSide.type,
+          size: identificationData.idCardBackSide.size,
+          buffer: Array.from(new Uint8Array(await identificationData.idCardBackSide.file.arrayBuffer()))
+        };
+      }
 
-      console.log('\n=== SERVICE PROVIDER DATA WITH PAYMENT ===');
-      console.log(JSON.stringify(serviceProviderData, null, 2));
-      console.log('\n=== PAYMENT FIELD TYPE CHECK ===');
-      console.log('Payment field:', serviceProviderData.payment);
-      console.log('Payment field type:', typeof serviceProviderData.payment);
-      console.log('Payment __type:', serviceProviderData.payment?.__type);
-      console.log('Payment className:', serviceProviderData.payment?.className);
-      console.log('Payment objectId:', serviceProviderData.payment?.objectId);
+      if (identificationData?.tourGuideCertificate?.file) {
+        files.tourGuideCertificate = {
+          name: identificationData.tourGuideCertificate.name,
+          type: identificationData.tourGuideCertificate.type,
+          size: identificationData.tourGuideCertificate.size,
+          buffer: Array.from(new Uint8Array(await identificationData.tourGuideCertificate.file.arrayBuffer()))
+        };
+      }
 
-      // Step 2: Create service provider account
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/classes/ServiceProvider`, {
+      // Call the secure backend API
+      const response = await fetch('/api/signup', {
         method: 'POST',
         headers: {
-          'accept': '*/*',
-          'X-Parse-Application-Id': process.env.NEXT_PUBLIC_APPLICATION_ID!,
-          'X-Parse-REST-API-Key': process.env.NEXT_PUBLIC_REST_API_KEY!,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(serviceProviderData)
+        body: JSON.stringify({
+          ...apiData,
+          paymentData: paymentApiData,
+          files
+        })
       });
 
       if (!response.ok) {
-        const accountError = await response.text();
-        console.error('❌ Account API Error:', accountError);
-        throw new Error(`Account API Error: ${response.status} - ${accountError}`);
+        const errorData = await response.json();
+        console.error('❌ Backend API Error:', errorData);
+        throw new Error(`Backend API Error: ${response.status} - ${errorData.error}`);
       }
 
       const result = await response.json();
-      console.log('✅ Account API Success:', result);
+      console.log('✅ Backend API Success:', result);
 
-      // Hide loading notification and show success
-      notifications.hide('creating-account');
-      notifications.show({
+      // Show success notification
+      notifications.update({
+        id: 'creating-account',
         title: 'Account Created Successfully!',
-        message: 'Welcome to Simsem! Your account and payment information have been saved.',
+        message: 'Welcome to Simsem! Your account has been created.',
         color: 'green',
+        loading: false,
         autoClose: 3000,
       });
 
       router.push('/signup/success');
     } catch (error) {
-      console.error('❌ API Error:', error);
+      console.error('❌ Backend API Error:', error);
 
       // Hide loading notification and show error
       notifications.hide('creating-account');
