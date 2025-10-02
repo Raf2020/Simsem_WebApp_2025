@@ -141,8 +141,99 @@ function SignupPageInner() {
       // Update loading notification
       notifications.update({
         id: 'creating-account',
+        title: 'Uploading Files...',
+        message: 'Payment information saved. Uploading your documents...',
+        color: 'blue',
+        loading: true,
+        autoClose: false,
+      });
+
+      console.log('\n=== UPLOADING FILES ===');
+
+      // Helper function to upload a file
+      const uploadFile = async (file: File, filePath: string): Promise<string> => {
+        const uploadUrl = `${process.env.NEXT_PUBLIC_BUNNY_STORAGE_URL}${filePath}`;
+
+        const response = await fetch(uploadUrl, {
+          method: 'PUT',
+          headers: {
+            'AccessKey': process.env.NEXT_PUBLIC_ACCESS_KEY!,
+            'Content-Type': 'application/octet-stream',
+          },
+          body: file
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to upload file: ${response.status}`);
+        }
+
+        return `${process.env.NEXT_PUBLIC_BUNNY_CDN_URL}${filePath}`;
+      };
+
+      // Generate unique user ID for file paths (you can replace with actual user ID)
+      const userId = `user_${Date.now()}`;
+      const uploadedFiles: { [key: string]: string } = {};
+
+      // Upload profile photo
+      if (identificationData?.profilePhoto?.file) {
+        try {
+          const fileExtension = identificationData.profilePhoto.name.split('.').pop() || 'jpeg';
+          const filePath = `/profiles/${userId}/avatar/profile.${fileExtension}`;
+          const uploadedUrl = await uploadFile(identificationData.profilePhoto.file, filePath);
+          uploadedFiles.imageUrl = uploadedUrl;
+          console.log('✅ Profile photo uploaded:', uploadedUrl);
+        } catch (error) {
+          console.error('❌ Profile photo upload failed:', error);
+        }
+      }
+
+      // Upload ID card front side
+      if (identificationData?.idCardFrontSide?.file) {
+        try {
+          const fileExtension = identificationData.idCardFrontSide.name.split('.').pop() || 'jpeg';
+          const filePath = `/profiles/${userId}/documents/id_front.${fileExtension}`;
+          const uploadedUrl = await uploadFile(identificationData.idCardFrontSide.file, filePath);
+          uploadedFiles.idFrontFileUrl = uploadedUrl;
+          console.log('✅ ID front uploaded:', uploadedUrl);
+        } catch (error) {
+          console.error('❌ ID front upload failed:', error);
+        }
+      }
+
+      // Upload ID card back side
+      if (identificationData?.idCardBackSide?.file) {
+        try {
+          const fileExtension = identificationData.idCardBackSide.name.split('.').pop() || 'jpeg';
+          const filePath = `/profiles/${userId}/documents/id_back.${fileExtension}`;
+          const uploadedUrl = await uploadFile(identificationData.idCardBackSide.file, filePath);
+          uploadedFiles.idBackFileUrl = uploadedUrl;
+          console.log('✅ ID back uploaded:', uploadedUrl);
+        } catch (error) {
+          console.error('❌ ID back upload failed:', error);
+        }
+      }
+
+      // Upload tour guide certificate (if provided)
+      if (identificationData?.tourGuideCertificate?.file) {
+        try {
+          const fileExtension = identificationData.tourGuideCertificate.name.split('.').pop() || 'pdf';
+          const filePath = `/profiles/${userId}/certificates/guide_cert.${fileExtension}`;
+          const uploadedUrl = await uploadFile(identificationData.tourGuideCertificate.file, filePath);
+          uploadedFiles.certificateFileUrl = uploadedUrl;
+          console.log('✅ Certificate uploaded:', uploadedUrl);
+        } catch (error) {
+          console.error('❌ Certificate upload failed:', error);
+        }
+      }
+
+      console.log('\n=== UPLOADED FILES ===');
+      console.log(JSON.stringify(uploadedFiles, null, 2));
+
+      // Update loading notification
+      notifications.update({
+        id: 'creating-account',
         title: 'Creating Account...',
-        message: 'Payment information saved. Creating your account...',
+        message: 'Files uploaded. Creating your account...',
         color: 'blue',
         loading: true,
         autoClose: false,
@@ -150,9 +241,10 @@ function SignupPageInner() {
 
       console.log('\n=== CREATING SERVICE PROVIDER ACCOUNT ===');
 
-      // Add payment information to the API data
+      // Add payment information and uploaded files to the API data
       const serviceProviderData = {
         ...apiData,
+        ...uploadedFiles, // Add all uploaded file URLs
         payment: {
           id: paymentResult.objectId,
           _objCount: 2,
