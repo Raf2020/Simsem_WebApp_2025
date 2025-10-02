@@ -137,6 +137,7 @@ function SignupPageInner() {
 
       const paymentResult = await paymentResponse.json();
       console.log('✅ Payment API Success:', paymentResult);
+      console.log('📊 Payment Result ObjectId:', paymentResult.objectId);
 
       // Update loading notification
       notifications.update({
@@ -241,19 +242,30 @@ function SignupPageInner() {
 
       console.log('\n=== CREATING SERVICE PROVIDER ACCOUNT ===');
 
+      // Create payment pointer object
+      const paymentPointer = {
+        __type: "Pointer",
+        className: "ServiceProviderPayment",
+        objectId: paymentResult.objectId
+      };
+
+      console.log('📊 Payment Pointer:', JSON.stringify(paymentPointer, null, 2));
+
       // Add payment information and uploaded files to the API data
       const serviceProviderData = {
         ...apiData,
-        ...uploadedFiles, // Add all uploaded file URLs
-        payment: {
-          __type: "Pointer",
-          className: "ServiceProviderPayment",
-          objectId: paymentResult.objectId
-        }
+        ...uploadedFiles, // Add all uploaded file URLs (currently undefined)
+        payment: paymentPointer
       };
 
       console.log('\n=== SERVICE PROVIDER DATA WITH PAYMENT ===');
       console.log(JSON.stringify(serviceProviderData, null, 2));
+      console.log('\n=== PAYMENT FIELD TYPE CHECK ===');
+      console.log('Payment field:', serviceProviderData.payment);
+      console.log('Payment field type:', typeof serviceProviderData.payment);
+      console.log('Payment __type:', serviceProviderData.payment?.__type);
+      console.log('Payment className:', serviceProviderData.payment?.className);
+      console.log('Payment objectId:', serviceProviderData.payment?.objectId);
 
       // Step 2: Create service provider account
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/classes/ServiceProvider`, {
