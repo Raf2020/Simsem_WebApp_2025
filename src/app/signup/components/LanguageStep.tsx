@@ -11,12 +11,20 @@ import {
   Paper,
   Flex,
   Modal,
-  TextInput,
-  Select
+  Select,
+  Loader
 } from '@mantine/core';
-import { IconPlus, IconTrash, IconX } from '@tabler/icons-react';
-import { useState } from 'react';
+import { IconPlus, IconTrash } from '@tabler/icons-react';
+import { useState, useEffect } from 'react';
 import { useLanguage, PROFICIENCY_LEVELS, type ProficiencyLevel } from '../contexts/LanguageContext';
+
+// Types for language options
+interface LanguageOption {
+  value: string;
+  label: string;
+  code: string;
+  objectId: string;
+}
 
 interface LanguageStepProps {
   onComplete: () => void;
@@ -26,21 +34,45 @@ interface LanguageStepProps {
 export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) {
   const { form, languages, removeLanguage, addLanguage, canAddMore, isFormValid } = useLanguage();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newLanguageName, setNewLanguageName] = useState('');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('');
   const [newLanguageProficiency, setNewLanguageProficiency] = useState<ProficiencyLevel>('CONVERSATIONAL');
+  const [availableLanguages, setAvailableLanguages] = useState<LanguageOption[]>([]);
+  const [isLoadingLanguages, setIsLoadingLanguages] = useState(false);
 
   const formErrors = form.formState.errors;
 
+  // Fetch languages from API
+  useEffect(() => {
+    const fetchLanguages = async () => {
+      setIsLoadingLanguages(true);
+      try {
+        const response = await fetch('/api/languages');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            setAvailableLanguages(data.languages);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch languages:', error);
+      } finally {
+        setIsLoadingLanguages(false);
+      }
+    };
+
+    fetchLanguages();
+  }, []);
+
   // Handle adding a new language
   const handleAddLanguage = () => {
-    if (newLanguageName.trim()) {
+    if (selectedLanguage.trim()) {
       addLanguage({
-        name: newLanguageName.trim(),
+        name: selectedLanguage.trim(),
         proficiency: newLanguageProficiency
       });
 
       // Reset form and close modal
-      setNewLanguageName('');
+      setSelectedLanguage('');
       setNewLanguageProficiency('CONVERSATIONAL');
       setIsAddModalOpen(false);
     }
@@ -263,7 +295,11 @@ export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) 
       {/* Add Language Modal */}
       <Modal
         opened={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
+        onClose={() => {
+          setIsAddModalOpen(false);
+          setSelectedLanguage('');
+          setNewLanguageProficiency('CONVERSATIONAL');
+        }}
         title="Add Language"
         centered
         styles={{
@@ -276,11 +312,14 @@ export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) 
         }}
       >
         <Stack gap="md">
-          <TextInput
-            label="Language Name"
-            placeholder="e.g., Spanish, German, Japanese"
-            value={newLanguageName}
-            onChange={(e) => setNewLanguageName(e.target.value)}
+          <Select
+            label="Language"
+            placeholder={isLoadingLanguages ? "Loading languages..." : "Select a language"}
+            value={selectedLanguage}
+            onChange={(value) => setSelectedLanguage(value || '')}
+            data={availableLanguages}
+            disabled={isLoadingLanguages}
+            searchable
             styles={{
               label: {
                 fontFamily: 'Barlow',
@@ -290,6 +329,7 @@ export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) 
                 marginBottom: '8px'
               }
             }}
+            rightSection={isLoadingLanguages ? <Loader size="xs" /> : undefined}
           />
 
           <Select
@@ -311,7 +351,11 @@ export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) 
           <Group justify="flex-end" gap="sm" mt="md">
             <Button
               variant="outline"
-              onClick={() => setIsAddModalOpen(false)}
+              onClick={() => {
+                setIsAddModalOpen(false);
+                setSelectedLanguage('');
+                setNewLanguageProficiency('CONVERSATIONAL');
+              }}
               style={{
                 borderColor: '#d1d5db',
                 color: '#6b7280'
@@ -321,10 +365,10 @@ export default function LanguageStep({ onComplete, onBack }: LanguageStepProps) 
             </Button>
             <Button
               onClick={handleAddLanguage}
-              disabled={!newLanguageName.trim()}
+              disabled={!selectedLanguage.trim()}
               style={{
-                backgroundColor: newLanguageName.trim() ? '#f59e0b' : '#d1d5db',
-                color: newLanguageName.trim() ? 'white' : '#6b7280'
+                backgroundColor: selectedLanguage.trim() ? '#f59e0b' : '#d1d5db',
+                color: selectedLanguage.trim() ? 'white' : '#6b7280'
               }}
             >
               Add Language
