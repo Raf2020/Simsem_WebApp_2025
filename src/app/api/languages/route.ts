@@ -15,8 +15,6 @@ interface LanguagesResponse {
 
 export async function GET(request: NextRequest) {
   try {
-    console.log('📥 Fetching languages from Parse API');
-
     // Fetch languages from Parse API
     const response = await fetch(`${process.env.BACKEND_URL}/classes/Language`, {
       method: 'GET',
@@ -36,8 +34,6 @@ export async function GET(request: NextRequest) {
     }
 
     const data: LanguagesResponse = await response.json();
-    
-    console.log(`✅ Successfully fetched ${data.results.length} languages`);
 
     // Transform the data for frontend use
     const languages = data.results.map(lang => ({

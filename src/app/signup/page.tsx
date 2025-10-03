@@ -88,9 +88,6 @@ function SignupPageInner() {
       isSocialAuth: false
     };
 
-    console.log('\n=== MAPPED API DATA ===');
-    console.log(JSON.stringify(apiData, null, 2));
-
     // Prepare payment data for API
     const paymentApiData = {
       type: 'IBAN', // Fixed value as required by API
@@ -103,12 +100,7 @@ function SignupPageInner() {
       bankAddress: paymentData?.bankAddress || ''
     };
 
-    console.log('\n=== PAYMENT API DATA ===');
-    console.log(JSON.stringify(paymentApiData, null, 2));
-
     try {
-      console.log('\n=== CALLING BACKEND API ===');
-
       // Show loading notification
       notifications.show({
         id: 'creating-account',
@@ -176,9 +168,6 @@ function SignupPageInner() {
         console.error('❌ Backend API Error:', errorData);
         throw new Error(`Backend API Error: ${response.status} - ${errorData.error}`);
       }
-
-      const result = await response.json();
-      console.log('✅ Backend API Success:', result);
 
       // Show success notification
       notifications.update({

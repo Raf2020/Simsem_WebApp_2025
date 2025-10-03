@@ -53,7 +53,7 @@ interface FileData {
 export async function POST(request: NextRequest) {
   try {
     const body: SignupRequestBody = await request.json();
-    console.log('📥 Received signup request');
+    console.log('🚀 Starting signup process for:', body.email);
 
     const {
       // Basic information
@@ -81,8 +81,6 @@ export async function POST(request: NextRequest) {
       files
     } = body;
 
-    console.log('🔄 Step 1: Creating payment...');
-
     // Step 1: Create payment
     const paymentResponse = await fetch(`${process.env.BACKEND_URL}/classes/ServiceProviderPayment`, {
       method: 'POST',
@@ -106,9 +104,7 @@ export async function POST(request: NextRequest) {
     }
 
     const paymentResult = await paymentResponse.json();
-    console.log('✅ Payment created:', paymentResult.objectId);
-
-    console.log('🔄 Step 2: Uploading files...');
+    console.log('💳 Payment created:', paymentResult.objectId);
 
     // Step 2: Upload files
     const uploadedFiles: Record<string, string> = {};
@@ -122,7 +118,6 @@ export async function POST(request: NextRequest) {
           const filePath = `/profiles/${userId}/avatar/profile.${fileExtension}`;
           const uploadedUrl = await uploadFile(files.profilePhoto, filePath);
           uploadedFiles.imageUrl = uploadedUrl;
-          console.log('✅ Profile photo uploaded:', uploadedUrl);
         } catch (error) {
           console.error('❌ Profile photo upload failed:', error);
         }
@@ -135,7 +130,6 @@ export async function POST(request: NextRequest) {
           const filePath = `/profiles/${userId}/documents/id_front.${fileExtension}`;
           const uploadedUrl = await uploadFile(files.idCardFrontSide, filePath);
           uploadedFiles.idFrontFileUrl = uploadedUrl;
-          console.log('✅ ID front uploaded:', uploadedUrl);
         } catch (error) {
           console.error('❌ ID front upload failed:', error);
         }
@@ -148,7 +142,6 @@ export async function POST(request: NextRequest) {
           const filePath = `/profiles/${userId}/documents/id_back.${fileExtension}`;
           const uploadedUrl = await uploadFile(files.idCardBackSide, filePath);
           uploadedFiles.idBackFileUrl = uploadedUrl;
-          console.log('✅ ID back uploaded:', uploadedUrl);
         } catch (error) {
           console.error('❌ ID back upload failed:', error);
         }
@@ -161,14 +154,11 @@ export async function POST(request: NextRequest) {
           const filePath = `/profiles/${userId}/certificates/guide_cert.${fileExtension}`;
           const uploadedUrl = await uploadFile(files.tourGuideCertificate, filePath);
           uploadedFiles.certificateFileUrl = uploadedUrl;
-          console.log('✅ Certificate uploaded:', uploadedUrl);
         } catch (error) {
           console.error('❌ Certificate upload failed:', error);
         }
       }
     }
-
-    console.log('🔄 Step 3: Creating service provider...');
 
     // Step 3: Create service provider
     const serviceProviderData = {
@@ -217,9 +207,7 @@ export async function POST(request: NextRequest) {
     }
 
     const serviceProviderResult = await serviceProviderResponse.json();
-    console.log('✅ Service provider created:', serviceProviderResult.objectId);
-
-    console.log('🔄 Step 4: Creating tourist record...');
+    console.log('👤 ServiceProvider created:', serviceProviderResult.objectId);
 
     // Step 4: Create tourist record
     const touristData = {
@@ -251,9 +239,7 @@ export async function POST(request: NextRequest) {
     }
 
     const touristResult = await touristResponse.json();
-    console.log('✅ Tourist created:', touristResult.objectId);
-
-    console.log('🔄 Step 5: Creating user account...');
+    console.log('🧳 Tourist created:', touristResult.objectId);
 
     // Step 5: Create user account with both tourist and service provider relationships
     const userData = {
@@ -296,7 +282,7 @@ export async function POST(request: NextRequest) {
     }
 
     const userResult = await userResponse.json();
-    console.log('✅ User created:', userResult.objectId);
+    console.log('✅ Signup completed successfully for:', body.email, '| User ID:', userResult.objectId);
 
     return NextResponse.json({
       success: true,
