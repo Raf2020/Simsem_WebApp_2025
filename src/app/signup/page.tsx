@@ -13,6 +13,7 @@ import SignupStepper from './components/SignupStepper';
 import { IdentificationProvider, useIdentification } from './contexts/IdentificationContext';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { PaymentProvider, usePayment } from './contexts/PaymentContext';
+import { ServicesProvider, useServices } from './contexts/ServicesContext';
 
 type SignupStep = 'identification' | 'profile' | 'language' | 'services' | 'payment' | 'account';
 
@@ -22,6 +23,7 @@ function SignupPageInner() {
   const identification = useIdentification();
   const language = useLanguage();
   const payment = usePayment();
+  const services = useServices();
 
   const [currentStep, setCurrentStep] = useState<SignupStep>('identification');
 
@@ -80,9 +82,9 @@ function SignupPageInner() {
       secondLanguageLevel: mapProficiencyLevel(languages[1]?.proficiency),
       thirdLanguage: languages[2]?.name || '',
       thirdLanguageLevel: mapProficiencyLevel(languages[2]?.proficiency),
-      isLocalSeller: false,
-      isFamilyHost: false,
-      isTourGuide: identificationData?.isCertifiedGuide || true,
+      isLocalSeller: services.isLocalSeller,
+      isFamilyHost: services.isFamilyHost,
+      isTourGuide: services.isTourGuide,
       isSocialAuth: false
     };
 
@@ -347,9 +349,11 @@ export default function SignUp () {
   return (
     <LanguageProvider>
       <IdentificationProvider>
-        <PaymentProvider>
-          <SignupPageInner />
-        </PaymentProvider>
+        <ServicesProvider>
+          <PaymentProvider>
+            <SignupPageInner />
+          </PaymentProvider>
+        </ServicesProvider>
       </IdentificationProvider>
     </LanguageProvider>
   );

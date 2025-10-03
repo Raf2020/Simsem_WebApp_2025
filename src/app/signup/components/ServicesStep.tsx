@@ -1,19 +1,16 @@
 'use client';
 
-import { useState } from 'react';
 import {
   Text,
   Title,
   Button,
   Stack,
   Box,
-  Group,
   Paper,
-  Card,
-  Image,
   SimpleGrid,
   Flex
 } from '@mantine/core';
+import { useServices, type ServiceType } from '../contexts/ServicesContext';
 
 interface ServicesStepProps {
   onComplete: () => void;
@@ -21,7 +18,7 @@ interface ServicesStepProps {
 }
 
 interface Service {
-  id: string;
+  id: ServiceType;
   title: string;
   description: string;
   image: string;
@@ -49,15 +46,7 @@ const availableServices: Service[] = [
 ];
 
 export default function ServicesStep({ onComplete, onBack }: ServicesStepProps) {
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
-
-  const toggleService = (serviceId: string) => {
-    setSelectedServices(prev =>
-      prev.includes(serviceId)
-        ? prev.filter(id => id !== serviceId)
-        : [...prev, serviceId]
-    );
-  };
+  const { selectedServices, toggleService, isServiceSelected, hasSelectedServices } = useServices();
 
   return (
 
@@ -116,10 +105,10 @@ export default function ServicesStep({ onComplete, onBack }: ServicesStepProps) 
                   padding: '30px',
                   gap: '10px',
                   cursor: 'pointer',
-                  border: selectedServices.includes(service.id)
+                  border: isServiceSelected(service.id)
                     ? '2px solid #f97316'
                     : '1px solid #e5e7eb',
-                  backgroundColor: selectedServices.includes(service.id)
+                  backgroundColor: isServiceSelected(service.id)
                     ? '#fff7ed'
                     : '#ffffff',
                   transition: 'all 0.2s ease',
@@ -232,16 +221,18 @@ export default function ServicesStep({ onComplete, onBack }: ServicesStepProps) 
         <Button
           size="md"
           onClick={onComplete}
+          disabled={!hasSelectedServices}
           w={{ base: '100%', sm: 'auto' }}
           style={{
-            backgroundColor: '#f59e0b',
-            color: 'white',
+            backgroundColor: hasSelectedServices ? '#f59e0b' : '#d1d5db',
+            color: hasSelectedServices ? 'white' : '#6b7280',
             border: 'none',
             borderRadius: '6px',
             height: '44px',
             fontSize: '14px',
             fontWeight: 500,
-            minWidth: '120px'
+            minWidth: '120px',
+            cursor: hasSelectedServices ? 'pointer' : 'not-allowed'
           }}
         >
           Proceed
